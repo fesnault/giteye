@@ -1,8 +1,5 @@
 package org.phoenix.giteye.core.hibernate;
 
-import java.util.HashSet;
-import java.util.Set;
-
 /**
  * GitEye entities provider.
  * User: phoenix
@@ -12,6 +9,6 @@ import java.util.Set;
 public class GitEyeEntitiesProvider extends EntitiesProvider {
 
     public GitEyeEntitiesProvider() {
-        add(DummyEntity.class);
+        add(GitRepository.class);
     }
 }
