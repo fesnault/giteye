@@ -5,7 +5,20 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
                                http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee.xsd">
 
+
+    <import resource="application-context-hibernate.xml"/>
+    <import resource="application-context-cache.xml"/>
+    <import resource="application-context-jdbc.xml"/>
     <import resource="classpath:giteye-core-context.xml"/>
+
+    <bean id="properties" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="location" value="WEB-INF/config/datasource.properties"/>
+    </bean>
+
+    <!-- JNDI datasource-->
+    <jee:jndi-lookup id="dataSource" jndi-name="${jndi.jdbc}"/>
+
+    <bean class="org.springframework.beans.factory.annotation.RequiredAnnotationBeanPostProcessor"/>
 
 
 </beans>

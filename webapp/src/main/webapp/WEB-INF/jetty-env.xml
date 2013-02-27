@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE Configure PUBLIC "-//Mort Bay Consulting//DTD Configure//EN" "http://www.eclipse.org/jetty/configure.dtd">
+    <!-- $Id$ -->
+<Configure class="org.eclipse.jetty.webapp.WebAppContext">
+    <New id="caha" class="org.eclipse.jetty.plus.jndi.Resource">
+        <Arg>jdbc/giteye</Arg>
+        <Arg>
+            <New class="org.apache.commons.dbcp.BasicDataSource">
+                <Set name="driverClassName"><SystemProperty name="dbdriver"/></Set>
+                <Set name="url"><SystemProperty name="dburl"/></Set>
+                <Set name="username"><SystemProperty name="dbuser"/></Set>
+                <Set name="password"><SystemProperty name="dbpassword"/></Set>
+                <Set name="accessToUnderlyingConnectionAllowed">true</Set>
+            </New>
+        </Arg>
+    </New>
+</Configure>

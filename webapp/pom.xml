@@ -46,6 +46,11 @@
             <artifactId>jsp-api</artifactId>
         </dependency>
         <dependency>
+            <groupId>commons-dbcp</groupId>
+            <artifactId>commons-dbcp</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
             <groupId>taglibs</groupId>
             <artifactId>standard</artifactId>
         </dependency>
@@ -109,6 +114,14 @@
             <groupId>org.springframework</groupId>
             <artifactId>spring-web</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-jdbc</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-orm</artifactId>
+        </dependency>
     </dependencies>
     <build>
             <finalName>giteye-webapp</finalName>
@@ -129,12 +142,49 @@
                 <plugin>
                     <groupId>org.mortbay.jetty</groupId>
                     <artifactId>jetty-maven-plugin</artifactId>
+                    <dependencies>
+                        <dependency>
+                            <groupId>${jdbc.groupId}</groupId>
+                            <artifactId>${jdbc.artifactId}</artifactId>
+                            <version>${jdbc.version}</version>
+                        </dependency>
+                        <dependency>
+                            <groupId>com.h2database</groupId>
+                            <artifactId>h2</artifactId>
+                            <version>${h2.version}</version>
+                        </dependency>
+                        <dependency>
+                            <groupId>commons-dbcp</groupId>
+                            <artifactId>commons-dbcp</artifactId>
+                            <version>${commons-dbcp.version}</version>
+                        </dependency>
+                    </dependencies>
                     <configuration>
                         <scanIntervalSeconds>0</scanIntervalSeconds>
                         <systemProperties>
                             <systemProperty>
-                                <name>jetty.port</name>
-                                <value>8080</value>
+                                <name>user</name>
+                                <value>jetty-${db.type}</value>
+                            </systemProperty>
+                            <systemProperty>
+                                <name>dbdriver</name>
+                                <value>${db.driver}</value>
+                            </systemProperty>
+                            <systemProperty>
+                                <name>dburl</name>
+                                <value>${db.url}</value>
+                            </systemProperty>
+                            <systemProperty>
+                                <name>dbuser</name>
+                                <value>${db.username}</value>
+                            </systemProperty>
+                            <systemProperty>
+                                <name>dbpassword</name>
+                                <value>${db.password}</value>
+                            </systemProperty>
+                            <systemProperty>
+                                <name>moduleTarget</name>
+                                <value>${project.build.directory}/${project.build.finalName}</value>
                             </systemProperty>
                         </systemProperties>
                         <reload>automatic</reload>
@@ -144,4 +194,16 @@
                 </plugin>
             </plugins>
         </build>
+    <profiles>
+        <profile>
+            <id>h2</id>
+            <properties>
+                <db.type>h2</db.type>
+                <db.driver>org.h2.jdbcx.JdbcDataSource</db.driver>
+                <db.url>jdbc:h2:./target/h2/web-db</db.url>
+                <db.username>sa</db.username>
+                <db.password></db.password>
+            </properties>
+        </profile>
+    </profiles>
 </project>
