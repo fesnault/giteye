@@ -4,3 +4,11 @@
 *.jar
 *.war
 *.ear
+
+# IDEA
+*.iml
+*.ipr
+.idea
+
+# Build artifacts
+**/target
