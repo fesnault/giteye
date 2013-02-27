@@ -1,6 +1,8 @@
 package org.phoenix.giteye.core.git.services;
 
 
+import org.phoenix.giteye.core.beans.RepositoryBean;
+
 import java.io.IOException;
 
 /**
@@ -8,5 +10,5 @@ import java.io.IOException;
  * @author phoenix
  */
 public interface RepositoryService {
-    void getRepositoryInformation(String repositoryPath);
+    RepositoryBean getRepositoryInformation(String repositoryPath);
 }
