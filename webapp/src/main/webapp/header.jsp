@@ -7,7 +7,7 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="brand" href="#">GitEye</a>
+          <a class="brand" href="/index.jsp">GitEye</a>
           <div class="nav-collapse collapse">
               <p class="navbar-text pull-right">
                 <a href="#" class="navbar-link">&nbsp;<i>${sessionScope.repository == null ? "no repository selected" : repository.displayName}</i></a>
