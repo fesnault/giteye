@@ -1,5 +1,9 @@
 package org.phoenix.giteye.core.beans;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
 /**
  * Created with IntelliJ IDEA.
  * User: phoenix
@@ -11,6 +15,8 @@ public class CommitBean {
     private String id;
     private String committerName;
     private String message;
+    private List<String> parents = new ArrayList<String>();
+    private Date date;
 
     public String getId() {
         return id;
@@ -34,5 +40,21 @@ public class CommitBean {
 
     public void setMessage(String message) {
         this.message = message;
+    }
+
+    public void addParent(String parentSha1) {
+        parents.add(parentSha1);
+    }
+
+    public List<String> getParents() {
+        return parents;
+    }
+
+    public Date getDate() {
+        return date;
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
     }
 }

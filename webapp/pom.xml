@@ -61,6 +61,10 @@
             <scope>test</scope>
         </dependency>
         <dependency>
+            <groupId>org.codehaus.jackson</groupId>
+            <artifactId>jackson-mapper-asl</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-webmvc</artifactId>
             <exclusions>
@@ -200,7 +204,7 @@
             <properties>
                 <db.type>h2</db.type>
                 <db.driver>org.h2.jdbcx.JdbcDataSource</db.driver>
-                <db.url>jdbc:h2:./target/h2/web-db</db.url>
+                <db.url>jdbc:h2:/Users/phoenix/tmp/h2/web-db</db.url>
                 <db.username>sa</db.username>
                 <db.password></db.password>
             </properties>

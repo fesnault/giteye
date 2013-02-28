@@ -1,5 +1,7 @@
 package org.phoenix.giteye.web.controllers;
 
+import org.phoenix.giteye.core.beans.CommitBean;
+import org.phoenix.giteye.core.beans.LogHolder;
 import org.phoenix.giteye.core.beans.RepositoryBean;
 import org.phoenix.giteye.core.beans.RepositoryConfig;
 import org.phoenix.giteye.core.git.services.GitService;
@@ -10,8 +12,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpSession;
+import java.util.List;
 
 /**
  * Git Commands controller.
@@ -49,6 +53,19 @@ public class GitController {
         model.addAttribute("branches", gitService.getBranches(bean));
         model.addAttribute("gitRepository", bean);
         return "git/branches";
+    }
+
+    @RequestMapping(value = "/test.do", produces = "application/json")
+    public @ResponseBody LogHolder test(HttpSession session, Model model) {
+        RepositoryConfig selectedRepository = (RepositoryConfig)session.getAttribute("repository");
+        LogHolder log = new LogHolder();
+        if (selectedRepository == null) {
+            return log;
+        }
+        RepositoryBean bean = repositoryService.getRepositoryInformation(selectedRepository.getLocation());
+        List<CommitBean> commits = gitService.getLog(bean);
+        log.setCommits(commits);
+        return log;
     }
 
 }

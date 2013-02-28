@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -43,8 +44,12 @@ public class GitServiceimpl implements GitService {
             Iterable<RevCommit> iterable = git.log().all().call();
             for (RevCommit revCommit : iterable) {
                 CommitBean commit = new CommitBean();
-                commit.setId(revCommit.getId().abbreviate(7).name());
-                commit.setCommitterName(revCommit.getCommitterIdent().getName());
+                for (RevCommit parent : revCommit.getParents()) {
+                    commit.addParent(parent.getId().name());
+                }
+                commit.setDate(new Date(revCommit.getCommitTime() * 1000L));
+                commit.setId(revCommit.getId().name());
+                commit.setCommitterName(revCommit.getAuthorIdent().getName());
                 commit.setMessage(revCommit.getShortMessage());
                 commits.add(commit);
             }
