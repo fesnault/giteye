@@ -1,13 +1,13 @@
 package org.phoenix.giteye.core.dao.impl;
 
-import org.hibernate.Criteria;
-import org.hibernate.HibernateException;
-import org.hibernate.Query;
-import org.hibernate.Session;
+import org.hibernate.*;
 import org.hibernate.criterion.*;
 import org.phoenix.giteye.core.dao.PersistentDAO;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate3.HibernateCallback;
+import org.springframework.orm.hibernate3.HibernateTemplate;
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
+import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.Serializable;
@@ -29,7 +29,6 @@ public abstract class PersistentDAOImpl<K extends Serializable, T extends Serial
         extends HibernateDaoSupport implements PersistentDAO<K, T> {
 
     private Class<T> persistentClass;
-
 
     /**
      * Default constructor

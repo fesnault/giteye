@@ -1,5 +1,6 @@
 package org.phoenix.giteye.core.git.services;
 
+import org.phoenix.giteye.core.beans.BranchBean;
 import org.phoenix.giteye.core.beans.CommitBean;
 import org.phoenix.giteye.core.beans.RepositoryBean;
 
@@ -12,6 +13,8 @@ import java.util.List;
  * Time: 11:31 PM
  * To change this template use File | Settings | File Templates.
  */
-public interface LogService {
+public interface GitService {
     List<CommitBean> getLog(RepositoryBean repository);
+
+    List<BranchBean> getBranches(RepositoryBean repository);
 }

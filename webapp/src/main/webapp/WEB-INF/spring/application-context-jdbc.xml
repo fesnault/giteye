@@ -7,20 +7,6 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
                         http://www.springframework.org/schema/lang http://www.springframework.org/schema/lang/spring-lang.xsd">
 
-    <!-- Datasource -->
-    <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
-        <property name="driverClassName" value="${dataSource.driverclass}"/>
-        <property name="url" value="${dataSource.url}"/>
-        <property name="username" value="${dataSource.username}"/>
-        <property name="password" value="${dataSource.password}"/>
-        <property name="accessToUnderlyingConnectionAllowed" value="true"/>
-        <property name="initialSize" value="${dataSource.initialSize}"/>
-        <property name="maxActive" value="${dataSource.maxActive}"/>
-        <property name="maxIdle" value="${dataSource.maxIdle}"/>
-        <property name="maxWait" value="${dataSource.maxWait}"/>
-    </bean>
-
-
     <bean id="jdbcTransactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
         <property name="dataSource" ref="dataSource"/>
     </bean>

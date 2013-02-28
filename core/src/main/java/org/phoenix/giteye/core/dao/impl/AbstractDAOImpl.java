@@ -1,7 +1,12 @@
-package org.phoenix.giteye.core.dao;
+package org.phoenix.giteye.core.dao.impl;
 
+import org.hibernate.SessionFactory;
+import org.phoenix.giteye.core.dao.AbstractDAO;
 import org.phoenix.giteye.core.dao.impl.PersistentDAOImpl;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.orm.hibernate3.HibernateTemplate;
+import org.springframework.stereotype.Repository;
 
 import java.io.Serializable;
 
@@ -20,5 +25,10 @@ public class AbstractDAOImpl<K extends Serializable, T extends Serializable> ext
 
     public JdbcTemplate getJdbcTemplate() {
         return this.jdbcTemplate;
+    }
+
+    @Autowired
+    public void injectHibernateTemplate(HibernateTemplate hibernateTemplate) {
+        super.setHibernateTemplate(hibernateTemplate);
     }
 }

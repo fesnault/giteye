@@ -39,19 +39,16 @@
         </div>
       </div-->
 
-      <hr>
 
-      <footer>
-        <p>&copy; Phoenix 2013</p>
-      </footer>
+        <%@ include file="footer.jsp" %>
 
-    </div> <!-- /container -->
+      </div> <!-- /container -->
 
-    <!-- Le javascript
+    <!-- javascript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
-    <script src="js/jquery/jquery.js"></script>
-    <script src="bootstrap/js/bootstrap.js"></script>
+    <script src="/js/jquery/jquery.js"></script>
+    <script src="/bootstrap/js/bootstrap.js"></script>
 
   </body>
 </html>

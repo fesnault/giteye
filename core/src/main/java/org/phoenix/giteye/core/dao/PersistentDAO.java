@@ -45,7 +45,6 @@ public interface PersistentDAO<K extends Serializable, T extends Serializable> {
      * @param object the object to save or update
      */
     @SuppressWarnings("unchecked")
-    @Transactional(propagation = Propagation.REQUIRED)
     void saveOrUpdate(T object);
 
 
@@ -55,7 +54,6 @@ public interface PersistentDAO<K extends Serializable, T extends Serializable> {
      * @param object the object to delete
      */
     @SuppressWarnings("unchecked")
-    @Transactional(propagation = Propagation.REQUIRED)
     void delete(T object);
 
 
@@ -64,7 +62,6 @@ public interface PersistentDAO<K extends Serializable, T extends Serializable> {
      *
      * @param object the object to merge
      */
-    @Transactional(propagation = Propagation.REQUIRED)
     T merge(T object);
 
     /**

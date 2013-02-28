@@ -1,8 +1,8 @@
 package org.phoenix.giteye.core.hibernate;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import org.phoenix.giteye.core.RepositoryType;
+
+import javax.persistence.*;
 
 /**
  * User: phoenix
@@ -13,14 +13,35 @@ import javax.persistence.Table;
 @Table(name="REPOSITORIES")
 public class GitRepository extends HibernateEntity {
     private static final long serialVersionUID = 8963768781855107420L;
-    private String path;
+    private String location;
+    private RepositoryType type;
+    private String name;
 
     @Column(nullable = false)
-    public String getPath() {
-        return path;
+    public String getLocation() {
+        return location;
     }
 
-    public void setPath(String path) {
-        this.path = path;
+    public void setLocation(String location) {
+        this.location = location;
+    }
+
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    public RepositoryType getType() {
+        return type;
+    }
+
+    public void setType(RepositoryType type) {
+        this.type = type;
+    }
+
+    @Column(nullable = false)
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }

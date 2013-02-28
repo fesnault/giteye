@@ -1,7 +1,9 @@
-package org.phoenix.giteye.core.dao;
+package org.phoenix.giteye.core.dao.impl;
 
 
+import org.phoenix.giteye.core.dao.GitRepositoryDAO;
 import org.phoenix.giteye.core.hibernate.GitRepository;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
@@ -11,6 +13,7 @@ import java.util.List;
  * Date: 14/01/13
  * Time: 11:10
  */
+@Repository
 public class GitRepositoryDAOImpl extends AbstractDAOImpl<String, GitRepository> implements GitRepositoryDAO {
     /**
      * {@inheritDoc}

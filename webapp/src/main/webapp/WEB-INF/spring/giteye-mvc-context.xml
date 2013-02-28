@@ -19,8 +19,7 @@
         <property name="basename" value="messages"/>
     </bean>
 
-    <context:component-scan base-package="org.phoenix.giteye.web.controllers"/>
-    <context:component-scan base-package="org.phoenix.giteye.core.git.services.impl"/>
+    <context:component-scan base-package="org.phoenix.giteye.web.controllers" />
 
     <mvc:annotation-driven/>
 
