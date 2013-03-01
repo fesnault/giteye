@@ -23,18 +23,20 @@
                         </ul>
                     </li>
                 </ul>
-                <ul class="nav">
-                    <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Tools<b class="caret"></b></a>
-                        <ul class="dropdown-menu">
-                            <li><a href="/git/branches.do">List branches</a></li>
-                            <li><a href="/git/log.do">Show flat log</a></li>
-                            <li class="divider"></li>
-                          <li class="nav-header">Graphs</li>
-                          <li><a href="/test.jsp">Test</a></li>
-                        </ul>
-                    </li>
-                </ul>
+                <c:if test="${sessionScope.repository != null}">
+                    <ul class="nav">
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Tools<b class="caret"></b></a>
+                            <ul class="dropdown-menu">
+                                <li><a href="/git/branches.do">List branches</a></li>
+                                <li><a href="/git/log.do">Show flat log</a></li>
+                                <li class="divider"></li>
+                              <li class="nav-header">Graphs</li>
+                              <li><a href="/test.jsp">Test</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </c:if>
             </div>
             <!--/.nav-collapse -->
         </div>
