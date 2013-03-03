@@ -6,6 +6,7 @@ import org.phoenix.giteye.core.beans.RepositoryBean;
 import org.phoenix.giteye.core.beans.RepositoryConfig;
 import org.phoenix.giteye.core.git.services.GitService;
 import org.phoenix.giteye.core.git.services.RepositoryService;
+import org.phoenix.giteye.json.JsonRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,17 +56,15 @@ public class GitController {
         return "git/branches";
     }
 
-    @RequestMapping(value = "/test.do", produces = "application/json")
-    public @ResponseBody LogHolder test(HttpSession session, Model model) {
+    @RequestMapping(value = "/json/log.do", produces = "application/json")
+    public @ResponseBody JsonRepository test(HttpSession session, Model model) {
         RepositoryConfig selectedRepository = (RepositoryConfig)session.getAttribute("repository");
-        LogHolder log = new LogHolder();
         if (selectedRepository == null) {
-            return log;
+            return null;
         }
         RepositoryBean bean = repositoryService.getRepositoryInformation(selectedRepository.getLocation());
-        List<CommitBean> commits = gitService.getLog(bean);
-        log.setCommits(commits);
-        return log;
+        JsonRepository jrep = gitService.getLogAsJson(bean);
+        return jrep;
     }
 
 }

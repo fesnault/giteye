@@ -12,6 +12,11 @@
     <name>giteye tool core</name>
     <dependencies>
         <dependency>
+            <groupId>org.phoenix.giteye</groupId>
+            <artifactId>giteye-json-beans</artifactId>
+            <version>${pom.version}</version>
+        </dependency>
+        <dependency>
             <groupId>org.eclipse.jgit</groupId>
             <artifactId>org.eclipse.jgit</artifactId>
         </dependency>

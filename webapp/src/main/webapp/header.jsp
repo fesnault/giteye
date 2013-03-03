@@ -12,7 +12,15 @@
             <div class="nav-collapse collapse">
                 <p class="navbar-text pull-right">
                     <a href="/repositories/list.do" class="navbar-link">
-                        &nbsp;<i>${sessionScope.repository == null ? "no repository selected" : repository.name}</i></a>
+                        <c:choose>
+                            <c:when test="${sessionScope.repository == null}">
+                                <button class="btn btn-small" type="button">Choose repository</button>
+                            </c:when>
+                            <c:otherwise>
+                                <i>${sessionScope.repository == null ? "no repository selected" : repository.name}</i>
+                            </c:otherwise>
+                        </c:choose>
+                     </a>
                 </p>
                 <ul class="nav">
                     <li class="dropdown">
@@ -30,9 +38,10 @@
                             <ul class="dropdown-menu">
                                 <li><a href="/git/branches.do">List branches</a></li>
                                 <li><a href="/git/log.do">Show flat log</a></li>
+                                <!--li><a href="/git/json/test.do">Test Json</a></li-->
                                 <li class="divider"></li>
                               <li class="nav-header">Graphs</li>
-                              <li><a href="/test.jsp">Test</a></li>
+                              <li><a href="/log.jsp">Log</a></li>
                             </ul>
                         </li>
                     </ul>

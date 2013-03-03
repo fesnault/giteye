@@ -18,6 +18,11 @@
             <version>${pom.version}</version>
         </dependency>
         <dependency>
+            <groupId>org.phoenix.giteye</groupId>
+            <artifactId>giteye-json-beans</artifactId>
+            <version>${pom.version}</version>
+        </dependency>
+        <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
         </dependency>

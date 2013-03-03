@@ -15,7 +15,7 @@ public class CommitBean {
     private String id;
     private String committerName;
     private String message;
-    private List<String> parents = new ArrayList<String>();
+    private List<CommitBean> parents = new ArrayList<CommitBean>();
     private Date date;
 
     public String getId() {
@@ -42,11 +42,11 @@ public class CommitBean {
         this.message = message;
     }
 
-    public void addParent(String parentSha1) {
-        parents.add(parentSha1);
+    public void addParent(CommitBean parent) {
+        parents.add(parent);
     }
 
-    public List<String> getParents() {
+    public List<CommitBean> getParents() {
         return parents;
     }
 

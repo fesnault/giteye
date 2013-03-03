@@ -3,6 +3,7 @@ package org.phoenix.giteye.core.git.services;
 import org.phoenix.giteye.core.beans.BranchBean;
 import org.phoenix.giteye.core.beans.CommitBean;
 import org.phoenix.giteye.core.beans.RepositoryBean;
+import org.phoenix.giteye.json.JsonRepository;
 
 import java.util.List;
 
@@ -17,4 +18,6 @@ public interface GitService {
     List<CommitBean> getLog(RepositoryBean repository);
 
     List<BranchBean> getBranches(RepositoryBean repository);
+
+    JsonRepository getLogAsJson(RepositoryBean repository);
 }
