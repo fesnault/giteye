@@ -72,8 +72,8 @@ function redraw(commits) {
     commits.forEach(function(d, i) {
         var source = {"x": x(d.lane), "y": y(d.position)};
         nodes.push(d);
-        if (d.parents !== null) {
-	        d.parents.forEach(function(c, i) {
+        if (d.children !== null) {
+	        d.children.forEach(function(c, i) {
 	        	var target = {"x": x(c.lane), "y": y(c.position)};
 	            links.push({"source": source, "target": target});
 	        });

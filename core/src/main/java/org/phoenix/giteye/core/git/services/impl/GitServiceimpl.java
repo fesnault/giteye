@@ -10,9 +10,9 @@ import org.eclipse.jgit.revplot.PlotCommitList;
 import org.eclipse.jgit.revplot.PlotLane;
 import org.eclipse.jgit.revplot.PlotWalk;
 import org.eclipse.jgit.revwalk.RevCommit;
+import org.eclipse.jgit.revwalk.RevCommitList;
 import org.eclipse.jgit.revwalk.RevWalk;
 import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
-import org.hibernate.property.Dom4jAccessor;
 import org.phoenix.giteye.core.beans.BranchBean;
 import org.phoenix.giteye.core.beans.CommitBean;
 import org.phoenix.giteye.core.beans.RepositoryBean;
@@ -155,7 +155,6 @@ public class GitServiceimpl implements GitService {
                 jrep.addBranch(branch);
             }
             // Retrieve objects
-            PlotCommitList<PlotLane> plotCommitList = new PlotCommitList<PlotLane>();
             PlotWalk revWalk = new PlotWalk(repo);
             // First create a list of heads targets for all non symbolic refs
             List<RevCommit> heads = new ArrayList<RevCommit>();
@@ -171,11 +170,12 @@ public class GitServiceimpl implements GitService {
                 heads.add(head);
             }
             revWalk.markStart(heads);
-            plotCommitList.source(revWalk);
-            plotCommitList.fillTo(Integer.MAX_VALUE);
-            Iterator<PlotCommit<PlotLane>> iterator = plotCommitList.iterator();
+            PlotCommitList<PlotLane> commits = new PlotCommitList<PlotLane>();
+            commits.source(revWalk);
+            commits.fillTo(Integer.MAX_VALUE);
+            Iterator<PlotCommit<PlotLane>> iterator = commits.iterator();
             while (iterator.hasNext()) {
-                PlotCommit revc = (PlotCommit)iterator.next();
+                PlotCommit revc = iterator.next();
                 JsonCommit commit = new JsonCommit(revc.getId().name());
                 commit.setShortMessage(revc.getShortMessage());
                 commit.setMessage(revc.getFullMessage());
@@ -184,29 +184,31 @@ public class GitServiceimpl implements GitService {
                 commit.setAuthorEmail(revc.getAuthorIdent().getEmailAddress());
                 commit.setCommitterName(revc.getCommitterIdent().getName());
                 commit.setCommitterEmail(revc.getCommitterIdent().getEmailAddress());
-                commit.setLane(revc.getLane().getPosition());
                 commit.setPosition(position);
+                commit.setLane(revc.getLane().getPosition());
                 position++;
                 if (revc.getParents() == null || revc.getParents().length == 0) {
                     continue;
                 }
+
                 for (RevCommit parent : revc.getParents()) {
-                    commit.addParent(new JsonCommitParent(parent.getId().name(), new Date(parent.getCommitTime() * 1000L)));
+                    commit.addParent(parent.getId().name());
                 }
                 jrep.addCommit(commit);
             }
+            // set children
             for (JsonCommit commit : jrep.getCommits()) {
                 if (!CollectionUtils.isEmpty(commit.getParents())) {
-                    for (JsonCommitParent parent : commit.getParents()) {
-                        JsonCommit parentCommit = jrep.getCommit(parent.getId());
+                    for (String parent : commit.getParents()) {
+                        JsonCommit parentCommit = jrep.getCommit(parent);
                         if (parentCommit == null) {
-                            logger.error("Could not get JsonCommit with id "+parent.getId());
+                            logger.error("Could not get JsonCommit with id "+parent);
                         } else {
-                            parent.setPosition(parentCommit.getPosition());
-                            parent.setLane(parentCommit.getLane());
+                            parentCommit.addChild(new JsonCommitChild(commit.getId()));
                         }
                     }
                 }
+                commit.resetParents();
             }
             return jrep;
 
@@ -215,5 +217,12 @@ public class GitServiceimpl implements GitService {
         }
         return null;
 
+    }
+
+    private void assignPositions(List<JsonCommit> commits) {
+
+        for (JsonCommit commit : commits) {
+
+        }
     }
 }

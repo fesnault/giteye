@@ -1,6 +1,7 @@
 package org.phoenix.giteye.json;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -20,7 +21,8 @@ public class JsonCommit {
     private Date date;
     private String message;
     private String shortMessage;
-    private List<JsonCommitParent> parents;
+    private List<JsonCommitChild> children;
+    private List<String> parents;
     private int lane;
     private int position;
 
@@ -88,15 +90,33 @@ public class JsonCommit {
         this.shortMessage = shortMessage;
     }
 
-    public List<JsonCommitParent> getParents() {
+    public List<JsonCommitChild> getChildren() {
+        if (children == null) {
+            return Collections.<JsonCommitChild>emptyList();
+        }
+        return children;
+    }
+
+    public void addChild(JsonCommitChild child) {
+        if (children == null) {
+            children = new ArrayList<JsonCommitChild>();
+        }
+        children.add(child);
+    }
+
+    public void addParent(String parentId) {
+        if (parents == null) {
+            parents = new ArrayList<String>();
+        }
+        parents.add(parentId);
+    }
+
+    public List<String> getParents() {
         return parents;
     }
 
-    public void addParent(JsonCommitParent parent) {
-        if (parents == null) {
-            parents = new ArrayList<JsonCommitParent>();
-        }
-        parents.add(parent);
+    public void resetParents() {
+        this.parents.clear();
     }
 
     public int getLane() {

@@ -11,23 +11,17 @@ import java.util.List;
  * Time: 3:01 PM
  * To change this template use File | Settings | File Templates.
  */
-public class JsonCommitParent {
+public class JsonCommitChild {
     private String id;
-    private Date date;
     private int lane;
     private int position;
 
-    public JsonCommitParent(String id, Date date) {
+    public JsonCommitChild(String id) {
         this.id = id;
-        this.date = date;
     }
 
     public String getId() {
         return id;
-    }
-
-    public Date getDate() {
-        return date;
     }
 
     public int getLane() {
