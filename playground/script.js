@@ -30,7 +30,7 @@ var originalCommits;
 var x = d3.scale.linear().domain([0,50]).range([padding+margin,width-margin]);
 // Y is scaled by the commit date
 //var y = d3.scale.linear().domain([min, max]).range([height-margin, margin]);
-var y = d3.time.scale.utc().domain([min, max]).range([height-margin, margin]);
+var y = d3.scale.linear().domain([min, max]).range([height-margin, margin]);
 
 
 function updateData() {
@@ -56,18 +56,10 @@ var axisElement = svg.append("g")
 
 function redraw(commits) {
 
-	var max = d3.max(commits,
-            function (d) {
-                return d.date;
-            }
-    );
-    var min = d3.min(commits,
-            function (d) {
-                return d.date;
-            }
-    );
-	y = d3.time.scale.utc().domain([min, max]).range([height-margin, margin]);
-	
+	var max = commits.length;
+    var min = 0;
+	y = d3.scale.linear().domain([min, max]).range([height-margin, margin]);
+
 
 
     // Axis
@@ -78,11 +70,11 @@ function redraw(commits) {
 	var nodes = [];
     var links = [];
     commits.forEach(function(d, i) {
-        var source = {"x": x(d.lane), "y": y(+d.date)};
+        var source = {"x": x(d.lane), "y": y(d.position)};
         nodes.push(d);
         if (d.parents !== null) {
 	        d.parents.forEach(function(c, i) {
-	        	var target = {"x": x(c.lane), "y": y(+c.date)};
+	        	var target = {"x": x(c.lane), "y": y(c.position)};
 	            links.push({"source": source, "target": target});
 	        });
     	}
@@ -117,7 +109,7 @@ function redraw(commits) {
 	var enteringCommits = commitsEnterSelection.append("circle")
 			.attr("id", function(d) {return d.id;})
 			.attr("cx", function(d) {return x(d.lane);})
-			.attr("cy", function(d) {return y(+d.date);})
+			.attr("cy", function(d) {return y(+d.position);})
 			.attr("r", 4)
 			.style("fill", "#FFFFFF")
 			.style("stroke", "#8888FF")
@@ -146,7 +138,7 @@ function redraw(commits) {
 		
 		 
 	t.selectAll("circle")
-		.attr("cy", function(d) { return y(+d.date); });
+		.attr("cy", function(d) { return y(+d.position); });
 
 	t.selectAll("path").attr("d", diagonal);
 

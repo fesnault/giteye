@@ -21,6 +21,7 @@ import org.phoenix.giteye.json.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -118,6 +119,7 @@ public class GitServiceimpl implements GitService {
     public JsonRepository getLogAsJson(RepositoryBean repository) {
         FileRepositoryBuilder builder = new FileRepositoryBuilder();
         Repository repo = null;
+        int position = 0;
         try {
             repo = builder.setGitDir(new File(repository.getPath()))
                     .readEnvironment()
@@ -183,13 +185,28 @@ public class GitServiceimpl implements GitService {
                 commit.setCommitterName(revc.getCommitterIdent().getName());
                 commit.setCommitterEmail(revc.getCommitterIdent().getEmailAddress());
                 commit.setLane(revc.getLane().getPosition());
+                commit.setPosition(position);
+                position++;
                 if (revc.getParents() == null || revc.getParents().length == 0) {
                     continue;
                 }
                 for (RevCommit parent : revc.getParents()) {
-                    commit.addParent(new JsonCommitParent(parent.getId().name(), new Date(parent.getCommitTime() * 1000L), ((PlotCommit)parent).getLane().getPosition()));
+                    commit.addParent(new JsonCommitParent(parent.getId().name(), new Date(parent.getCommitTime() * 1000L)));
                 }
                 jrep.addCommit(commit);
+            }
+            for (JsonCommit commit : jrep.getCommits()) {
+                if (!CollectionUtils.isEmpty(commit.getParents())) {
+                    for (JsonCommitParent parent : commit.getParents()) {
+                        JsonCommit parentCommit = jrep.getCommit(parent.getId());
+                        if (parentCommit == null) {
+                            logger.error("Could not get JsonCommit with id "+parent.getId());
+                        } else {
+                            parent.setPosition(parentCommit.getPosition());
+                            parent.setLane(parentCommit.getLane());
+                        }
+                    }
+                }
             }
             return jrep;
 

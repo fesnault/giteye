@@ -57,7 +57,7 @@ public class GitController {
     }
 
     @RequestMapping(value = "/json/log.do", produces = "application/json")
-    public @ResponseBody JsonRepository test(HttpSession session, Model model) {
+    public @ResponseBody JsonRepository getLogAsJson(HttpSession session, Model model) {
         RepositoryConfig selectedRepository = (RepositoryConfig)session.getAttribute("repository");
         if (selectedRepository == null) {
             return null;

@@ -15,8 +15,9 @@ public class JsonCommitParent {
     private String id;
     private Date date;
     private int lane;
+    private int position;
 
-    public JsonCommitParent(String id, Date date, int lane) {
+    public JsonCommitParent(String id, Date date) {
         this.id = id;
         this.date = date;
     }
@@ -31,5 +32,17 @@ public class JsonCommitParent {
 
     public int getLane() {
         return lane;
+    }
+
+    public void setLane(int lane) {
+        this.lane = lane;
+    }
+
+    public int getPosition() {
+        return position;
+    }
+
+    public void setPosition(int position) {
+        this.position = position;
     }
 }

@@ -22,6 +22,7 @@ public class JsonCommit {
     private String shortMessage;
     private List<JsonCommitParent> parents;
     private int lane;
+    private int position;
 
     public JsonCommit(String id) {
         this.id = id;
@@ -104,5 +105,13 @@ public class JsonCommit {
 
     public void setLane(int lane) {
         this.lane = lane;
+    }
+
+    public int getPosition() {
+        return position;
+    }
+
+    public void setPosition(int position) {
+        this.position = position;
     }
 }
