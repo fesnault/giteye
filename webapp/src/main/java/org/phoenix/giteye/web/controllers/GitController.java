@@ -1,9 +1,8 @@
 package org.phoenix.giteye.web.controllers;
 
-import org.phoenix.giteye.core.beans.CommitBean;
-import org.phoenix.giteye.core.beans.LogHolder;
 import org.phoenix.giteye.core.beans.RepositoryBean;
 import org.phoenix.giteye.core.beans.RepositoryConfig;
+import org.phoenix.giteye.core.exceptions.json.NotInitializedRepositoryException;
 import org.phoenix.giteye.core.git.services.GitService;
 import org.phoenix.giteye.core.git.services.RepositoryService;
 import org.phoenix.giteye.json.JsonRepository;
@@ -16,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpSession;
-import java.util.List;
 
 /**
  * Git Commands controller.
@@ -63,7 +61,12 @@ public class GitController {
             return null;
         }
         RepositoryBean bean = repositoryService.getRepositoryInformation(selectedRepository.getLocation());
-        JsonRepository jrep = gitService.getLogAsJson(bean);
+        JsonRepository jrep = null;
+        try {
+            jrep = gitService.getLogAsJson(bean);
+        } catch (NotInitializedRepositoryException notInitializedRepositoryException) {
+            logger.error("Error while retrieving json repository", notInitializedRepositoryException);
+        }
         return jrep;
     }
 

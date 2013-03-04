@@ -10,12 +10,11 @@ import org.eclipse.jgit.revplot.PlotCommitList;
 import org.eclipse.jgit.revplot.PlotLane;
 import org.eclipse.jgit.revplot.PlotWalk;
 import org.eclipse.jgit.revwalk.RevCommit;
-import org.eclipse.jgit.revwalk.RevCommitList;
-import org.eclipse.jgit.revwalk.RevWalk;
 import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
 import org.phoenix.giteye.core.beans.BranchBean;
 import org.phoenix.giteye.core.beans.CommitBean;
 import org.phoenix.giteye.core.beans.RepositoryBean;
+import org.phoenix.giteye.core.exceptions.json.NotInitializedRepositoryException;
 import org.phoenix.giteye.core.git.services.GitService;
 import org.phoenix.giteye.json.*;
 import org.slf4j.Logger;
@@ -116,7 +115,7 @@ public class GitServiceimpl implements GitService {
     }
 
     @Override
-    public JsonRepository getLogAsJson(RepositoryBean repository) {
+    public JsonRepository getLogAsJson(RepositoryBean repository) throws NotInitializedRepositoryException {
         FileRepositoryBuilder builder = new FileRepositoryBuilder();
         Repository repo = null;
         int position = 0;
@@ -209,6 +208,9 @@ public class GitServiceimpl implements GitService {
                     }
                 }
                 commit.resetParents();
+            }
+            if (true) {
+                throw new NotInitializedRepositoryException("We still have to reposition commits in order to get a nice grpah, instead of the gitk-style one.");
             }
             return jrep;
 
