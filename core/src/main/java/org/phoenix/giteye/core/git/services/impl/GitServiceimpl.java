@@ -10,12 +10,14 @@ import org.eclipse.jgit.revplot.PlotCommitList;
 import org.eclipse.jgit.revplot.PlotLane;
 import org.eclipse.jgit.revplot.PlotWalk;
 import org.eclipse.jgit.revwalk.RevCommit;
+import org.eclipse.jgit.revwalk.RevSort;
 import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
 import org.phoenix.giteye.core.beans.BranchBean;
 import org.phoenix.giteye.core.beans.CommitBean;
 import org.phoenix.giteye.core.beans.RepositoryBean;
 import org.phoenix.giteye.core.exceptions.json.NotInitializedRepositoryException;
 import org.phoenix.giteye.core.git.services.GitService;
+import org.phoenix.giteye.core.graph.LogGraphProcessorFactory;
 import org.phoenix.giteye.json.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -168,6 +170,7 @@ public class GitServiceimpl implements GitService {
                 }
                 heads.add(head);
             }
+            //revWalk.sort(RevSort.REVERSE);
             revWalk.markStart(heads);
             PlotCommitList<PlotLane> commits = new PlotCommitList<PlotLane>();
             commits.source(revWalk);
@@ -184,16 +187,20 @@ public class GitServiceimpl implements GitService {
                 commit.setCommitterName(revc.getCommitterIdent().getName());
                 commit.setCommitterEmail(revc.getCommitterIdent().getEmailAddress());
                 commit.setPosition(position);
-                commit.setLane(revc.getLane().getPosition());
+                if (revc.getLane() == null) {
+                    commit.setLane(0);
+                } else {
+                    commit.setLane(revc.getLane().getPosition());
+                }
                 position++;
+                jrep.addCommit(commit);
                 if (revc.getParents() == null || revc.getParents().length == 0) {
                     continue;
                 }
-
                 for (RevCommit parent : revc.getParents()) {
                     commit.addParent(parent.getId().name());
                 }
-                jrep.addCommit(commit);
+
             }
             // set children
             for (JsonCommit commit : jrep.getCommits()) {
@@ -203,15 +210,17 @@ public class GitServiceimpl implements GitService {
                         if (parentCommit == null) {
                             logger.error("Could not get JsonCommit with id "+parent);
                         } else {
-                            parentCommit.addChild(new JsonCommitChild(commit.getId()));
+                            JsonCommitChild child = new JsonCommitChild(commit.getId());
+                            child.setLane(commit.getLane());
+                            child.setPosition(commit.getPosition());
+                            parentCommit.addChild(child);
+
                         }
                     }
                 }
                 commit.resetParents();
             }
-            if (true) {
-                throw new NotInitializedRepositoryException("We still have to reposition commits in order to get a nice grpah, instead of the gitk-style one.");
-            }
+            //return LogGraphProcessorFactory.getProcessor().process(jrep);
             return jrep;
 
         } catch (IOException e) {
@@ -219,12 +228,5 @@ public class GitServiceimpl implements GitService {
         }
         return null;
 
-    }
-
-    private void assignPositions(List<JsonCommit> commits) {
-
-        for (JsonCommit commit : commits) {
-
-        }
     }
 }

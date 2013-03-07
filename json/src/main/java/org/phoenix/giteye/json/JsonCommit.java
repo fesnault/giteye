@@ -30,6 +30,22 @@ public class JsonCommit {
         this.id = id;
     }
 
+    public boolean hasParents() {
+        return parents == null;
+    }
+
+    public boolean hasChildren() {
+        return children == null;
+    }
+
+    public int getParentCount() {
+        return parents == null ? 0 : parents.size();
+    }
+
+    public int getChildCount() {
+        return children == null ? 0 : children.size();
+    }
+
     public String getId() {
         return id;
     }
@@ -112,11 +128,16 @@ public class JsonCommit {
     }
 
     public List<String> getParents() {
+        if (parents == null) {
+            return Collections.<String>emptyList();
+        }
         return parents;
     }
 
     public void resetParents() {
-        this.parents.clear();
+        if (parents != null) {
+            this.parents.clear();
+        }
     }
 
     public int getLane() {

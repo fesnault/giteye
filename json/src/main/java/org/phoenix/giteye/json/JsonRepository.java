@@ -47,7 +47,7 @@ public class JsonRepository {
         if (commits == null) {
             commits = new ArrayList<JsonCommit>();
         }
-        commits.add(commit);
+        commits.add(0, commit);
     }
 
     public List<JsonBranch> getBranches() {
