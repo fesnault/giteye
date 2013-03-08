@@ -145,13 +145,12 @@ function redraw(commits) {
   //  .y(function(d) { return d.y; });
 	
 	var linksSelection = svgGroup.selectAll("path").data(links, key);
-	var linksEnterSelection = linksSelection.enter().append("path").attr("class", "link").attr("d", line)
-      .attr("transform", "translate(30,0)");
-	var linksExitingSelection = linksSelection.exit().transition()
-      .duration(delay)
-      .style("opacity", 1e-6)
-      .remove();
+	var linksEnterSelection = linksSelection.enter().append("g").attr("class", "link");
+	var linksExitingSelection = linksSelection.exit();
 
+  
+  linksEnterSelection.append("path").attr("d", line)
+      .attr("transform", "translate(30,0)");
   //linksEnterSelection.append("path")
   //    .attr("d", line)
   //    .attr("transform", "translate(30,0)");
@@ -162,7 +161,11 @@ function redraw(commits) {
    //   .remove(); 
 
   //linksSelection.attr("d", line).transition().duration(delay).style("opacity", 1);
-
+  
+//linksExitingSelection.transition()
+ //     .duration(delay)
+  //    .style("opacity", 1e-6)
+  //    .remove();
     
   //"806e25530d0ca953e5ad34dd2c5709524caadc8e-b8743f91b02387f1bac3189226a9cc1f251511ab"
 	// Create a selection of circles for commits
@@ -184,10 +187,10 @@ function redraw(commits) {
       .duration(delay)
       .style("opacity", 1);
 
-    commitsExitingSelection.transition()
+    commitsExitingSelection.transition().style("opacity", 1e-6)
       .duration(delay)
-      .style("opacity", 1e-6)
       .remove();
+    
 
     //commitsSelection.transition()
     //    .duration(delay)
@@ -201,6 +204,7 @@ function redraw(commits) {
 	t.selectAll("circle").attr("cy", function(d) { return y(+d.position); });
 
 	t.selectAll("path").attr("d", line);
+  linksExitingSelection.transition().style("opacity", 1e-6).remove();
 
 	
 
