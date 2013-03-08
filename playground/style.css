@@ -27,7 +27,7 @@ text {
     stroke-width: 2px;
 }
 
-.circle circle.selected {
+.circle.selected circle {
 	stroke: #3366FF;
 	fill: #99AAFF;
 }
@@ -38,7 +38,7 @@ text {
     fill: none;
 }
 
-.link.selected{
+.link.selected path{
 	stroke: #3366FF;
     stroke-width: 2px;
     fill: none;

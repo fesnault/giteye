@@ -24,7 +24,7 @@ function formatMillisecondDate(d) {
 
 var delay = 500;
 
-setInterval(function() {updateData(); }, 1000);
+//setInterval(function() {updateData(); }, 1000);
 
 var repository;
 var currentCommits;
@@ -34,20 +34,16 @@ var originalCommits;
 var x = d3.scale.linear().domain([0,25]).range([margin,width-margin]);
 // Y is scaled by the commit date
 //var y = d3.scale.linear().domain([min, max]).range([height-margin, margin]);
-var y = d3.scale.linear().domain([min, max]).range([height-margin, margin]);
+var y = d3.scale.linear().domain([min, max]).range([margin, height-margin]);
 
+var line = d3.svg.diagonal();
 
 function updateData() {
 	if (currentCommits.length > 50) {
-    //svgGroup.selectAll(".circle").remove();
-    //svgGroup.selectAll(".link").remove();
 		currentCommits = currentCommits.slice(1, currentCommits.length);
 		redraw(currentCommits);
 	}
 }
-
-
-
 
 d3.json("data.json", function(jrep) {
 	repository = jrep;
@@ -80,7 +76,7 @@ function brushmove() {
   var bx2 = (+(bx+bw));
   var by2 = (+(by+bh));  
   
-  d3.selectAll(".circle circle").classed("selected", function(d) {
+  d3.selectAll(".circle").classed("selected", function(d) {
   	var cx = x(d.lane);
   	var cy = y (+d.position);
   	if (cx > bx && cx < bx2 && cy > by && cy < by2) {
@@ -88,7 +84,7 @@ function brushmove() {
   	}
   	return false;
  });
-  var linkContainer = d3.selectAll("path.link ").classed("selected", function(d) {
+  var linkContainer = d3.selectAll(".link").classed("selected", function(d) {
   	var sx = d.source.x;
   	var sy = d.source.y;
   	var tx = d.target.x;
@@ -108,17 +104,26 @@ function brushend() {
   var bw = (+brushRect.attr("width"));
   var bh = (+brushRect.attr("height"));
   if (bw > 10 && bh > 10) {
-  	alert("zooming");
+  	zoom();
   }
 }
 
-
+function zoom() {
+  var selectedCommitsSelection = svgGroup.selectAll(".circle.selected")[0];
+  if (selectedCommitsSelection.length === 0) { return; }
+  var selectedCommits = [];
+  for (var i=0; i< selectedCommitsSelection.length; i++) {
+    selectedCommits.push(selectedCommitsSelection[i].__data__);
+  }
+  redraw(selectedCommits);
+}
 
 function redraw(commits) {
 
-	var max = commits.length;
-  var min = 0;
-	y = d3.scale.linear().domain([min, max]).range([height-margin, margin]);
+	var max = d3.max(commits, function(d) { return d.position;});
+  var min = d3.min(commits, function(d) { return d.position;});
+	y = d3.scale.linear().domain([min, max]).range([margin, height-margin]);
+  console.log(min+" - "+max);
 
 	var nodes = [];
   var links = [];
@@ -129,91 +134,51 @@ function redraw(commits) {
         d.children.forEach(function(c, i) {
         	var target = {"id": c.id ,"x": x(c.lane), "y": y(c.position)};
             links.push({"id": source.id + "-" + target.id ,"source": source, "target": target});
-            if ( (source.id + "-" + target.id) == "806e25530d0ca953e5ad34dd2c5709524caadc8e-b8743f91b02387f1bac3189226a9cc1f251511ab") {
-              //console.log(source.id + "-" + target.id);
-              //console.log("source : "+source.x+" - "+source.y);
-              //console.log("target : "+target.x+" - "+target.y);
-            }
         });
   	}
   });
 
-  var line = d3.svg.diagonal();
-
-  //var line = d3.svg.line()
-  //  .x(function(d) { return d.x; })
-  //  .y(function(d) { return d.y; });
 	
 	var linksSelection = svgGroup.selectAll("path").data(links, key);
-	var linksEnterSelection = linksSelection.enter().append("g").attr("class", "link");
-	var linksExitingSelection = linksSelection.exit();
+  var linksEnterSelection = linksSelection.enter();
+  var linksExitingSelection = linksSelection.exit();
 
-  
-  linksEnterSelection.append("path").attr("d", line)
+  var enteringLinks = linksEnterSelection.append("path").attr("class", "link").attr("d", line)
       .attr("transform", "translate(30,0)");
-  //linksEnterSelection.append("path")
-  //    .attr("d", line)
-  //    .attr("transform", "translate(30,0)");
-     
-  //linksExitingSelection.transition()
-   //   .duration(delay)
-   //   .style("opacity", 1e-6)
-   //   .remove(); 
-
-  //linksSelection.attr("d", line).transition().duration(delay).style("opacity", 1);
-  
-//linksExitingSelection.transition()
- //     .duration(delay)
-  //    .style("opacity", 1e-6)
-  //    .remove();
-    
-  //"806e25530d0ca953e5ad34dd2c5709524caadc8e-b8743f91b02387f1bac3189226a9cc1f251511ab"
-	// Create a selection of circles for commits
-	var commitsSelection = svgGroup.selectAll(".circle").data(nodes, key);
-	var commitsEnterSelection = commitsSelection.enter().append("g").attr("class", "circle");
-	var commitsExitingSelection = commitsSelection.exit();
-
-	// Create a circle for each commit and set it in the top left angle
-	var enteringCommits = commitsEnterSelection.append("circle")
-			.attr("id", function(d) {return d.id;})
-			.attr("cx", function(d) {return x(d.lane);})
-			.attr("cy", function(d) {return y(+d.position);})
-			.attr("r", 4)
-			.attr("transform", "translate(30,0)")
-			.on("click", function(d) { click(d); });
-
-
-    enteringCommits.transition()
+  enteringLinks.transition()
       .duration(delay)
       .style("opacity", 1);
 
-    commitsExitingSelection.transition().style("opacity", 1e-6)
+  
+  var commitsSelection = svgGroup.selectAll(".circle").data(nodes, key);
+  var commitsEnterSelection = commitsSelection.enter().append("g").attr("class", "circle");
+  var commitsExitingSelection = commitsSelection.exit();
+	
+
+  var enteringCommits = commitsEnterSelection.append("circle")
+      .attr("cx", function(d) {return x(d.lane);})
+      .attr("cy", function(d) {return y(+d.position);})
+      .attr("r", 4)
+      .attr("transform", "translate(30,0)")
+      .on("click", function(d) { click(d); });
+  enteringCommits.transition()
+      .duration(delay)
+      .style("opacity", 1);
+
+  
+	
+
+  commitsExitingSelection.transition().style("opacity", 1e-6)
       .duration(delay)
       .remove();
-    
-
-    //commitsSelection.transition()
-    //    .duration(delay)
-    //   .style("opacity", 1);
+  linksExitingSelection.transition().style("opacity", 1e-6)
+      .duration(delay)
+      .remove();
 
 
-    var t = svg.transition()
-		.duration(delay);
-		
-		 
+  var t = svg.transition().duration(delay);
 	t.selectAll("circle").attr("cy", function(d) { return y(+d.position); });
-
 	t.selectAll("path").attr("d", line);
+
   linksExitingSelection.transition().style("opacity", 1e-6).remove();
-
-	
-
-
-
-	
-
-	// transition function
-	//svg.selectAll("circle").transition().duration(1000)
-    //		.attr("cx",)
-    //		.attr("cy",);
 }
