@@ -1,4 +1,4 @@
-var min=0, max=0,width=1300,height=500,margin=10,padding=100,bgcolor="#FFFFFF"
+var min=0, max=0, previousMin=0, previousMax=0,width=1300,height=500,margin=10,padding=100,bgcolor="#FFFFFF"
 svg=d3.select("#svgcontainer")
 .append("svg")
 .attr("width",width)
@@ -7,6 +7,8 @@ svg=d3.select("#svgcontainer")
 .style("background", bgcolor);
 
 var svgGroup = svg.insert("g");
+var linksGroup = svgGroup.insert("g").attr("class", "links-group");
+var commitsGroup = svgGroup.insert("g").attr("class", "commits-group");
  
 // The data join should be done on the commits ids.
 
@@ -37,6 +39,14 @@ var x = d3.scale.linear().domain([0,25]).range([margin,width-margin]);
 var y = d3.scale.linear().domain([min, max]).range([margin, height-margin]);
 
 var line = d3.svg.diagonal();
+var initline = d3.svg.diagonal().projection( function (d) {
+  if (d.y < min) {
+    return [d.x, margin];
+  } else if (d.y > max) {
+    return [d.x, height-margin];
+  }
+  return [d.x, margin];} 
+);
 
 // buttons
 var resetButton = d3.select("svg").append("circle").attr("class",".button").attr("cx", 1000)
@@ -144,8 +154,10 @@ function resetZoom() {
 
 function redraw(commits) {
   resetBrush();
-	var max = d3.max(commits, function(d) { return d.position;});
-  var min = d3.min(commits, function(d) { return d.position;});
+  previousMax = max;
+  previousMin = min;
+	max = d3.max(commits, function(d) { return d.position;});
+  min = d3.min(commits, function(d) { return d.position;});
 	y = d3.scale.linear().domain([min, max]).range([margin, height-margin]);
 
 	var nodes = [];
@@ -162,25 +174,31 @@ function redraw(commits) {
   });
 
 	
-	var linksSelection = svgGroup.selectAll("path").data(links, key);
+	var linksSelection = linksGroup.selectAll("path").data(links, key);
   var linksEnterSelection = linksSelection.enter();
   var linksExitingSelection = linksSelection.exit();
 
-  var enteringLinks = linksEnterSelection.append("path").attr("class", "link").attr("d", line)
+  var enteringLinks = linksEnterSelection.append("path").attr("class", "link").attr("d", initline)
       .attr("transform", "translate(30,0)");
   enteringLinks.transition()
       .duration(delay)
       .style("opacity", 1);
 
   
-  var commitsSelection = svgGroup.selectAll(".circle").data(nodes, key);
+  var commitsSelection = commitsGroup.selectAll(".circle").data(nodes, key);
   var commitsEnterSelection = commitsSelection.enter().append("g").attr("class", "circle");
   var commitsExitingSelection = commitsSelection.exit();
 	
 
   var enteringCommits = commitsEnterSelection.append("circle").attr("class", "commit")
       .attr("cx", function(d) {return x(d.lane);})
-      .attr("cy", function(d) {return y(+d.position);})
+      .attr("cy", function(d) { 
+        if (d.position < previousMin) {
+          return margin;
+        } else if (d.position > previousMax) {
+          return height-margin;
+        }
+      })
       .attr("r", 4)
       .attr("transform", "translate(30,0)")
       .on("click", function(d) { click(d); });
