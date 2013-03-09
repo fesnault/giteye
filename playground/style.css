@@ -38,7 +38,7 @@ text {
     fill: none;
 }
 
-.link.selected path{
+.link.selected{
 	stroke: #3366FF;
     stroke-width: 2px;
     fill: none;

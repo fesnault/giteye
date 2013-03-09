@@ -1,4 +1,4 @@
-var min=0, max=0,width=960,height=500,margin=10,padding=100,bgcolor="#FFFFFF"
+var min=0, max=0,width=1300,height=500,margin=10,padding=100,bgcolor="#FFFFFF"
 svg=d3.select("#svgcontainer")
 .append("svg")
 .attr("width",width)
@@ -38,6 +38,12 @@ var y = d3.scale.linear().domain([min, max]).range([margin, height-margin]);
 
 var line = d3.svg.diagonal();
 
+// buttons
+var resetButton = d3.select("svg").append("circle").attr("class",".button").attr("cx", 1000)
+      .attr("cy", 200).attr("class", "reset")
+      .attr("r", 30).style("stroke","#000000").style("fill","#229922")
+      .on("click", resetZoom);
+
 function updateData() {
 	if (currentCommits.length > 50) {
 		currentCommits = currentCommits.slice(1, currentCommits.length);
@@ -56,12 +62,24 @@ function click(commit) {
 	alert('Clicked commit '+commit.id);
 }
 
-var brush = svgGroup.append("g")
+var brush;
+
+function initBrush() {
+  brush = svgGroup.append("g")
     .attr("class", "brush");
-brush.call(d3.svg.brush().x(x).y(y)
+  brush.call(d3.svg.brush().x(x).y(y)
     .on("brushstart", brushstart)
     .on("brush", brushmove)
     .on("brushend", brushend));
+}
+
+function resetBrush() {
+  if (brush !== undefined) {
+    brush.remove();
+  }
+  initBrush();
+}
+
 
 function brushstart() {
   svgGroup.classed("selecting", true);
@@ -115,15 +133,20 @@ function zoom() {
   for (var i=0; i< selectedCommitsSelection.length; i++) {
     selectedCommits.push(selectedCommitsSelection[i].__data__);
   }
+  svgGroup.selectAll(".selected").classed("selected", false);
   redraw(selectedCommits);
 }
 
-function redraw(commits) {
+function resetZoom() {
+  //console.log("dblclick");
+  redraw(originalCommits);
+}
 
+function redraw(commits) {
+  resetBrush();
 	var max = d3.max(commits, function(d) { return d.position;});
   var min = d3.min(commits, function(d) { return d.position;});
 	y = d3.scale.linear().domain([min, max]).range([margin, height-margin]);
-  console.log(min+" - "+max);
 
 	var nodes = [];
   var links = [];
@@ -155,7 +178,7 @@ function redraw(commits) {
   var commitsExitingSelection = commitsSelection.exit();
 	
 
-  var enteringCommits = commitsEnterSelection.append("circle")
+  var enteringCommits = commitsEnterSelection.append("circle").attr("class", "commit")
       .attr("cx", function(d) {return x(d.lane);})
       .attr("cy", function(d) {return y(+d.position);})
       .attr("r", 4)
@@ -177,7 +200,7 @@ function redraw(commits) {
 
 
   var t = svg.transition().duration(delay);
-	t.selectAll("circle").attr("cy", function(d) { return y(+d.position); });
+	t.selectAll("circle.commit").attr("cy", function(d) { return y(+d.position); });
 	t.selectAll("path").attr("d", line);
 
   linksExitingSelection.transition().style("opacity", 1e-6).remove();
