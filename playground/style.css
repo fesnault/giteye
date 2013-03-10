@@ -1,6 +1,24 @@
-text {
-	font-size: 12px;
+body {
+  background-color: #F8F8F8;
+  font-family: 'Open Sans', sans-serif;
+  font-size: 14px;
+  font-weight: normal;
+  line-height: 1.2em;
+  margin: 15px;
 }
+
+h1, p {
+  color: #333;
+}
+
+#svgcontainer .workspace {
+  width: 1300px;
+  height: 500px;
+  border: solid black 1px;
+  background: #777777;
+  overflow : scroll;
+}
+
 
 .axis path,
 .axis line {
@@ -14,6 +32,12 @@ text {
     font-size: 11px;
 }
 
+.button {
+  cursor: pointer;
+  stroke: #000000;
+  fill: #229922;
+}
+
 .brush .extent {
   stroke: #999999;
   stroke-width: 2;
@@ -21,9 +45,20 @@ text {
   shape-rendering: crispEdges;
 }
 
-.circle circle {
+.circle .commit {
 	fill: #999999;
     stroke: #333333;
+    stroke-width: 2px;
+}
+
+.circle .commit.root {
+	fill: #FF0000;
+    stroke: #FF8800;
+    stroke-width: 2px;
+}
+.circle .commit.tip {
+	fill: #00FF00;
+    stroke: #FF8800;
     stroke-width: 2px;
 }
 

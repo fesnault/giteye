@@ -1,10 +1,6 @@
-var min=0, max=0, previousMin=0, previousMax=0,width=1300,height=500,margin=10,padding=100,bgcolor="#FFFFFF"
+var min=0, max=0, previousMin=0, previousMax=0, commitPadding=4,width=1300,height=500,margin=10,padding=100,bgcolor="#FFFFFF"
 svg=d3.select("#svgcontainer")
-.append("svg")
-.attr("width",width)
-.attr("height",height)
-.style("border", "solid black 1px")
-.style("background", bgcolor);
+.append("svg").attr("class", "workspace");
 
 var svgGroup = svg.insert("g");
 var linksGroup = svgGroup.insert("g").attr("class", "links-group");
@@ -38,7 +34,7 @@ var x = d3.scale.linear().domain([0,25]).range([margin,width-margin]);
 //var y = d3.scale.linear().domain([min, max]).range([height-margin, margin]);
 var y = d3.scale.linear().domain([min, max]).range([margin, height-margin]);
 
-var line = d3.svg.diagonal();
+var line = d3.svg.diagonal().projection( function (d) { return [d.x, d.y*commitPadding] } );
 var initline = d3.svg.diagonal().projection( function (d) {
   if (d.y < min) {
     return [d.x, margin];
@@ -49,10 +45,28 @@ var initline = d3.svg.diagonal().projection( function (d) {
 );
 
 // buttons
-var resetButton = d3.select("svg").append("circle").attr("class",".button").attr("cx", 1000)
-      .attr("cy", 200).attr("class", "reset")
-      .attr("r", 30).style("stroke","#000000").style("fill","#229922")
+var resetButton = d3.select("svg").append("g").attr("class","button reset");
+resetButton.append("circle")
+      .attr("cx", 1000)
+      .attr("cy", 200)
+      .attr("r", 30)
       .on("click", resetZoom);
+resetButton.append("text")
+        .attr("x", 1000)
+        .attr("y", 200)
+        .text("Reset")
+        .on("click", resetZoom);
+var zoomButton = d3.select("svg").append("g").attr("class","button zoom");
+zoomButton.append("circle")
+      .attr("cx", 1000)
+      .attr("cy", 270)
+      .attr("r", 30)
+      .on("click", initBrush);
+zoomButton.append("text")
+        .attr("x", 1000)
+        .attr("y", 270)
+        .text("Zoom")
+        .on("click", initBrush);
 
 function updateData() {
 	if (currentCommits.length > 50) {
@@ -87,7 +101,6 @@ function resetBrush() {
   if (brush !== undefined) {
     brush.remove();
   }
-  initBrush();
 }
 
 
@@ -144,6 +157,7 @@ function zoom() {
     selectedCommits.push(selectedCommitsSelection[i].__data__);
   }
   svgGroup.selectAll(".selected").classed("selected", false);
+  resetBrush();
   redraw(selectedCommits);
 }
 
@@ -153,7 +167,6 @@ function resetZoom() {
 }
 
 function redraw(commits) {
-  resetBrush();
   previousMax = max;
   previousMin = min;
 	max = d3.max(commits, function(d) { return d.position;});
@@ -190,7 +203,15 @@ function redraw(commits) {
   var commitsExitingSelection = commitsSelection.exit();
 	
 
-  var enteringCommits = commitsEnterSelection.append("circle").attr("class", "commit")
+  var enteringCommits = commitsEnterSelection.append("circle")
+      .attr("class", function (d) {
+        if (d.parentCount===0) {
+          return "commit root";
+        } else if (d.childCount === 0) {
+          return "commit tip";
+        }
+        return "commit";
+      })
       .attr("cx", function(d) {return x(d.lane);})
       .attr("cy", function(d) { 
         if (d.position < previousMin) {
@@ -218,8 +239,10 @@ function redraw(commits) {
 
 
   var t = svg.transition().duration(delay);
-	t.selectAll("circle.commit").attr("cy", function(d) { return y(+d.position); });
+	t.selectAll("circle.commit").attr("cy", function(d) { return y(+d.position)*commitPadding; });
 	t.selectAll("path").attr("d", line);
 
   linksExitingSelection.transition().style("opacity", 1e-6).remove();
+
+
 }

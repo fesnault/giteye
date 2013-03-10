@@ -23,6 +23,7 @@ public class JsonCommit {
     private String shortMessage;
     private List<JsonCommitChild> children;
     private List<String> parents;
+    private int parentCount = 0;
     private int lane;
     private int position;
 
@@ -39,7 +40,7 @@ public class JsonCommit {
     }
 
     public int getParentCount() {
-        return parents == null ? 0 : parents.size();
+        return parentCount;
     }
 
     public int getChildCount() {
@@ -125,6 +126,7 @@ public class JsonCommit {
             parents = new ArrayList<String>();
         }
         parents.add(parentId);
+        parentCount++;
     }
 
     public List<String> getParents() {
