@@ -15,7 +15,7 @@ h1, p {
   width: 1300px;
   height: 500px;
   border: solid black 1px;
-  background: #777777;
+  background: #F0F0F0;
   overflow : scroll;
 }
 
