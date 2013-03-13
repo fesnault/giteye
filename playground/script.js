@@ -28,6 +28,7 @@ var svgGroup = svg.insert("g").attr("class", "log");
   
 var linksGroup = svgGroup.insert("g").attr("class", "links-group");
 var commitsGroup = svgGroup.insert("g").attr("class", "commits-group");
+var infosGroup = svgGroup.insert("g").attr("class", "infos-group");
 var origin;
 
 
@@ -122,6 +123,8 @@ function updateData() {
 	}
 }
 
+var maxLane = 0;
+
 d3.json("data.json", function(jrep) {
 	repository = jrep;
 	originalCommits = repository.commits;
@@ -133,6 +136,7 @@ d3.json("data.json", function(jrep) {
   y = d3.scale.linear().domain([min, max]).range([margin, (height-margin)*commitPadding]);
 	redraw(currentCommits);
 });
+
 
 function click(commit) {
 	alert('Clicked commit '+commit.id);
@@ -260,13 +264,16 @@ function resetZoom() {
 function redraw(commits) {
   previousMax = max;
   previousMin = min;
-	
+	maxLane = d3.max(commits, function(d) { return d.lane;})+1;
 
 	var nodes = [];
   var links = [];
+  var infos = [];
   commits.forEach(function(d, i) {
       var source = {"id": d.id ,"x": x(d.lane), "y": y(d.position)};
       nodes.push(d);
+      var info = {"id": d.id ,"committer": d.committerName, "x": x(d.lane)+margin, "y": y(d.position)};
+      infos.push(info);
       if (d.children !== null) {
         d.children.forEach(function(c, i) {
         	var target = {"id": c.id ,"x": x(c.lane), "y": y(c.position)};
@@ -274,7 +281,8 @@ function redraw(commits) {
         });
   	}
   });
-
+  
+  console.log("Max lane : "+maxLane);
 	
 	var linksSelection = linksGroup.selectAll("path").data(links, key);
   var linksEnterSelection = linksSelection.enter();
@@ -317,7 +325,25 @@ function redraw(commits) {
       .style("opacity", 1);
 
   
-	
+	var infosSelection = infosGroup.selectAll(".info").data(infos, key);
+  var infosEnterSelection = infosSelection.enter().append("g").attr("class", "info")
+    .on('mouseover', function(){d3.select(this).classed("selected", true);})
+    .on('mouseout', function(){d3.select(this).classed("selected", false);});;
+  var infosExitingSelection = infosSelection.exit(); 
+
+  infosEnterSelection.append("rect").attr("class", "infoHolder")
+      .attr("x", function(d) { return x(maxLane); })
+      .attr("y", function(d) { return d.y - margin- commitPadding + 2; })
+      .attr("width", function(d) { return x(maxLane+4); })
+      .attr("height", function(d) { return (2*margin)+commitPadding; } );
+  infosEnterSelection.insert("line").attr("class", "infoLine")
+      .attr("x1", function(d) { return d.x+x(0.5); })
+      .attr("y1", function(d) { return d.y; })
+      .attr("x2", function(d) { return x(maxLane+7); })
+      .attr("y2", function(d) { return d.y; });
+  infosEnterSelection.transition()
+      .duration(delay);
+
 
   commitsExitingSelection.transition().style("opacity", 1e-6)
       .duration(delay)
@@ -325,11 +351,15 @@ function redraw(commits) {
   linksExitingSelection.transition().style("opacity", 1e-6)
       .duration(delay)
       .remove();
+  infosExitingSelection.transition().style("opacity", 1e-6)
+      .duration(delay)
+      .remove();
 
 
   var t = svg.transition().duration(delay);
 	t.selectAll("circle.commit").attr("cy", function(d) { return y(+d.position); });
 	t.selectAll("path").attr("d", line);
+  t.selectAll(".info.infoLine").attr("y1", function(d) { return d.y; }).attr("y2", function(d) { return d.y; });
 
   linksExitingSelection.transition().style("opacity", 1e-6).remove();
 
