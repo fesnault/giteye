@@ -1,18 +1,32 @@
-var min=0, max=0, previousMin=0, previousMax=0, commitPadding=4,width=1300,height=500,margin=10,padding=100,bgcolor="#FFFFFF",
+var min=0, max=0, previousMin=0, previousMax=0, commitPadding=4,width=1300,height=500,margin=10,padding=100,bgcolor="#FFFFFF", maxAllowedLane = 25,
 ypan=0;
-// scalers - scales the commits dates base on the idea that they are displayed vertically. So the scale range uses the height as a max.
-// X is scaled by the number of branches (from 1 to 10) - TODO : make it dynamic from the branch count in the data.
-var x = d3.scale.linear().domain([0,25]).range([margin,width-margin]);
-// Y is scaled by the commit date
-//var y = d3.scale.linear().domain([min, max]).range([height-margin, margin]);
+
 var maxPaddingHeight = 0;
 var minPaddingHeight = 0;
 var originalTranslate = 0;
 var currentPan = 0;
+// scalers - scales the commits dates base on the idea that they are displayed vertically. So the scale range uses the height as a max.
+// X is scaled by the number of branches (from 1 to 10) - TODO : make it dynamic from the branch count in the data.
+// Y is scaled by the commit date
+var x = d3.scale.linear().domain([0,maxAllowedLane]).range([margin,width-margin]);
 var y = d3.scale.linear().domain([min, max]).range([margin, height-margin]);
 var svg=d3.select("#svgcontainer")
 .append("svg").attr("class", "workspace");
 
+svg.append("clipPath")
+    .attr("id", "clipMessage")
+  .append("rect")
+    .attr("x", 5)
+    .attr("y", 5)
+    .attr("width", 10)
+    .attr("height", 10);
+svg.append("clipPath")
+    .attr("id", "clipName")
+  .append("rect")
+    .attr("x", 5)
+    .attr("y", 5)
+    .attr("width", 10)
+    .attr("height", 10);
 
   
 //.on("mousedown", mousedown)
@@ -139,7 +153,11 @@ d3.json("data.json", function(jrep) {
 
 
 function click(commit) {
-	alert('Clicked commit '+commit.id);
+	//alert('Clicked commit '+commit.id);
+  var clickedCommit = getCommit(commit.id);
+  if (clickedCommit !== null) {
+    alert(clickedCommit.message);
+  }
 }
 
 var brush;
@@ -261,10 +279,26 @@ function resetZoom() {
   redraw(originalCommits);
 }
 
+function getCommit(id) {
+  for (var i=0; i< currentCommits.length; i++) {
+    if (currentCommits[i].id == id) {
+      return currentCommits[i];
+    }
+  }
+  return null;
+}
+
 function redraw(commits) {
   previousMax = max;
   previousMin = min;
 	maxLane = d3.max(commits, function(d) { return d.lane;})+1;
+  svg.select("#clipMessage").select("rect")
+    .attr("width", x(maxAllowedLane-5)-margin)
+    .attr("height", y(max));
+  svg.select("#clipName").select("rect")
+    .attr("width", x(maxAllowedLane-2)-margin)
+    .attr("height", y(max));
+  
 
 	var nodes = [];
   var links = [];
@@ -272,7 +306,15 @@ function redraw(commits) {
   commits.forEach(function(d, i) {
       var source = {"id": d.id ,"x": x(d.lane), "y": y(d.position)};
       nodes.push(d);
-      var info = {"id": d.id ,"committer": d.committerName, "x": x(d.lane)+margin, "y": y(d.position)};
+      //var info = {"id": d.id ,"committer": d.committerName, "date": d.date, "x": x(d.lane)+margin, "y": y(d.position)};
+      var info = {
+        "id": d.id,
+        "message": d.message,
+        "author": d.authorName,
+        "date": formatMillisecondDate(d.date),
+        "x": x(d.lane)+margin,
+        "y": y(d.position)
+      };
       infos.push(info);
       if (d.children !== null) {
         d.children.forEach(function(c, i) {
@@ -281,9 +323,7 @@ function redraw(commits) {
         });
   	}
   });
-  
-  console.log("Max lane : "+maxLane);
-	
+  	
 	var linksSelection = linksGroup.selectAll("path").data(links, key);
   var linksEnterSelection = linksSelection.enter();
   var linksExitingSelection = linksSelection.exit();
@@ -334,13 +374,36 @@ function redraw(commits) {
   infosEnterSelection.append("rect").attr("class", "infoHolder")
       .attr("x", function(d) { return x(maxLane); })
       .attr("y", function(d) { return d.y - margin- commitPadding + 2; })
-      .attr("width", function(d) { return x(maxLane+4); })
+      .attr("width", function(d) { return x(maxLane+1); })
       .attr("height", function(d) { return (2*margin)+commitPadding; } );
-  infosEnterSelection.insert("line").attr("class", "infoLine")
+  infosEnterSelection.append("line").attr("class", "infoLine")
       .attr("x1", function(d) { return d.x+x(0.5); })
       .attr("y1", function(d) { return d.y; })
-      .attr("x2", function(d) { return x(maxLane+7); })
+      .attr("x2", function(d) { return x(maxLane+1); })
       .attr("y2", function(d) { return d.y; });
+  var textTable = infosEnterSelection.append("text").attr("class", "commitInfo")
+      .attr("x", function(d) { return x(maxLane+1)+margin; })
+      .attr("y", function(d) { return d.y; })
+      .attr("dy", ".30em")
+  textTable.append("tspan")
+      .attr("x", function(d) { return x(maxLane+1)+margin; })
+      .text(function (d) { return d.id.substring(0,7); })
+  textTable.append("tspan")
+      .attr("x", function(d) { return x(maxLane+3)+margin; })
+      .attr("clip-path", "url(#clipMessage)")
+      .text(function (d) { return d.message; })
+  textTable.append("tspan")
+      .attr("x", function(d) { return x(maxAllowedLane-5)+margin; })
+      .attr("clip-path", "url(#clipName)")
+      .text(function (d) { return d.author; });
+  textTable.append("tspan")
+      .attr("x", function(d) { return x(maxAllowedLane-2)+margin; })
+      .text(function (d) { return d.date; });
+  //infosEnterSelection.append("text").attr("class", "commitInfo")
+  //    .attr("x", function(d) { return x(maxLane+3)+margin; })
+  //    .attr("y", function(d) { return d.y; })
+  //    .attr("dy", ".30em")
+  //    .text(function (d) { return (d.message.length > 40)? d.message.substring(0, 38)+"...": d.message; });
   infosEnterSelection.transition()
       .duration(delay);
 
