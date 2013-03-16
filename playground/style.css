@@ -80,8 +80,8 @@ h1, p {
 }
 
 .infoHolder {
-  fill: #F0F0F0;
-  stroke: #F0F0F0;
+  fill: none;
+  stroke: none;
   stroke-width: 0px;
 }
 
@@ -109,4 +109,17 @@ h1, p {
   fill: #3366FF;
   opacity: 1;
   text-anchor: right;
+}
+
+.info .branchHolder .branchName {
+  fill: #4444FF;
+  opacity: 1;
+  text-anchor: right;
+}
+
+.info .branchHolder .branchBox {
+  fill: #5577FF;
+  fill-opacity: 0.2;
+  stroke: #7799FF;
+  stroke-width: 1px;
 }

@@ -1,5 +1,4 @@
-var min=0, max=0, previousMin=0, previousMax=0, commitPadding=4,width=1300,height=500,margin=10,padding=100,bgcolor="#FFFFFF", maxAllowedLane = 25,
-ypan=0;
+var min=0, max=0, previousMin=0, previousMax=0, commitPadding=4,width=1300,height=500,margin=10,padding=100,bgcolor="#FFFFFF", maxAllowedLane = 25, branchPadding = 3, ypan=0;
 
 var maxPaddingHeight = 0;
 var minPaddingHeight = 0;
@@ -93,7 +92,7 @@ var delay = 500;
 
 var repository;
 var currentCommits;
-var branches;
+var refs;
 
 
 var line = d3.svg.diagonal().projection( function (d) { return [d.x, d.y] } );
@@ -142,13 +141,13 @@ var maxLane = 0;
 d3.json("data.json", function(jrep) {
 	repository = jrep;
 	currentCommits = repository.commits;
-  branches = repository.branches;
+  refs = repository.branches;
   max = d3.max(currentCommits, function(d) { return d.position;});
   min = d3.min(currentCommits, function(d) { return d.position;});
   maxPaddingHeight = (((height-margin)*commitPadding)-height)+2*margin;
   minPaddingHeight = 0;
   y = d3.scale.linear().domain([min, max]).range([margin, (height-margin)*commitPadding]);
-	redraw(currentCommits);
+	redraw(currentCommits, refs);
 });
 
 
@@ -315,7 +314,7 @@ function getCommit(id) {
   return null;
 }
 
-function redraw(commits) {
+function redraw(commits, references) {
   previousMax = max;
   previousMin = min;
 	maxLane = d3.max(commits, function(d) { return d.lane;})+1;
@@ -340,9 +339,20 @@ function redraw(commits) {
         "author": d.authorName,
         "date": formatMillisecondDate(d.date),
         "x": x(d.lane)+margin,
-        "y": y(d.position)
+        "y": y(d.position),
+        "branches": []
       };
       infos.push(info);
+      for (var j=0; j<references.length; j++) {
+        if (references[j].target == d.id) {
+          var branch = {
+            "name": references[j].name,
+            "x": x(d.lane)+margin,
+            "y": y(d.position)
+          };
+          info.branches.push(branch);
+        }
+      }
       if (d.children !== null) {
         d.children.forEach(function(c, i) {
         	var target = {"id": c.id ,"x": x(c.lane), "y": y(c.position)};
@@ -391,16 +401,70 @@ function redraw(commits) {
       .duration(delay)
       .style("opacity", 1);
 
-  
+  /*var branchesSelection = branchesGroup.selectAll(".branch").data(branches, key);
+  var branchesEnterSelection = branchesSelection.enter().append("g").attr("class", "branch");
+  var branchesExitingSelection = branchesSelection.exit(); 
+
+  var branchesHolders = branchesEnterSelection.append("g").attr("class", "branchHolder");
+  branchesHolders.append("text").attr("class", "branchName")
+    .attr("x", function(d) { return x(maxLane+3)+margin; })
+    .attr("y", function(d) { return d.y; })
+    .text( function(d) { return d.name;})
+    .attr("dy", ".30em");
+  var branchesNames = d3.selectAll(".branchName");
+  branchesNames.each( function(d, i) {
+    if (this.textContent === d.name) {
+      branchesHolders.insert("rect").attr("class", "branchBox")
+      .attr("x", this.getBBox().x)
+      .attr("y", this.getBBox().y)
+      .attr("width", this.getBBox().width)
+      .attr("height", this.getBBox().height);
+    }
+  });
+  branchesEnterSelection.transition()
+      .duration(delay);*/
+
 	var infosSelection = infosGroup.selectAll(".info").data(infos, key);
-  var infosEnterSelection = infosSelection.enter().append("g").attr("class", "info")
+  var infosEnterSelection = infosSelection.enter().append("g").attr("class", function (d, i) { return "info info"+i; })
     .on('mouseover', function(){d3.select(this).classed("selected", true);})
-    .on('mouseout', function(){d3.select(this).classed("selected", false);});;
+    .on('mouseout', function(){d3.select(this).classed("selected", false);});
   var infosExitingSelection = infosSelection.exit(); 
 
-  infosEnterSelection.append("rect").attr("class", "infoHolder")
+  var branchesPaddings = new Object();
+
+  infos.forEach(
+    function(d, i) {
+      var currentPadding = 0;
+      if (d.branches.length > 0) {
+        d.branches.forEach(
+          function(e,j) {
+            var branchHolder = d3.select(".info"+i).append("g").attr("class", "branchHolder");
+            branchHolder.append("text").attr("class", "branchName")
+                .attr("x", function(d) { return currentPadding+x(maxLane+3)+margin; })
+                .attr("y", function(d) { return d.y; })
+                .text( function (f) { return e.name; })
+                .attr("dy", ".30em");
+            var branchesNames = d3.selectAll(".branchName");
+            branchesNames.each( function(g, k) {
+              if (this.textContent === e.name) {
+                branchHolder.insert("rect").attr("class", "branchBox")
+                .attr("x", this.getBBox().x)
+                .attr("y", this.getBBox().y)
+                .attr("width", this.getBBox().width)
+                .attr("height", this.getBBox().height);
+                currentPadding = currentPadding + this.getBBox().width + branchPadding;
+              }
+            });
+          }
+        );
+      }
+      branchesPaddings[d.id] = currentPadding;
+    }
+  );
+
+  var infoHolder = infosEnterSelection.append("rect").attr("class", "infoHolder")
       .attr("x", function(d) { return x(maxLane); })
-      .attr("y", function(d) { return d.y - margin- commitPadding + 2; })
+      .attr("y", function(d) { return d.y - margin - commitPadding + 2; })
       .attr("width", function(d) { return x(maxLane+1); })
       .attr("height", function(d) { return (2*margin)+commitPadding; } );
   infosEnterSelection.append("line").attr("class", "infoLine")
@@ -416,7 +480,7 @@ function redraw(commits) {
       .attr("x", function(d) { return x(maxLane+1)+margin; })
       .text(function (d) { return d.id.substring(0,7); })
   textTable.append("tspan")
-      .attr("x", function(d) { return x(maxLane+3)+margin; })
+      .attr("x", function(d) { return branchesPaddings[d.id] + x(maxLane+3)+margin; })
       .attr("clip-path", "url(#clipMessage)")
       .text(function (d) { return d.message; })
   textTable.append("tspan")
@@ -426,6 +490,8 @@ function redraw(commits) {
   textTable.append("tspan")
       .attr("x", function(d) { return x(maxAllowedLane-2)+margin; })
       .text(function (d) { return d.date; });
+  
+
   //infosEnterSelection.append("text").attr("class", "commitInfo")
   //    .attr("x", function(d) { return x(maxLane+3)+margin; })
   //    .attr("y", function(d) { return d.y; })
@@ -444,12 +510,16 @@ function redraw(commits) {
   infosExitingSelection.transition().style("opacity", 1e-6)
       .duration(delay)
       .remove();
+  /*branchesExitingSelection.transition().style("opacity", 1e-6)
+      .duration(delay)
+      .remove();*/
 
 
   var t = svg.transition().duration(delay);
 	t.selectAll("circle.commit").attr("cy", function(d) { return y(+d.position); });
 	t.selectAll("path").attr("d", line);
   t.selectAll(".info.infoLine").attr("y1", function(d) { return d.y; }).attr("y2", function(d) { return d.y; });
+
 
   linksExitingSelection.transition().style("opacity", 1e-6).remove();
 

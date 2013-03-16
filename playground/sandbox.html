@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+ <head>
+   <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+   <link href="style.css" rel="stylesheet" media="screen"/>
+   <title>D3 Test</title>
+   
+   
+ </head>
+ <body>
+   <div id="work">
+   	<!-- Here we go -->
+   </div>
+   <script type="text/javascript" src="d3.v3.js"></script>
+   <script>
+   	var work = d3.select("#work");
+   	var svg = work.append("svg").attr("width", 500).attr("height", 500).append("g");
+   	var t = svg.append("text").style("font", "15px Helvetica Neue").attr("x", 30).attr("y", 30).text("Hello");
+   	var bbox = t.node().getBBox();
+   	var rect = svg.append("svg:rect")
+    .attr("x", bbox.x)
+    .attr("y", bbox.y)
+    .attr("width", bbox.width)
+    .attr("height", bbox.height)
+    .style("fill", "#ccc")
+    .style("fill-opacity", ".3")
+    .style("stroke", "#666")
+    .style("stroke-width", "1.5px");
+   	//console.log(d3.select('.label').node().getComputedTextLength() );
+   	//t.each(function() {
+	    //console.log(this.getBBox());
+	//});
+   </script>
+ </body>
+</html>
