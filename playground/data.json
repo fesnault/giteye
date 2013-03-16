@@ -1,5 +1,5 @@
 {
-   "name" : "/Users/phoenix/data/sources/caha-web/.git [ 1.0]",
+   "name" : "/Users/phoenix/data/sources/dummy-web/.git [ 1.0]",
    "tags" : null,
    "branches" :
       [
@@ -49,7 +49,7 @@
    "commits" :
       [
          {
-            "message" : "Adding CAHA front website starting point sources.\n",
+            "message" : "Adding DUMMY front website starting point sources.\n",
             "id" : "81541c827995c961c5359929c4e96e522c332dab",
             "date" : 1357921519000,
             "position" : 71,
@@ -70,13 +70,13 @@
             "parents" :
                [
                ],
-            "shortMessage" : "Adding CAHA front website starting point sources.",
+            "shortMessage" : "Adding DUMMY front website starting point sources.",
             "lane" : 1,
             "parentCount" : 0,
-            "authorName" : "Esnault FrÃ©dÃ©ric",
-            "authorEmail" : "esnault@fullsix.com",
-            "committerName" : "Esnault FrÃ©dÃ©ric",
-            "committerEmail" : "esnault@fullsix.com"
+            "authorName" : "Esnault Frederic",
+            "authorEmail" : "esnault@phoenix.com",
+            "committerName" : "Esnault Frederic",
+            "committerEmail" : "esnault@phoenix.com"
          },
          {
             "message" : "Added git ignore file. Fixed servlet/jsp apis dependencies (removed from web-inf/lib, servlet api is expected as provided).\n",
@@ -98,10 +98,10 @@
             "shortMessage" : "Added git ignore file. Fixed servlet/jsp apis dependencies (removed from web-inf/lib, servlet api is expected as provided).",
             "lane" : 0,
             "parentCount" : 1,
-            "authorName" : "Esnault FrÃ©dÃ©ric",
-            "authorEmail" : "esnault@fullsix.com",
-            "committerName" : "Esnault FrÃ©dÃ©ric",
-            "committerEmail" : "esnault@fullsix.com"
+            "authorName" : "Esnault Frederic",
+            "authorEmail" : "esnault@phoenix.com",
+            "committerName" : "Esnault Frederic",
+            "committerEmail" : "esnault@phoenix.com"
          },
          {
             "message" : "Fixed again servlet/jsp/jstl apis.\n",
@@ -123,10 +123,10 @@
             "shortMessage" : "Fixed again servlet/jsp/jstl apis.",
             "lane" : 0,
             "parentCount" : 1,
-            "authorName" : "Esnault FrÃ©dÃ©ric",
-            "authorEmail" : "esnault@fullsix.com",
-            "committerName" : "Esnault FrÃ©dÃ©ric",
-            "committerEmail" : "esnault@fullsix.com"
+            "authorName" : "Esnault Frederic",
+            "authorEmail" : "esnault@phoenix.com",
+            "committerName" : "Esnault Frederic",
+            "committerEmail" : "esnault@phoenix.com"
          },
          {
             "message" : "Refactoring project structure. Added a POM parent, and making webapp and core modules.\n",
@@ -278,10 +278,10 @@
             "shortMessage" : "Adding logback configuration. Fixed path error in dummy jsp.",
             "lane" : 0,
             "parentCount" : 1,
-            "authorName" : "Esnault FrÃ©dÃ©ric",
-            "authorEmail" : "esnault@fullsix.com",
-            "committerName" : "Esnault FrÃ©dÃ©ric",
-            "committerEmail" : "esnault@fullsix.com"
+            "authorName" : "Esnault Frederic",
+            "authorEmail" : "esnault@phoenix.com",
+            "committerName" : "Esnault Frederic",
+            "committerEmail" : "esnault@phoenix.com"
          },
          {
             "message" : "Implemented a dummy core chain (service/dao/entity). Implemented parent dao with the Auditable interface. Adding service injection in dummy controller. Now saving a dummy entity when signup succeeds.\n",
@@ -308,13 +308,13 @@
             "shortMessage" : "Implemented a dummy core chain (service/dao/entity). Implemented parent dao with the Auditable interface. Adding service injection in dummy controller. Now saving a dummy entity when signup succeeds.",
             "lane" : 0,
             "parentCount" : 1,
-            "authorName" : "Esnault FrÃ©dÃ©ric",
-            "authorEmail" : "esnault@fullsix.com",
-            "committerName" : "Esnault FrÃ©dÃ©ric",
-            "committerEmail" : "esnault@fullsix.com"
+            "authorName" : "Esnault Frederic",
+            "authorEmail" : "esnault@phoenix.com",
+            "committerName" : "Esnault Frederic",
+            "committerEmail" : "esnault@phoenix.com"
          },
          {
-            "message" : "Removing index.jsp. (Index page should be served by CAHA edito).\n",
+            "message" : "Removing index.jsp. (Index page should be served by DUMMY edito).\n",
             "id" : "e2e11fd20cab6df10e88f5af3ad08d7bcd465716",
             "date" : 1358170742000,
             "position" : 61,
@@ -330,13 +330,13 @@
             "parents" :
                [
                ],
-            "shortMessage" : "Removing index.jsp. (Index page should be served by CAHA edito).",
+            "shortMessage" : "Removing index.jsp. (Index page should be served by DUMMY edito).",
             "lane" : 1,
             "parentCount" : 1,
             "authorName" : "webadmin",
-            "authorEmail" : "webadmin@orion.fullsix.com",
+            "authorEmail" : "webadmin@orion.phoenix.com",
             "committerName" : "webadmin",
-            "committerEmail" : "webadmin@orion.fullsix.com"
+            "committerEmail" : "webadmin@orion.phoenix.com"
          },
          {
             "message" : "Fixed context name (removed wildcard)\n",
@@ -358,13 +358,13 @@
             "shortMessage" : "Fixed context name (removed wildcard)",
             "lane" : 0,
             "parentCount" : 1,
-            "authorName" : "Esnault FrÃ©dÃ©ric",
-            "authorEmail" : "esnault@fullsix.com",
-            "committerName" : "Esnault FrÃ©dÃ©ric",
-            "committerEmail" : "esnault@fullsix.com"
+            "authorName" : "Esnault Frederic",
+            "authorEmail" : "esnault@phoenix.com",
+            "committerName" : "Esnault Frederic",
+            "committerEmail" : "esnault@phoenix.com"
          },
          {
-            "message" : "Merge branch '1.0' of git.fullsix.com:caha/front-web into 1.0\n",
+            "message" : "Merge branch '1.0' of git.phoenix.com:dummy/front-web into 1.0\n",
             "id" : "e140bf9341341b55bf58d9ec551fa6eb3ab216db",
             "date" : 1358173642000,
             "position" : 59,
@@ -380,13 +380,13 @@
             "parents" :
                [
                ],
-            "shortMessage" : "Merge branch '1.0' of git.fullsix.com:caha/front-web into 1.0",
+            "shortMessage" : "Merge branch '1.0' of git.phoenix.com:dummy/front-web into 1.0",
             "lane" : 0,
             "parentCount" : 2,
-            "authorName" : "Esnault FrÃ©dÃ©ric",
-            "authorEmail" : "esnault@fullsix.com",
-            "committerName" : "Esnault FrÃ©dÃ©ric",
-            "committerEmail" : "esnault@fullsix.com"
+            "authorName" : "Esnault Frederic",
+            "authorEmail" : "esnault@phoenix.com",
+            "committerName" : "Esnault Frederic",
+            "committerEmail" : "esnault@phoenix.com"
          },
          {
             "message" : "fix: compilation fails on linux (complains about source version).\nSpecified 1.6 as source and target version.\n",
@@ -403,10 +403,10 @@
             "shortMessage" : "fix: compilation fails on linux (complains about source version). Specified 1.6 as source and target version.",
             "lane" : 1,
             "parentCount" : 1,
-            "authorName" : "Matthieu Bertin",
-            "authorEmail" : "mbertin@consulting.altensir.fr",
-            "committerName" : "Matthieu Bertin",
-            "committerEmail" : "mbertin@consulting.altensir.fr"
+            "authorName" : "Tony Stark",
+            "authorEmail" : "tstark@stark.com",
+            "committerName" : "Tony Stark",
+            "committerEmail" : "tstark@stark.com"
          },
          {
             "message" : "fix: compilation fails on linux (complains about source version).\nSpecified 1.6 as source and target version.\n",
@@ -428,10 +428,10 @@
             "shortMessage" : "fix: compilation fails on linux (complains about source version). Specified 1.6 as source and target version.",
             "lane" : 0,
             "parentCount" : 1,
-            "authorName" : "Matthieu Bertin",
-            "authorEmail" : "mbertin@consulting.altensir.fr",
-            "committerName" : "Matthieu Bertin",
-            "committerEmail" : "mbertin@consulting.altensir.fr"
+            "authorName" : "Tony Stark",
+            "authorEmail" : "tstark@stark.com",
+            "committerName" : "Tony Stark",
+            "committerEmail" : "tstark@stark.com"
          },
          {
             "message" : "fix: overwrote without checking for a delta between the master branch's pom file and 1.0 pom file. The unexpected delta has been reverted.\n",
@@ -453,10 +453,10 @@
             "shortMessage" : "fix: overwrote without checking for a delta between the master branch's pom file and 1.0 pom file. The unexpected delta has been reverted.",
             "lane" : 0,
             "parentCount" : 1,
-            "authorName" : "Matthieu Bertin",
-            "authorEmail" : "mbertin@consulting.altensir.fr",
-            "committerName" : "Matthieu Bertin",
-            "committerEmail" : "mbertin@consulting.altensir.fr"
+            "authorName" : "Tony Stark",
+            "authorEmail" : "tstark@stark.com",
+            "committerName" : "Tony Stark",
+            "committerEmail" : "tstark@stark.com"
          },
          {
             "message" : "updated .gitignore with eclipse's project files & folders\nan impactless change on the tag order in web.xml for eclipse not to\ncomplain",
@@ -478,10 +478,10 @@
             "shortMessage" : "updated .gitignore with eclipse's project files & folders an impactless change on the tag order in web.xml for eclipse not to complain",
             "lane" : 0,
             "parentCount" : 1,
-            "authorName" : "Matthieu Bertin",
-            "authorEmail" : "mbertin@consulting.altensir.fr",
-            "committerName" : "Matthieu Bertin",
-            "committerEmail" : "mbertin@consulting.altensir.fr"
+            "authorName" : "Tony Stark",
+            "authorEmail" : "tstark@stark.com",
+            "committerName" : "Tony Stark",
+            "committerEmail" : "tstark@stark.com"
          },
          {
             "message" : "fixed: jetty plugin version number",
@@ -503,10 +503,10 @@
             "shortMessage" : "fixed: jetty plugin version number",
             "lane" : 0,
             "parentCount" : 1,
-            "authorName" : "Matthieu Bertin",
-            "authorEmail" : "mbertin@consulting.altensir.fr",
-            "committerName" : "Matthieu Bertin",
-            "committerEmail" : "mbertin@consulting.altensir.fr"
+            "authorName" : "Tony Stark",
+            "authorEmail" : "tstark@stark.com",
+            "committerName" : "Tony Stark",
+            "committerEmail" : "tstark@stark.com"
          },
          {
             "message" : "fixed: wrong plugin dep",
@@ -528,10 +528,10 @@
             "shortMessage" : "fixed: wrong plugin dep",
             "lane" : 0,
             "parentCount" : 1,
-            "authorName" : "Matthieu Bertin",
-            "authorEmail" : "mbertin@consulting.altensir.fr",
-            "committerName" : "Matthieu Bertin",
-            "committerEmail" : "mbertin@consulting.altensir.fr"
+            "authorName" : "Tony Stark",
+            "authorEmail" : "tstark@stark.com",
+            "committerName" : "Tony Stark",
+            "committerEmail" : "tstark@stark.com"
          },
          {
             "message" : "added: spring system properties for khaleesi",
@@ -553,10 +553,10 @@
             "shortMessage" : "added: spring system properties for khaleesi",
             "lane" : 0,
             "parentCount" : 1,
-            "authorName" : "Matthieu Bertin",
-            "authorEmail" : "mbertin@consulting.altensir.fr",
-            "committerName" : "Matthieu Bertin",
-            "committerEmail" : "mbertin@consulting.altensir.fr"
+            "authorName" : "Tony Stark",
+            "authorEmail" : "tstark@stark.com",
+            "committerName" : "Tony Stark",
+            "committerEmail" : "tstark@stark.com"
          },
          {
             "message" : "parameterized cms target and other values for front",
@@ -578,10 +578,10 @@
             "shortMessage" : "parameterized cms target and other values for front",
             "lane" : 0,
             "parentCount" : 1,
-            "authorName" : "Matthieu Bertin",
-            "authorEmail" : "mbertin@consulting.altensir.fr",
-            "committerName" : "Matthieu Bertin",
-            "committerEmail" : "mbertin@consulting.altensir.fr"
+            "authorName" : "Tony Stark",
+            "authorEmail" : "tstark@stark.com",
+            "committerName" : "Tony Stark",
+            "committerEmail" : "tstark@stark.com"
          },
          {
             "message" : "automatically import jstl taglibs in all jsp\n",
@@ -603,13 +603,13 @@
             "shortMessage" : "automatically import jstl taglibs in all jsp",
             "lane" : 0,
             "parentCount" : 1,
-            "authorName" : "Valentin Kasas",
-            "authorEmail" : "kasas@fullsix.com",
-            "committerName" : "Valentin Kasas",
-            "committerEmail" : "kasas@fullsix.com"
+            "authorName" : "Clark Kent",
+            "authorEmail" : "kent@dailyplanet.com",
+            "committerName" : "Clark Kent",
+            "committerEmail" : "kent@dailyplanet.com"
          },
          {
-            "message" : "CAHA-174 added mock & base wiring for the B_recommendation block",
+            "message" : "DUMMY-174 added mock & base wiring for the B_recommendation block",
             "id" : "c0b26110257a2872f2687e95753d2aef1ca65937",
             "date" : 1360167342000,
             "position" : 49,
@@ -625,16 +625,16 @@
             "parents" :
                [
                ],
-            "shortMessage" : "CAHA-174 added mock & base wiring for the B_recommendation block",
+            "shortMessage" : "DUMMY-174 added mock & base wiring for the B_recommendation block",
             "lane" : 0,
             "parentCount" : 1,
-            "authorName" : "Matthieu Bertin",
-            "authorEmail" : "mbertin@consulting.altensir.fr",
-            "committerName" : "Matthieu Bertin",
-            "committerEmail" : "mbertin@consulting.altensir.fr"
+            "authorName" : "Tony Stark",
+            "authorEmail" : "tstark@stark.com",
+            "committerName" : "Tony Stark",
+            "committerEmail" : "tstark@stark.com"
          },
          {
-            "message" : "CAHA-164 B_QUIZZ_HP\n",
+            "message" : "DUMMY-164 B_QUIZZ_HP\n",
             "id" : "4912d2fa992f948d7443e4afdbb1663c5756f779",
             "date" : 1360773159000,
             "position" : 48,
@@ -650,16 +650,16 @@
             "parents" :
                [
                ],
-            "shortMessage" : "CAHA-164 B_QUIZZ_HP",
+            "shortMessage" : "DUMMY-164 B_QUIZZ_HP",
             "lane" : 0,
             "parentCount" : 1,
-            "authorName" : "mouhcine moulou",
-            "authorEmail" : "mouhcine.moulou@soat.fr",
-            "committerName" : "mouhcine moulou",
-            "committerEmail" : "mouhcine.moulou@soat.fr"
+            "authorName" : "david copperfield",
+            "authorEmail" : "david.copperfield@corp.fr",
+            "committerName" : "david copperfield",
+            "committerEmail" : "david.copperfield@corp.fr"
          },
          {
-            "message" : "CAHA-164 B_QUIZZ_HP\n",
+            "message" : "DUMMY-164 B_QUIZZ_HP\n",
             "id" : "0918c0236d2e6728223a1e3d7f26b528ba92de24",
             "date" : 1361182318000,
             "position" : 47,
@@ -680,13 +680,13 @@
             "parents" :
                [
                ],
-            "shortMessage" : "CAHA-164 B_QUIZZ_HP",
+            "shortMessage" : "DUMMY-164 B_QUIZZ_HP",
             "lane" : 0,
             "parentCount" : 1,
-            "authorName" : "mouhcine moulou",
-            "authorEmail" : "mouhcine.moulou@soat.fr",
-            "committerName" : "mouhcine moulou",
-            "committerEmail" : "mouhcine.moulou@soat.fr"
+            "authorName" : "david copperfield",
+            "authorEmail" : "david.copperfield@corp.fr",
+            "committerName" : "david copperfield",
+            "committerEmail" : "david.copperfield@corp.fr"
          },
          {
             "message" : "added mock controller for the MEA feature",
@@ -713,13 +713,13 @@
             "shortMessage" : "added mock controller for the MEA feature",
             "lane" : 1,
             "parentCount" : 1,
-            "authorName" : "Matthieu Bertin",
-            "authorEmail" : "mbertin@consulting.altensir.fr",
-            "committerName" : "Matthieu Bertin",
-            "committerEmail" : "mbertin@consulting.altensir.fr"
+            "authorName" : "Tony Stark",
+            "authorEmail" : "tstark@stark.com",
+            "committerName" : "Tony Stark",
+            "committerEmail" : "tstark@stark.com"
          },
          {
-            "message" : "CAHA-164 B_QUIZZ_HP\n",
+            "message" : "DUMMY-164 B_QUIZZ_HP\n",
             "id" : "be7046157122f4839bc0acde711fb28b57dba881",
             "date" : 1361294082000,
             "position" : 45,
@@ -735,16 +735,16 @@
             "parents" :
                [
                ],
-            "shortMessage" : "CAHA-164 B_QUIZZ_HP",
+            "shortMessage" : "DUMMY-164 B_QUIZZ_HP",
             "lane" : 0,
             "parentCount" : 1,
-            "authorName" : "mouhcine moulou",
-            "authorEmail" : "mouhcine.moulou@soat.fr",
-            "committerName" : "mouhcine moulou",
-            "committerEmail" : "mouhcine.moulou@soat.fr"
+            "authorName" : "david copperfield",
+            "authorEmail" : "david.copperfield@corp.fr",
+            "committerName" : "david copperfield",
+            "committerEmail" : "david.copperfield@corp.fr"
          },
          {
-            "message" : "CAHA-164 B_QUIZZ_HP\n",
+            "message" : "DUMMY-164 B_QUIZZ_HP\n",
             "id" : "dfbe9932f3102626684c11c4349fee2aeda038c6",
             "date" : 1361348549000,
             "position" : 44,
@@ -765,16 +765,16 @@
             "parents" :
                [
                ],
-            "shortMessage" : "CAHA-164 B_QUIZZ_HP",
+            "shortMessage" : "DUMMY-164 B_QUIZZ_HP",
             "lane" : 0,
             "parentCount" : 1,
-            "authorName" : "mouhcine moulou",
-            "authorEmail" : "mouhcine.moulou@soat.fr",
-            "committerName" : "mouhcine moulou",
-            "committerEmail" : "mouhcine.moulou@soat.fr"
+            "authorName" : "david copperfield",
+            "authorEmail" : "david.copperfield@corp.fr",
+            "committerName" : "david copperfield",
+            "committerEmail" : "david.copperfield@corp.fr"
          },
          {
-            "message" : "Merge branch '1.0' of git.fullsix.com:/caha/front-web into feature-mea\n",
+            "message" : "Merge branch '1.0' of git.phoenix.com:/dummy/front-web into feature-mea\n",
             "id" : "38bdfb3c16209d00abce10ba86adfcf58349bfa0",
             "date" : 1361348611000,
             "position" : 43,
@@ -790,16 +790,16 @@
             "parents" :
                [
                ],
-            "shortMessage" : "Merge branch '1.0' of git.fullsix.com:/caha/front-web into feature-mea",
+            "shortMessage" : "Merge branch '1.0' of git.phoenix.com:/dummy/front-web into feature-mea",
             "lane" : 2,
             "parentCount" : 2,
             "authorName" : "webadmin",
-            "authorEmail" : "webadmin@orion.fullsix.com",
+            "authorEmail" : "webadmin@orion.phoenix.com",
             "committerName" : "webadmin",
-            "committerEmail" : "webadmin@orion.fullsix.com"
+            "committerEmail" : "webadmin@orion.phoenix.com"
          },
          {
-            "message" : "CAHA-164 fix quiz path resolution\n",
+            "message" : "DUMMY-164 fix quiz path resolution\n",
             "id" : "50a5a6a622b94f6bc3da640569ee1a45f9748643",
             "date" : 1361373900000,
             "position" : 42,
@@ -815,16 +815,16 @@
             "parents" :
                [
                ],
-            "shortMessage" : "CAHA-164 fix quiz path resolution",
+            "shortMessage" : "DUMMY-164 fix quiz path resolution",
             "lane" : 0,
             "parentCount" : 1,
-            "authorName" : "mouhcine moulou",
-            "authorEmail" : "mouhcine.moulou@soat.fr",
-            "committerName" : "mouhcine moulou",
-            "committerEmail" : "mouhcine.moulou@soat.fr"
+            "authorName" : "david copperfield",
+            "authorEmail" : "david.copperfield@corp.fr",
+            "committerName" : "david copperfield",
+            "committerEmail" : "david.copperfield@corp.fr"
          },
          {
-            "message" : "CAHA-164 fix quiz path resolution & add missing bundles\n",
+            "message" : "DUMMY-164 fix quiz path resolution & add missing bundles\n",
             "id" : "a62d3f0aee5957cab9a550c32fe8b80aa4f18ec1",
             "date" : 1361377038000,
             "position" : 41,
@@ -840,13 +840,13 @@
             "parents" :
                [
                ],
-            "shortMessage" : "CAHA-164 fix quiz path resolution & add missing bundles",
+            "shortMessage" : "DUMMY-164 fix quiz path resolution & add missing bundles",
             "lane" : 0,
             "parentCount" : 1,
-            "authorName" : "mouhcine moulou",
-            "authorEmail" : "mouhcine.moulou@soat.fr",
-            "committerName" : "mouhcine moulou",
-            "committerEmail" : "mouhcine.moulou@soat.fr"
+            "authorName" : "david copperfield",
+            "authorEmail" : "david.copperfield@corp.fr",
+            "committerName" : "david copperfield",
+            "committerEmail" : "david.copperfield@corp.fr"
          },
          {
             "message" : "bugfixes & unittested the XML Feed based service\n",
@@ -868,13 +868,13 @@
             "shortMessage" : "bugfixes & unittested the XML Feed based service",
             "lane" : 1,
             "parentCount" : 1,
-            "authorName" : "Matthieu Bertin",
-            "authorEmail" : "mbertin@consulting.altensir.fr",
-            "committerName" : "Matthieu Bertin",
-            "committerEmail" : "mbertin@consulting.altensir.fr"
+            "authorName" : "Tony Stark",
+            "authorEmail" : "tstark@stark.com",
+            "committerName" : "Tony Stark",
+            "committerEmail" : "tstark@stark.com"
          },
          {
-            "message" : "CAHA-174 B_RECOMMENDATION, CMS,FRONT & CORE\n",
+            "message" : "DUMMY-174 B_RECOMMENDATION, CMS,FRONT & CORE\n",
             "id" : "3956d907bc01e35a054548ff62f4be57d9316669",
             "date" : 1361551827000,
             "position" : 39,
@@ -890,13 +890,13 @@
             "parents" :
                [
                ],
-            "shortMessage" : "CAHA-174 B_RECOMMENDATION, CMS,FRONT & CORE",
+            "shortMessage" : "DUMMY-174 B_RECOMMENDATION, CMS,FRONT & CORE",
             "lane" : 0,
             "parentCount" : 1,
-            "authorName" : "mouhcine moulou",
-            "authorEmail" : "mouhcine.moulou@soat.fr",
-            "committerName" : "mouhcine moulou",
-            "committerEmail" : "mouhcine.moulou@soat.fr"
+            "authorName" : "david copperfield",
+            "authorEmail" : "david.copperfield@corp.fr",
+            "committerName" : "david copperfield",
+            "committerEmail" : "david.copperfield@corp.fr"
          },
          {
             "message" : "configuration for feed urls\n",
@@ -923,13 +923,13 @@
             "shortMessage" : "configuration for feed urls",
             "lane" : 1,
             "parentCount" : 1,
-            "authorName" : "Matthieu Bertin",
-            "authorEmail" : "mbertin@consulting.altensir.fr",
-            "committerName" : "Matthieu Bertin",
-            "committerEmail" : "mbertin@consulting.altensir.fr"
+            "authorName" : "Tony Stark",
+            "authorEmail" : "tstark@stark.com",
+            "committerName" : "Tony Stark",
+            "committerEmail" : "tstark@stark.com"
          },
          {
-            "message" : "Merge branch 'feature-mea' of git.fullsix.com:/caha/front-web into feature-mea\n",
+            "message" : "Merge branch 'feature-mea' of git.phoenix.com:/dummy/front-web into feature-mea\n",
             "id" : "76d31fe4070253b862511d74c85187d759e90d2b",
             "date" : 1361554372000,
             "position" : 37,
@@ -945,16 +945,16 @@
             "parents" :
                [
                ],
-            "shortMessage" : "Merge branch 'feature-mea' of git.fullsix.com:/caha/front-web into feature-mea",
+            "shortMessage" : "Merge branch 'feature-mea' of git.phoenix.com:/dummy/front-web into feature-mea",
             "lane" : 2,
             "parentCount" : 2,
             "authorName" : "webadmin",
-            "authorEmail" : "webadmin@orion.fullsix.com",
+            "authorEmail" : "webadmin@orion.phoenix.com",
             "committerName" : "webadmin",
-            "committerEmail" : "webadmin@orion.fullsix.com"
+            "committerEmail" : "webadmin@orion.phoenix.com"
          },
          {
-            "message" : "CAHA-174 B_RECOMMENDATION\n",
+            "message" : "DUMMY-174 B_RECOMMENDATION\n",
             "id" : "5ec411f80eab62294548fd770dcd0d373790841f",
             "date" : 1361780101000,
             "position" : 36,
@@ -970,16 +970,16 @@
             "parents" :
                [
                ],
-            "shortMessage" : "CAHA-174 B_RECOMMENDATION",
+            "shortMessage" : "DUMMY-174 B_RECOMMENDATION",
             "lane" : 0,
             "parentCount" : 1,
-            "authorName" : "mouhcine moulou",
-            "authorEmail" : "mouhcine.moulou@soat.fr",
-            "committerName" : "mouhcine moulou",
-            "committerEmail" : "mouhcine.moulou@soat.fr"
+            "authorName" : "david copperfield",
+            "authorEmail" : "david.copperfield@corp.fr",
+            "committerName" : "david copperfield",
+            "committerEmail" : "david.copperfield@corp.fr"
          },
          {
-            "message" : "CAHA-174 B_RECOMMENDATION\n",
+            "message" : "DUMMY-174 B_RECOMMENDATION\n",
             "id" : "8313242794074c644450b81af8463e2eee5761e3",
             "date" : 1361780193000,
             "position" : 35,
@@ -995,13 +995,13 @@
             "parents" :
                [
                ],
-            "shortMessage" : "CAHA-174 B_RECOMMENDATION",
+            "shortMessage" : "DUMMY-174 B_RECOMMENDATION",
             "lane" : 0,
             "parentCount" : 1,
-            "authorName" : "mouhcine moulou",
-            "authorEmail" : "mouhcine.moulou@soat.fr",
-            "committerName" : "mouhcine moulou",
-            "committerEmail" : "mouhcine.moulou@soat.fr"
+            "authorName" : "david copperfield",
+            "authorEmail" : "david.copperfield@corp.fr",
+            "committerName" : "david copperfield",
+            "committerEmail" : "david.copperfield@corp.fr"
          },
          {
             "message" : "correction on the EditoDataService for mre more robustness\n",
@@ -1023,13 +1023,13 @@
             "shortMessage" : "correction on the EditoDataService for mre more robustness",
             "lane" : 1,
             "parentCount" : 1,
-            "authorName" : "Matthieu Bertin",
-            "authorEmail" : "mbertin@consulting.altensir.fr",
-            "committerName" : "Matthieu Bertin",
-            "committerEmail" : "mbertin@consulting.altensir.fr"
+            "authorName" : "Tony Stark",
+            "authorEmail" : "tstark@stark.com",
+            "committerName" : "Tony Stark",
+            "committerEmail" : "tstark@stark.com"
          },
          {
-            "message" : "Merge branch 'feature-mea' of git.fullsix.com:/caha/front-web into feature-mea\n",
+            "message" : "Merge branch 'feature-mea' of git.phoenix.com:/dummy/front-web into feature-mea\n",
             "id" : "516e42d011e52ea2cf3165cff43827dd8be73b3c",
             "date" : 1361785764000,
             "position" : 33,
@@ -1045,13 +1045,13 @@
             "parents" :
                [
                ],
-            "shortMessage" : "Merge branch 'feature-mea' of git.fullsix.com:/caha/front-web into feature-mea",
+            "shortMessage" : "Merge branch 'feature-mea' of git.phoenix.com:/dummy/front-web into feature-mea",
             "lane" : 1,
             "parentCount" : 2,
             "authorName" : "webadmin",
-            "authorEmail" : "webadmin@orion.fullsix.com",
+            "authorEmail" : "webadmin@orion.phoenix.com",
             "committerName" : "webadmin",
-            "committerEmail" : "webadmin@orion.fullsix.com"
+            "committerEmail" : "webadmin@orion.phoenix.com"
          },
          {
             "message" : "added mock controller for the MEA feature",
@@ -1073,10 +1073,10 @@
             "shortMessage" : "added mock controller for the MEA feature",
             "lane" : 0,
             "parentCount" : 1,
-            "authorName" : "Matthieu Bertin",
-            "authorEmail" : "mbertin@consulting.altensir.fr",
-            "committerName" : "Matthieu Bertin",
-            "committerEmail" : "mbertin@consulting.altensir.fr"
+            "authorName" : "Tony Stark",
+            "authorEmail" : "tstark@stark.com",
+            "committerName" : "Tony Stark",
+            "committerEmail" : "tstark@stark.com"
          },
          {
             "message" : "bugfixes & unittested the XML Feed based service\n",
@@ -1098,10 +1098,10 @@
             "shortMessage" : "bugfixes & unittested the XML Feed based service",
             "lane" : 0,
             "parentCount" : 1,
-            "authorName" : "Matthieu Bertin",
-            "authorEmail" : "mbertin@consulting.altensir.fr",
-            "committerName" : "Matthieu Bertin",
-            "committerEmail" : "mbertin@consulting.altensir.fr"
+            "authorName" : "Tony Stark",
+            "authorEmail" : "tstark@stark.com",
+            "committerName" : "Tony Stark",
+            "committerEmail" : "tstark@stark.com"
          },
          {
             "message" : "configuration for feed urls\n",
@@ -1123,10 +1123,10 @@
             "shortMessage" : "configuration for feed urls",
             "lane" : 0,
             "parentCount" : 1,
-            "authorName" : "Matthieu Bertin",
-            "authorEmail" : "mbertin@consulting.altensir.fr",
-            "committerName" : "Matthieu Bertin",
-            "committerEmail" : "mbertin@consulting.altensir.fr"
+            "authorName" : "Tony Stark",
+            "authorEmail" : "tstark@stark.com",
+            "committerName" : "Tony Stark",
+            "committerEmail" : "tstark@stark.com"
          },
          {
             "message" : "correction on the EditoDataService for mre more robustness\n",
@@ -1148,10 +1148,10 @@
             "shortMessage" : "correction on the EditoDataService for mre more robustness",
             "lane" : 0,
             "parentCount" : 1,
-            "authorName" : "Matthieu Bertin",
-            "authorEmail" : "mbertin@consulting.altensir.fr",
-            "committerName" : "Matthieu Bertin",
-            "committerEmail" : "mbertin@consulting.altensir.fr"
+            "authorName" : "Tony Stark",
+            "authorEmail" : "tstark@stark.com",
+            "committerName" : "Tony Stark",
+            "committerEmail" : "tstark@stark.com"
          },
          {
             "message" : "Merge remote-tracking branch 'origin/feature-mea' into feature-mea\n\nConflicts:\n\tcore/src/main/resources/application-context-core.xml\n",
@@ -1173,13 +1173,13 @@
             "shortMessage" : "Merge remote-tracking branch 'origin/feature-mea' into feature-mea",
             "lane" : 0,
             "parentCount" : 2,
-            "authorName" : "Matthieu Bertin",
-            "authorEmail" : "mbertin@consulting.altensir.fr",
-            "committerName" : "Matthieu Bertin",
-            "committerEmail" : "mbertin@consulting.altensir.fr"
+            "authorName" : "Tony Stark",
+            "authorEmail" : "tstark@stark.com",
+            "committerName" : "Tony Stark",
+            "committerEmail" : "tstark@stark.com"
          },
          {
-            "message" : "CAHA-174 B_RECOMMENDATION\n",
+            "message" : "DUMMY-174 B_RECOMMENDATION\n",
             "id" : "686102e12d4e7069d1669c65d08c0a7d4b3ee858",
             "date" : 1361790424000,
             "position" : 27,
@@ -1195,16 +1195,16 @@
             "parents" :
                [
                ],
-            "shortMessage" : "CAHA-174 B_RECOMMENDATION",
+            "shortMessage" : "DUMMY-174 B_RECOMMENDATION",
             "lane" : 0,
             "parentCount" : 1,
-            "authorName" : "mouhcine moulou",
-            "authorEmail" : "mouhcine.moulou@soat.fr",
-            "committerName" : "mouhcine moulou",
-            "committerEmail" : "mouhcine.moulou@soat.fr"
+            "authorName" : "david copperfield",
+            "authorEmail" : "david.copperfield@corp.fr",
+            "committerName" : "david copperfield",
+            "committerEmail" : "david.copperfield@corp.fr"
          },
          {
-            "message" : "CAHA-174 B_RECOMMENDATION\n",
+            "message" : "DUMMY-174 B_RECOMMENDATION\n",
             "id" : "3ce3bbf46b957fa7beddf9d8ef33641f60454bf4",
             "date" : 1361790528000,
             "position" : 26,
@@ -1225,16 +1225,16 @@
             "parents" :
                [
                ],
-            "shortMessage" : "CAHA-174 B_RECOMMENDATION",
+            "shortMessage" : "DUMMY-174 B_RECOMMENDATION",
             "lane" : 0,
             "parentCount" : 1,
-            "authorName" : "mouhcine moulou",
-            "authorEmail" : "mouhcine.moulou@soat.fr",
-            "committerName" : "mouhcine moulou",
-            "committerEmail" : "mouhcine.moulou@soat.fr"
+            "authorName" : "david copperfield",
+            "authorEmail" : "david.copperfield@corp.fr",
+            "committerName" : "david copperfield",
+            "committerEmail" : "david.copperfield@corp.fr"
          },
          {
-            "message" : "CAHA-174 B_RECOMMENDATION\n",
+            "message" : "DUMMY-174 B_RECOMMENDATION\n",
             "id" : "806e25530d0ca953e5ad34dd2c5709524caadc8e",
             "date" : 1361797746000,
             "position" : 25,
@@ -1250,13 +1250,13 @@
             "parents" :
                [
                ],
-            "shortMessage" : "CAHA-174 B_RECOMMENDATION",
+            "shortMessage" : "DUMMY-174 B_RECOMMENDATION",
             "lane" : 1,
             "parentCount" : 1,
-            "authorName" : "mouhcine moulou",
-            "authorEmail" : "mouhcine.moulou@soat.fr",
-            "committerName" : "mouhcine moulou",
-            "committerEmail" : "mouhcine.moulou@soat.fr"
+            "authorName" : "david copperfield",
+            "authorEmail" : "david.copperfield@corp.fr",
+            "committerName" : "david copperfield",
+            "committerEmail" : "david.copperfield@corp.fr"
          },
          {
             "message" : "fixed missing dependency on javaassist\n",
@@ -1278,10 +1278,10 @@
             "shortMessage" : "fixed missing dependency on javaassist",
             "lane" : 0,
             "parentCount" : 1,
-            "authorName" : "Matthieu Bertin",
-            "authorEmail" : "mbertin@consulting.altensir.fr",
-            "committerName" : "Matthieu Bertin",
-            "committerEmail" : "mbertin@consulting.altensir.fr"
+            "authorName" : "Tony Stark",
+            "authorEmail" : "tstark@stark.com",
+            "committerName" : "Tony Stark",
+            "committerEmail" : "tstark@stark.com"
          },
          {
             "message" : "Merge remote-tracking branch 'origin/1.0' into 1.0\n",
@@ -1303,10 +1303,10 @@
             "shortMessage" : "Merge remote-tracking branch 'origin/1.0' into 1.0",
             "lane" : 0,
             "parentCount" : 2,
-            "authorName" : "Matthieu Bertin",
-            "authorEmail" : "mbertin@consulting.altensir.fr",
-            "committerName" : "Matthieu Bertin",
-            "committerEmail" : "mbertin@consulting.altensir.fr"
+            "authorName" : "Tony Stark",
+            "authorEmail" : "tstark@stark.com",
+            "committerName" : "Tony Stark",
+            "committerEmail" : "tstark@stark.com"
          },
          {
             "message" : "fixed missing dependency on javaassist\n",
@@ -1328,10 +1328,10 @@
             "shortMessage" : "fixed missing dependency on javaassist",
             "lane" : 0,
             "parentCount" : 1,
-            "authorName" : "Matthieu Bertin",
-            "authorEmail" : "mbertin@consulting.altensir.fr",
-            "committerName" : "Matthieu Bertin",
-            "committerEmail" : "mbertin@consulting.altensir.fr"
+            "authorName" : "Tony Stark",
+            "authorEmail" : "tstark@stark.com",
+            "committerName" : "Tony Stark",
+            "committerEmail" : "tstark@stark.com"
          },
          {
             "message" : "fixed: corrupted web.xml\n",
@@ -1353,13 +1353,13 @@
             "shortMessage" : "fixed: corrupted web.xml",
             "lane" : 0,
             "parentCount" : 1,
-            "authorName" : "Matthieu Bertin",
-            "authorEmail" : "mbertin@consulting.altensir.fr",
-            "committerName" : "Matthieu Bertin",
-            "committerEmail" : "mbertin@consulting.altensir.fr"
+            "authorName" : "Tony Stark",
+            "authorEmail" : "tstark@stark.com",
+            "committerName" : "Tony Stark",
+            "committerEmail" : "tstark@stark.com"
          },
          {
-            "message" : "CAHA-174 B_RECOMMENDATION\n",
+            "message" : "DUMMY-174 B_RECOMMENDATION\n",
             "id" : "62438b3fb9b7a95ce99d82dd95b02ca410fa7199",
             "date" : 1361800196000,
             "position" : 20,
@@ -1375,13 +1375,13 @@
             "parents" :
                [
                ],
-            "shortMessage" : "CAHA-174 B_RECOMMENDATION",
+            "shortMessage" : "DUMMY-174 B_RECOMMENDATION",
             "lane" : 0,
             "parentCount" : 1,
-            "authorName" : "mouhcine moulou",
-            "authorEmail" : "mouhcine.moulou@soat.fr",
-            "committerName" : "mouhcine moulou",
-            "committerEmail" : "mouhcine.moulou@soat.fr"
+            "authorName" : "david copperfield",
+            "authorEmail" : "david.copperfield@corp.fr",
+            "committerName" : "david copperfield",
+            "committerEmail" : "david.copperfield@corp.fr"
          },
          {
             "message" : "fixed: bad options in h2 profile\n",
@@ -1403,13 +1403,13 @@
             "shortMessage" : "fixed: bad options in h2 profile",
             "lane" : 0,
             "parentCount" : 1,
-            "authorName" : "Matthieu Bertin",
-            "authorEmail" : "mbertin@consulting.altensir.fr",
-            "committerName" : "Matthieu Bertin",
-            "committerEmail" : "mbertin@consulting.altensir.fr"
+            "authorName" : "Tony Stark",
+            "authorEmail" : "tstark@stark.com",
+            "committerName" : "Tony Stark",
+            "committerEmail" : "tstark@stark.com"
          },
          {
-            "message" : "CAHA-174 B_RECOMMENDATION\n",
+            "message" : "DUMMY-174 B_RECOMMENDATION\n",
             "id" : "d4fa6a65af1b716717ef16660945be7c0dd98188",
             "date" : 1361804222000,
             "position" : 18,
@@ -1425,16 +1425,16 @@
             "parents" :
                [
                ],
-            "shortMessage" : "CAHA-174 B_RECOMMENDATION",
+            "shortMessage" : "DUMMY-174 B_RECOMMENDATION",
             "lane" : 0,
             "parentCount" : 1,
-            "authorName" : "mouhcine moulou",
-            "authorEmail" : "mouhcine.moulou@soat.fr",
-            "committerName" : "mouhcine moulou",
-            "committerEmail" : "mouhcine.moulou@soat.fr"
+            "authorName" : "david copperfield",
+            "authorEmail" : "david.copperfield@corp.fr",
+            "committerName" : "david copperfield",
+            "committerEmail" : "david.copperfield@corp.fr"
          },
          {
-            "message" : "CAHA-174 B_RECOMMENDATION\n",
+            "message" : "DUMMY-174 B_RECOMMENDATION\n",
             "id" : "d4a4dfb2376ec7e5fbc667f53c3c8a1837070426",
             "date" : 1361804485000,
             "position" : 17,
@@ -1450,16 +1450,16 @@
             "parents" :
                [
                ],
-            "shortMessage" : "CAHA-174 B_RECOMMENDATION",
+            "shortMessage" : "DUMMY-174 B_RECOMMENDATION",
             "lane" : 0,
             "parentCount" : 1,
-            "authorName" : "mouhcine moulou",
-            "authorEmail" : "mouhcine.moulou@soat.fr",
-            "committerName" : "mouhcine moulou",
-            "committerEmail" : "mouhcine.moulou@soat.fr"
+            "authorName" : "david copperfield",
+            "authorEmail" : "david.copperfield@corp.fr",
+            "committerName" : "david copperfield",
+            "committerEmail" : "david.copperfield@corp.fr"
          },
          {
-            "message" : "CAHA-197 Realisation TOP_5\n",
+            "message" : "DUMMY-197 Realisation TOP_5\n",
             "id" : "9ff9f9d3732cb5c42a3c26b4e40c66625b8f376a",
             "date" : 1361957583000,
             "position" : 16,
@@ -1475,16 +1475,16 @@
             "parents" :
                [
                ],
-            "shortMessage" : "CAHA-197 Realisation TOP_5",
+            "shortMessage" : "DUMMY-197 Realisation TOP_5",
             "lane" : 0,
             "parentCount" : 1,
-            "authorName" : "mouhcine moulou",
-            "authorEmail" : "mouhcine.moulou@soat.fr",
-            "committerName" : "mouhcine moulou",
-            "committerEmail" : "mouhcine.moulou@soat.fr"
+            "authorName" : "david copperfield",
+            "authorEmail" : "david.copperfield@corp.fr",
+            "committerName" : "david copperfield",
+            "committerEmail" : "david.copperfield@corp.fr"
          },
          {
-            "message" : "CAHA-174 B_RECOMMENDATION\n",
+            "message" : "DUMMY-174 B_RECOMMENDATION\n",
             "id" : "12bb63c8df62a2e35b77e2c84116cf96ed8dacb0",
             "date" : 1361959090000,
             "position" : 15,
@@ -1500,16 +1500,16 @@
             "parents" :
                [
                ],
-            "shortMessage" : "CAHA-174 B_RECOMMENDATION",
+            "shortMessage" : "DUMMY-174 B_RECOMMENDATION",
             "lane" : 0,
             "parentCount" : 1,
-            "authorName" : "mouhcine moulou",
-            "authorEmail" : "mouhcine.moulou@soat.fr",
-            "committerName" : "mouhcine moulou",
-            "committerEmail" : "mouhcine.moulou@soat.fr"
+            "authorName" : "david copperfield",
+            "authorEmail" : "david.copperfield@corp.fr",
+            "committerName" : "david copperfield",
+            "committerEmail" : "david.copperfield@corp.fr"
          },
          {
-            "message" : "CAHA-164\n",
+            "message" : "DUMMY-164\n",
             "id" : "727e43572ffd491030c7bf07286c6a492cfa2acc",
             "date" : 1361963913000,
             "position" : 14,
@@ -1525,16 +1525,16 @@
             "parents" :
                [
                ],
-            "shortMessage" : "CAHA-164",
+            "shortMessage" : "DUMMY-164",
             "lane" : 0,
             "parentCount" : 1,
-            "authorName" : "mouhcine moulou",
-            "authorEmail" : "mouhcine.moulou@soat.fr",
-            "committerName" : "mouhcine moulou",
-            "committerEmail" : "mouhcine.moulou@soat.fr"
+            "authorName" : "david copperfield",
+            "authorEmail" : "david.copperfield@corp.fr",
+            "committerName" : "david copperfield",
+            "committerEmail" : "david.copperfield@corp.fr"
          },
          {
-            "message" : "CAHA-197 topGuides\n",
+            "message" : "DUMMY-197 topGuides\n",
             "id" : "a56578ba5d15710e8b8d2ad60192c030000b9ecf",
             "date" : 1361976169000,
             "position" : 13,
@@ -1550,16 +1550,16 @@
             "parents" :
                [
                ],
-            "shortMessage" : "CAHA-197 topGuides",
+            "shortMessage" : "DUMMY-197 topGuides",
             "lane" : 0,
             "parentCount" : 1,
-            "authorName" : "mouhcine moulou",
-            "authorEmail" : "mouhcine.moulou@soat.fr",
-            "committerName" : "mouhcine moulou",
-            "committerEmail" : "mouhcine.moulou@soat.fr"
+            "authorName" : "david copperfield",
+            "authorEmail" : "david.copperfield@corp.fr",
+            "committerName" : "david copperfield",
+            "committerEmail" : "david.copperfield@corp.fr"
          },
          {
-            "message" : "CAHA-197 topGuides\n",
+            "message" : "DUMMY-197 topGuides\n",
             "id" : "5e4771dbd6249fd9af42be0d033fd55c78ae854b",
             "date" : 1361980903000,
             "position" : 12,
@@ -1575,16 +1575,16 @@
             "parents" :
                [
                ],
-            "shortMessage" : "CAHA-197 topGuides",
+            "shortMessage" : "DUMMY-197 topGuides",
             "lane" : 0,
             "parentCount" : 1,
-            "authorName" : "mouhcine moulou",
-            "authorEmail" : "mouhcine.moulou@soat.fr",
-            "committerName" : "mouhcine moulou",
-            "committerEmail" : "mouhcine.moulou@soat.fr"
+            "authorName" : "david copperfield",
+            "authorEmail" : "david.copperfield@corp.fr",
+            "committerName" : "david copperfield",
+            "committerEmail" : "david.copperfield@corp.fr"
          },
          {
-            "message" : "CAHA-214\n",
+            "message" : "DUMMY-214\n",
             "id" : "00504b7a17aca8ebff038221805e6297e54b3695",
             "date" : 1361985286000,
             "position" : 11,
@@ -1600,16 +1600,16 @@
             "parents" :
                [
                ],
-            "shortMessage" : "CAHA-214",
+            "shortMessage" : "DUMMY-214",
             "lane" : 0,
             "parentCount" : 1,
-            "authorName" : "mouhcine moulou",
-            "authorEmail" : "mouhcine.moulou@soat.fr",
-            "committerName" : "mouhcine moulou",
-            "committerEmail" : "mouhcine.moulou@soat.fr"
+            "authorName" : "david copperfield",
+            "authorEmail" : "david.copperfield@corp.fr",
+            "committerName" : "david copperfield",
+            "committerEmail" : "david.copperfield@corp.fr"
          },
          {
-            "message" : "CAHA-164\n",
+            "message" : "DUMMY-164\n",
             "id" : "72769b4d609a37550e9baaabdb6c71bbcca59624",
             "date" : 1362040254000,
             "position" : 10,
@@ -1625,16 +1625,16 @@
             "parents" :
                [
                ],
-            "shortMessage" : "CAHA-164",
+            "shortMessage" : "DUMMY-164",
             "lane" : 0,
             "parentCount" : 1,
-            "authorName" : "mouhcine moulou",
-            "authorEmail" : "mouhcine.moulou@soat.fr",
-            "committerName" : "mouhcine moulou",
-            "committerEmail" : "mouhcine.moulou@soat.fr"
+            "authorName" : "david copperfield",
+            "authorEmail" : "david.copperfield@corp.fr",
+            "committerName" : "david copperfield",
+            "committerEmail" : "david.copperfield@corp.fr"
          },
          {
-            "message" : "CAHA-164\n",
+            "message" : "DUMMY-164\n",
             "id" : "d48bf3b59219f7466907b70e98ea4f4e9bf6503f",
             "date" : 1362041040000,
             "position" : 9,
@@ -1650,16 +1650,16 @@
             "parents" :
                [
                ],
-            "shortMessage" : "CAHA-164",
+            "shortMessage" : "DUMMY-164",
             "lane" : 0,
             "parentCount" : 1,
-            "authorName" : "mouhcine moulou",
-            "authorEmail" : "mouhcine.moulou@soat.fr",
-            "committerName" : "mouhcine moulou",
-            "committerEmail" : "mouhcine.moulou@soat.fr"
+            "authorName" : "david copperfield",
+            "authorEmail" : "david.copperfield@corp.fr",
+            "committerName" : "david copperfield",
+            "committerEmail" : "david.copperfield@corp.fr"
          },
          {
-            "message" : "CAHA-174 B_RECOMMENDATION fix html bug\n",
+            "message" : "DUMMY-174 B_RECOMMENDATION fix html bug\n",
             "id" : "66183dcd326923889f02889da501270f0138164c",
             "date" : 1362043911000,
             "position" : 8,
@@ -1675,13 +1675,13 @@
             "parents" :
                [
                ],
-            "shortMessage" : "CAHA-174 B_RECOMMENDATION fix html bug",
+            "shortMessage" : "DUMMY-174 B_RECOMMENDATION fix html bug",
             "lane" : 0,
             "parentCount" : 1,
-            "authorName" : "mouhcine moulou",
-            "authorEmail" : "mouhcine.moulou@soat.fr",
-            "committerName" : "mouhcine moulou",
-            "committerEmail" : "mouhcine.moulou@soat.fr"
+            "authorName" : "david copperfield",
+            "authorEmail" : "david.copperfield@corp.fr",
+            "committerName" : "david copperfield",
+            "committerEmail" : "david.copperfield@corp.fr"
          },
          {
             "message" : "fixed configuration, refactored EditoDataService, refined its xPath request\n",
@@ -1703,13 +1703,13 @@
             "shortMessage" : "fixed configuration, refactored EditoDataService, refined its xPath request",
             "lane" : 0,
             "parentCount" : 1,
-            "authorName" : "Valentin Kasas",
-            "authorEmail" : "kasas@fullsix.com",
-            "committerName" : "Valentin Kasas",
-            "committerEmail" : "kasas@fullsix.com"
+            "authorName" : "Clark Kent",
+            "authorEmail" : "kent@dailyplanet.com",
+            "committerName" : "Clark Kent",
+            "committerEmail" : "kent@dailyplanet.com"
          },
          {
-            "message" : "[CAHA-201] implemented self exclusion, done further refactoring and added tests\n",
+            "message" : "[DUMMY-201] implemented self exclusion, done further refactoring and added tests\n",
             "id" : "f2da9364f54f625bf2fd9cd20c7be87bc1e58ed0",
             "date" : 1362068818000,
             "position" : 6,
@@ -1725,16 +1725,16 @@
             "parents" :
                [
                ],
-            "shortMessage" : "[CAHA-201] implemented self exclusion, done further refactoring and added tests",
+            "shortMessage" : "[DUMMY-201] implemented self exclusion, done further refactoring and added tests",
             "lane" : 0,
             "parentCount" : 1,
-            "authorName" : "Valentin Kasas",
-            "authorEmail" : "kasas@fullsix.com",
-            "committerName" : "Valentin Kasas",
-            "committerEmail" : "kasas@fullsix.com"
+            "authorName" : "Clark Kent",
+            "authorEmail" : "kent@dailyplanet.com",
+            "committerName" : "Clark Kent",
+            "committerEmail" : "kent@dailyplanet.com"
          },
          {
-            "message" : "CAHA-197 : top 5 guide. Refactor, Add job that remove Guide on inexisted cms documents\n",
+            "message" : "DUMMY-197 : top 5 guide. Refactor, Add job that remove Guide on inexisted cms documents\n",
             "id" : "11340e40f7b8b51ff70f06d2f28954cda54fdc8b",
             "date" : 1362149081000,
             "position" : 5,
@@ -1750,16 +1750,16 @@
             "parents" :
                [
                ],
-            "shortMessage" : "CAHA-197 : top 5 guide. Refactor, Add job that remove Guide on inexisted cms documents",
+            "shortMessage" : "DUMMY-197 : top 5 guide. Refactor, Add job that remove Guide on inexisted cms documents",
             "lane" : 0,
             "parentCount" : 1,
-            "authorName" : "mouhcine moulou",
-            "authorEmail" : "mouhcine.moulou@soat.fr",
-            "committerName" : "mouhcine moulou",
-            "committerEmail" : "mouhcine.moulou@soat.fr"
+            "authorName" : "david copperfield",
+            "authorEmail" : "david.copperfield@corp.fr",
+            "committerName" : "david copperfield",
+            "committerEmail" : "david.copperfield@corp.fr"
          },
          {
-            "message" : "CAHA-197 : top 5 guide. Refactor, externalize EL to properties file\n",
+            "message" : "DUMMY-197 : top 5 guide. Refactor, externalize EL to properties file\n",
             "id" : "90749e7a76c1cfba25ba049b3f293f21e30e8ee7",
             "date" : 1362149519000,
             "position" : 4,
@@ -1775,16 +1775,16 @@
             "parents" :
                [
                ],
-            "shortMessage" : "CAHA-197 : top 5 guide. Refactor, externalize EL to properties file",
+            "shortMessage" : "DUMMY-197 : top 5 guide. Refactor, externalize EL to properties file",
             "lane" : 0,
             "parentCount" : 1,
-            "authorName" : "mouhcine moulou",
-            "authorEmail" : "mouhcine.moulou@soat.fr",
-            "committerName" : "mouhcine moulou",
-            "committerEmail" : "mouhcine.moulou@soat.fr"
+            "authorName" : "david copperfield",
+            "authorEmail" : "david.copperfield@corp.fr",
+            "committerName" : "david copperfield",
+            "committerEmail" : "david.copperfield@corp.fr"
          },
          {
-            "message" : "CAHA-174 : Refactor, Add mail Service, fix Bug\n",
+            "message" : "DUMMY-174 : Refactor, Add mail Service, fix Bug\n",
             "id" : "c95306891203226b804a6711d82b84b3015635a2",
             "date" : 1362149699000,
             "position" : 3,
@@ -1800,13 +1800,13 @@
             "parents" :
                [
                ],
-            "shortMessage" : "CAHA-174 : Refactor, Add mail Service, fix Bug",
+            "shortMessage" : "DUMMY-174 : Refactor, Add mail Service, fix Bug",
             "lane" : 0,
             "parentCount" : 1,
-            "authorName" : "mouhcine moulou",
-            "authorEmail" : "mouhcine.moulou@soat.fr",
-            "committerName" : "mouhcine moulou",
-            "committerEmail" : "mouhcine.moulou@soat.fr"
+            "authorName" : "david copperfield",
+            "authorEmail" : "david.copperfield@corp.fr",
+            "committerName" : "david copperfield",
+            "committerEmail" : "david.copperfield@corp.fr"
          },
          {
             "message" : "Refactor classes, remove unused import\n",
@@ -1828,13 +1828,13 @@
             "shortMessage" : "Refactor classes, remove unused import",
             "lane" : 0,
             "parentCount" : 1,
-            "authorName" : "mouhcine moulou",
-            "authorEmail" : "mouhcine.moulou@soat.fr",
-            "committerName" : "mouhcine moulou",
-            "committerEmail" : "mouhcine.moulou@soat.fr"
+            "authorName" : "david copperfield",
+            "authorEmail" : "david.copperfield@corp.fr",
+            "committerName" : "david copperfield",
+            "committerEmail" : "david.copperfield@corp.fr"
          },
          {
-            "message" : "CAHA-169 big bundle fragment bug for Recommendation & Quizz\n",
+            "message" : "DUMMY-169 big bundle fragment bug for Recommendation & Quizz\n",
             "id" : "1df5554882a943195940e2b27d7ea0cccc4af504",
             "date" : 1362155675000,
             "position" : 1,
@@ -1850,13 +1850,13 @@
             "parents" :
                [
                ],
-            "shortMessage" : "CAHA-169 big bundle fragment bug for Recommendation & Quizz",
+            "shortMessage" : "DUMMY-169 big bundle fragment bug for Recommendation & Quizz",
             "lane" : 0,
             "parentCount" : 1,
-            "authorName" : "mouhcine moulou",
-            "authorEmail" : "mouhcine.moulou@soat.fr",
-            "committerName" : "mouhcine moulou",
-            "committerEmail" : "mouhcine.moulou@soat.fr"
+            "authorName" : "david copperfield",
+            "authorEmail" : "david.copperfield@corp.fr",
+            "committerName" : "david copperfield",
+            "committerEmail" : "david.copperfield@corp.fr"
          },
          {
             "message" : "update mysql profile & adapt it to dev platform\n",
@@ -1873,10 +1873,10 @@
             "shortMessage" : "update mysql profile & adapt it to dev platform",
             "lane" : 0,
             "parentCount" : 1,
-            "authorName" : "mouhcine moulou",
-            "authorEmail" : "mouhcine.moulou@soat.fr",
-            "committerName" : "mouhcine moulou",
-            "committerEmail" : "mouhcine.moulou@soat.fr"
+            "authorName" : "david copperfield",
+            "authorEmail" : "david.copperfield@corp.fr",
+            "committerName" : "david copperfield",
+            "committerEmail" : "david.copperfield@corp.fr"
          }
       ]
 }

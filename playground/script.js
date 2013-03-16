@@ -55,7 +55,7 @@ function mousemove() {
         var m = d3.mouse(svgGroup.node());
         ypan = ypan + (m[1]-origin[1]);
         convertedPan = y.invert(ypan);
-        maxPaddingHeight = (max*commitPadding) - y.invert(height-4*margin);
+        maxPaddingHeight = y(max)- (height-2*margin);
         if (convertedPan >= 0) { ypan = y(0); }
         if (convertedPan <= -( maxPaddingHeight )) { ypan = -(y( maxPaddingHeight )); }
         d3.select(".log").attr("transform", "translate(0,"+ypan+")");
@@ -93,7 +93,7 @@ var delay = 500;
 
 var repository;
 var currentCommits;
-var originalCommits;
+var branches;
 
 
 var line = d3.svg.diagonal().projection( function (d) { return [d.x, d.y] } );
@@ -141,8 +141,8 @@ var maxLane = 0;
 
 d3.json("data.json", function(jrep) {
 	repository = jrep;
-	originalCommits = repository.commits;
-	currentCommits = originalCommits;
+	currentCommits = repository.commits;
+  branches = repository.branches;
   max = d3.max(currentCommits, function(d) { return d.position;});
   min = d3.min(currentCommits, function(d) { return d.position;});
   maxPaddingHeight = (((height-margin)*commitPadding)-height)+2*margin;
@@ -225,22 +225,49 @@ function brushend() {
 
 
 
-var zoom = d3.behavior.zoom()
-  .on('zoom', function() {
-      var currentTranslate = zoom.translate()[1];
-      var panDirection = 1;
-      if (currentTranslate - originalTranslate < 0) {
-        panDirection = -1;
-      } 
-      
-      var panFactor = 20;
-      originalTranslate = currentTranslate;
-      currentPan = currentPan+panDirection*panFactor;
-      if (currentPan > maxPaddingHeight) { currentPan = maxPaddingHeight; }
-      else if (currentPan < minPaddingHeight) { currentPan = minPaddingHeight; }
-      svgGroup.attr("transform", "translate(0, " + -currentPan + ")");
-  });
-svg.call(zoom);
+//var zoom = d3.behavior.zoom().on('zoom', pan);
+//svg.call(zoom);
+
+svg.on("wheel", mozPan);
+svg.on("mousewheel", miscPan)
+function miscPan() {
+  //console.log(d3.event);
+  // IE : MouseWheelEvent
+  // Opera : MouseEvent
+  // Chrome / Safari : WheelEvent wheelDeltaY ?
+}
+function mozPan() {
+  // Firefox (Gecko 17+) : wheel
+  // deltaY in delta mode 0, amount of pixels
+  //TODO ABSOLUTELY !!!!! DO IT DO IT DO IT DO IT : try this : http://www.sitepoint.com/html5-javascript-mouse-wheel/
+  var delta = +d3.event.deltaY;
+  currentPan = currentPan+delta;
+  if (currentPan < (-maxPaddingHeight)) {
+    currentPan = -maxPaddingHeight;
+  } else if (currentPan > 0) {
+    currentPan = 0;
+  }
+  svgGroup.attr("transform", "translate(0, "+currentPan+")");
+  //console.log(currentPan);
+}
+
+
+/*function pan() {
+  console.log(d3.mouse);
+  var currentTranslate = zoom.translate()[1];
+  var panDirection = 1;
+  if (currentTranslate - originalTranslate < 0) {
+    panDirection = -1;
+  } 
+  
+  var panFactor = 25;
+  originalTranslate = currentTranslate;
+  currentPan = currentPan+panDirection*panFactor;
+  if (currentPan > maxPaddingHeight) { currentPan = maxPaddingHeight; }
+  else if (currentPan < minPaddingHeight) { currentPan = minPaddingHeight; }
+  svgGroup.transition().duration(0.1).attr("transform", "translate(0, " + -currentPan + ")");
+
+}*/
 //svg.call(d3.behavior.zoom().scaleExtent([1,1])
 //      .on("zoom", function() {
         
