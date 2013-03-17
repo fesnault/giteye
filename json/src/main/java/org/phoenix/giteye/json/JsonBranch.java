@@ -12,6 +12,7 @@ public class JsonBranch {
     private String ref;
     private String target;
     private boolean symbolic;
+    private boolean current;
 
     public JsonBranch(String name) {
         this.name = name;
@@ -43,5 +44,13 @@ public class JsonBranch {
 
     public void setSymbolic(boolean symbolic) {
         this.symbolic = symbolic;
+    }
+
+    public boolean isCurrent() {
+        return current;
+    }
+
+    public void setCurrent(boolean current) {
+        this.current = current;
     }
 }

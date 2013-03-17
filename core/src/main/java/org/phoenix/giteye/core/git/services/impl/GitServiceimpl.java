@@ -150,6 +150,9 @@ public class GitServiceimpl implements GitService {
                 JsonBranch branch = new JsonBranch(name);
                 branch.setRef(ref.getName());
                 branch.setTarget(ref.getObjectId().name());
+                if (repository.getBranch().equals(name)) {
+                    branch.setCurrent(true);
+                }
                 if (ref instanceof SymbolicRef) {
                     branch.setSymbolic(true);
                 }
