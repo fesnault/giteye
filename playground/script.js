@@ -348,7 +348,10 @@ function redraw(commits, references) {
           var branch = {
             "name": references[j].name,
             "x": x(d.lane)+margin,
-            "y": y(d.position)
+            "y": y(d.position),
+            "symbolic": references[j].symbolic,
+            "remote": references[j].name.indexOf("remote") !== -1,
+            "current": references[j].current
           };
           info.branches.push(branch);
         }
@@ -439,7 +442,10 @@ function redraw(commits, references) {
         d.branches.forEach(
           function(e,j) {
             var branchHolder = d3.select(".info"+i).append("g").attr("class", "branchHolder");
-            branchHolder.append("text").attr("class", "branchName")
+            var qualifier = e.remote === true ? "remote" : "local";
+            if (e.symbolic) { qualifier = qualifier+" symbolic"}
+            if (e.current) { qualifier = qualifier+" current"}
+            branchHolder.append("text").attr("class", "branchName "+qualifier)
                 .attr("x", function(d) { return currentPadding+x(maxLane+3)+margin; })
                 .attr("y", function(d) { return d.y; })
                 .text( function (f) { return e.name; })
@@ -447,7 +453,7 @@ function redraw(commits, references) {
             var branchesNames = d3.selectAll(".branchName");
             branchesNames.each( function(g, k) {
               if (this.textContent === e.name) {
-                branchHolder.insert("rect").attr("class", "branchBox")
+                branchHolder.insert("rect").attr("class", "branchBox "+qualifier)
                 .attr("x", this.getBBox().x)
                 .attr("y", this.getBBox().y)
                 .attr("width", this.getBBox().width)

@@ -7,43 +7,50 @@
             "name" : "HEAD",
             "ref" : "HEAD",
             "target" : "43853dc554439674080dd916ddfc82da34809b78",
-            "symbolic" : true
+            "symbolic" : true,
+            "current": false
          },
          {
             "name" : "1.0",
             "ref" : "refs/heads/1.0",
             "target" : "43853dc554439674080dd916ddfc82da34809b78",
-            "symbolic" : false
+            "symbolic" : false,
+            "current": true
          },
          {
             "name" : "master",
             "ref" : "refs/heads/master",
             "target" : "73d134360e832282471ce962b35c32e849fe6904",
-            "symbolic" : false
+            "symbolic" : false,
+            "current": false
          },
          {
             "name" : "remotes/origin/1.0",
             "ref" : "refs/remotes/origin/1.0",
             "target" : "43853dc554439674080dd916ddfc82da34809b78",
-            "symbolic" : false
+            "symbolic" : false,
+            "current": false
          },
          {
             "name" : "remotes/origin/HEAD",
             "ref" : "refs/remotes/origin/HEAD",
             "target" : "a50bbdc1883773112459983cd500c54e42a8bf1f",
-            "symbolic" : true
+            "symbolic" : true,
+            "current": false
          },
          {
             "name" : "remotes/origin/feature-mea",
             "ref" : "refs/remotes/origin/feature-mea",
             "target" : "9dd61f712c9c5938c127c98d5e5f830b02ec6c4d",
-            "symbolic" : false
+            "symbolic" : false,
+            "current": false
          },
          {
             "name" : "remotes/origin/master",
             "ref" : "refs/remotes/origin/master",
             "target" : "a50bbdc1883773112459983cd500c54e42a8bf1f",
-            "symbolic" : false
+            "symbolic" : false,
+            "current": false
          }
       ],
    "commits" :

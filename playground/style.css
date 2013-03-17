@@ -111,15 +111,61 @@ h1, p {
   text-anchor: right;
 }
 
-.info .branchHolder .branchName {
+.info .branchHolder .branchName.local {
   fill: #4444FF;
   opacity: 1;
   text-anchor: right;
 }
 
-.info .branchHolder .branchBox {
+.info .branchHolder .branchBox.local {
   fill: #5577FF;
   fill-opacity: 0.2;
-  stroke: #7799FF;
+}
+
+.info .branchHolder .branchName.local.current {
+  fill: #4444FF;
+  opacity: 1;
+  text-anchor: right;
+}
+
+.info .branchHolder .branchBox.local.current {
+  fill: #5577FF;
+  fill-opacity: 0.2;
+  stroke: #4444FF;
   stroke-width: 1px;
+}
+
+.info .branchHolder .branchName.remote {
+  fill: #006600;
+  opacity: 1;
+  text-anchor: right;
+}
+
+.info .branchHolder .branchBox.remote {
+  fill: #006600;
+  fill-opacity: 0.2;
+}
+
+.info .branchHolder .branchName.remote.symbolic {
+  fill: #006600;
+  opacity: 1;
+  text-anchor: right;
+  font-style: italic;
+}
+
+.info .branchHolder .branchBox.remote.symbolic {
+  fill: #006600;
+  fill-opacity: 0.2;
+}
+
+.info .branchHolder .branchName.local.symbolic {
+  fill: #4444FF;
+  opacity: 1;
+  text-anchor: right;
+  font-style: italic;
+}
+
+.info .branchHolder .branchBox.local.symbolic {
+  fill: #5577FF;
+  fill-opacity: 0.2;
 }
