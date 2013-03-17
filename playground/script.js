@@ -368,7 +368,7 @@ function redraw(commits, references) {
   var linksEnterSelection = linksSelection.enter();
   var linksExitingSelection = linksSelection.exit();
 
-  var enteringLinks = linksEnterSelection.append("path").attr("class", "link").attr("d", initline)
+  var enteringLinks = linksEnterSelection.append("path").attr("class", "link").attr("d", line)
       .attr("transform", "translate(30,0)");
   enteringLinks.transition()
       .duration(delay)
@@ -390,42 +390,13 @@ function redraw(commits, references) {
         return "commit";
       })
       .attr("cx", function(d) {return x(d.lane);})
-      .attr("cy", function(d) { 
-        if (d.position < previousMin) {
-          return margin;
-        } else if (d.position > previousMax) {
-          return height-margin;
-        }
-      })
+      .attr("cy", function(d) { return y(+d.position); })
       .attr("r", 4)
       .attr("transform", "translate(30,0)")
       .on("click", function(d) { click(d); });
   enteringCommits.transition()
       .duration(delay)
       .style("opacity", 1);
-
-  /*var branchesSelection = branchesGroup.selectAll(".branch").data(branches, key);
-  var branchesEnterSelection = branchesSelection.enter().append("g").attr("class", "branch");
-  var branchesExitingSelection = branchesSelection.exit(); 
-
-  var branchesHolders = branchesEnterSelection.append("g").attr("class", "branchHolder");
-  branchesHolders.append("text").attr("class", "branchName")
-    .attr("x", function(d) { return x(maxLane+3)+margin; })
-    .attr("y", function(d) { return d.y; })
-    .text( function(d) { return d.name;})
-    .attr("dy", ".30em");
-  var branchesNames = d3.selectAll(".branchName");
-  branchesNames.each( function(d, i) {
-    if (this.textContent === d.name) {
-      branchesHolders.insert("rect").attr("class", "branchBox")
-      .attr("x", this.getBBox().x)
-      .attr("y", this.getBBox().y)
-      .attr("width", this.getBBox().width)
-      .attr("height", this.getBBox().height);
-    }
-  });
-  branchesEnterSelection.transition()
-      .duration(delay);*/
 
 	var infosSelection = infosGroup.selectAll(".info").data(infos, key);
   var infosEnterSelection = infosSelection.enter().append("g").attr("class", function (d, i) { return "info info"+i; })
@@ -496,38 +467,10 @@ function redraw(commits, references) {
   textTable.append("tspan")
       .attr("x", function(d) { return x(maxAllowedLane-2)+margin; })
       .text(function (d) { return d.date; });
-  
 
-  //infosEnterSelection.append("text").attr("class", "commitInfo")
-  //    .attr("x", function(d) { return x(maxLane+3)+margin; })
-  //    .attr("y", function(d) { return d.y; })
-  //    .attr("dy", ".30em")
-  //    .text(function (d) { return (d.message.length > 40)? d.message.substring(0, 38)+"...": d.message; });
-  infosEnterSelection.transition()
-      .duration(delay);
-
-
-  commitsExitingSelection.transition().style("opacity", 1e-6)
-      .duration(delay)
-      .remove();
-  linksExitingSelection.transition().style("opacity", 1e-6)
-      .duration(delay)
-      .remove();
-  infosExitingSelection.transition().style("opacity", 1e-6)
-      .duration(delay)
-      .remove();
-  /*branchesExitingSelection.transition().style("opacity", 1e-6)
-      .duration(delay)
-      .remove();*/
-
-
-  var t = svg.transition().duration(delay);
-	t.selectAll("circle.commit").attr("cy", function(d) { return y(+d.position); });
-	t.selectAll("path").attr("d", line);
-  t.selectAll(".info.infoLine").attr("y1", function(d) { return d.y; }).attr("y2", function(d) { return d.y; });
-
-
-  linksExitingSelection.transition().style("opacity", 1e-6).remove();
+  commitsExitingSelection.remove();
+  linksExitingSelection.transition().remove();
+  infosExitingSelection.transition().remove();
 
   
 
