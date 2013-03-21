@@ -5,13 +5,17 @@ var minPaddingHeight = 0;
 var originalTranslate = 0;
 var currentPan = 0;
 var commitInfoPanel = null;
+
 // scalers - scales the commits dates base on the idea that they are displayed vertically. So the scale range uses the height as a max.
 // X is scaled by the number of branches (from 1 to 10) - TODO : make it dynamic from the branch count in the data.
 // Y is scaled by the commit date
 var x = d3.scale.linear().domain([0,maxAllowedLane]).range([margin,width-margin]);
 var y = d3.scale.linear().domain([min, max]).range([margin, height-margin]);
+var availableWidth = d3.select("#svgcontainer")[0][0].clientWidth;
+var availableHeight = d3.select("#svgcontainer")[0][0].clientHeight;
+var maxAllowedLane = Math.floor(x.invert(availableWidth));
 var svg=d3.select("#svgcontainer")
-.append("svg").attr("class", "workspace").attr("width",1500).attr("height", 500)
+.append("svg").attr("class", "workspace").attr("width",availableWidth-16).attr("height", 500);
 
 svg.append("clipPath")
     .attr("id", "clipMessage")
@@ -28,7 +32,7 @@ svg.append("clipPath")
     .attr("width", 10)
     .attr("height", 10);
 
-  
+
 //.on("mousedown", mousedown)
 //.on("mousemove", mousemove)
 //.on("mouseup", mouseup)
@@ -40,7 +44,7 @@ function doit(d) {
 
 var svgGroup = svg.insert("g").attr("class", "log");
 
-  
+
 var linksGroup = svgGroup.insert("g").attr("class", "links-group");
 var commitsGroup = svgGroup.insert("g").attr("class", "commits-group");
 var infosGroup = svgGroup.insert("g").attr("class", "infos-group");
@@ -65,7 +69,7 @@ function mousemove() {
           //d3.select(".log").attr("transform", "translate(0,"+ypan+")");
        // update();
     }
- 
+
     function mouseup() {
       if (!origin) { return; }
         mousemove();
@@ -73,7 +77,7 @@ function mousemove() {
     }
 
 
- 
+
 // The data join should be done on the commits ids.
 
 function key(d) {
@@ -81,11 +85,11 @@ function key(d) {
 }
 
 function formatMillisecondDate(d) {
-	var format = d3.time.format("%Y, %b %d");
-	if (d instanceof Date) {
-		return format(d);
-	}
-	return format(new Date(d));
+  var format = d3.time.format("%a %b %d %H:%M:%S %Y");
+  if (d instanceof Date) {
+    return format(d);
+  }
+  return format(new Date(d));
 }
 
 var delay = 500;
@@ -104,7 +108,7 @@ var initline = d3.svg.diagonal().projection( function (d) {
   } else if (d.y > max) {
     return [d.x, height-margin];
   }
-  return [d.x, margin];} 
+  return [d.x, margin];}
 );
 
 // buttons
@@ -132,24 +136,24 @@ var initline = d3.svg.diagonal().projection( function (d) {
 //        .on("click", initBrush);
 
 function updateData() {
-	if (currentCommits.length > 50) {
-		currentCommits = currentCommits.slice(1, currentCommits.length);
-		redraw(currentCommits);
-	}
+  if (currentCommits.length > 50) {
+    currentCommits = currentCommits.slice(1, currentCommits.length);
+    redraw(currentCommits);
+  }
 }
 
 var maxLane = 0;
 
 d3.json("data.json", function(jrep) {
-	repository = jrep;
-	currentCommits = repository.commits;
+  repository = jrep;
+  currentCommits = repository.commits;
   refs = repository.branches;
   max = d3.max(currentCommits, function(d) { return d.position;});
   min = d3.min(currentCommits, function(d) { return d.position;});
   maxPaddingHeight = (((height-margin)*commitPadding)-height)+2*margin;
   minPaddingHeight = 0;
   y = d3.scale.linear().domain([min, max]).range([margin, (height-margin)*commitPadding]);
-	redraw(currentCommits, refs);
+  redraw(currentCommits, refs);
 });
 
 
@@ -193,27 +197,27 @@ function brushmove() {
   var bw = (+brushRect.attr("width"));
   var bh = (+brushRect.attr("height"));
   var bx2 = (+(bx+bw));
-  var by2 = (+(by+bh));  
-  
+  var by2 = (+(by+bh));
+
   d3.selectAll(".circle").classed("selected", function(d) {
-  	var cx = x(d.lane);
-  	var cy = y (+d.position);
-  	if (cx > bx && cx < bx2 && cy > by && cy < by2) {
-  		return true;
-  	}
-  	return false;
+    var cx = x(d.lane);
+    var cy = y (+d.position);
+    if (cx > bx && cx < bx2 && cy > by && cy < by2) {
+      return true;
+    }
+    return false;
  });
   var linkContainer = d3.selectAll(".link").classed("selected", function(d) {
-  	var sx = d.source.x;
-  	var sy = d.source.y;
-  	var tx = d.target.x;
-  	var ty = d.target.y;
-  	if (sx > bx && sx < bx2 && sy > by && sy < by2) {
-  		if (tx > bx && tx < bx2 && ty > by && ty < by2) {
-  			return true;
-  		}
-  	}
-  	return false;
+    var sx = d.source.x;
+    var sy = d.source.y;
+    var tx = d.target.x;
+    var ty = d.target.y;
+    if (sx > bx && sx < bx2 && sy > by && sy < by2) {
+      if (tx > bx && tx < bx2 && ty > by && ty < by2) {
+        return true;
+      }
+    }
+    return false;
  });
 }
 
@@ -223,7 +227,7 @@ function brushend() {
   var bw = (+brushRect.attr("width"));
   var bh = (+brushRect.attr("height"));
   if (bw > 10 && bh > 10) {
-  	zoom();
+    zoom();
   }
 }
 
@@ -263,8 +267,8 @@ function pan(delta) {
   var panDirection = 1;
   if (currentTranslate - originalTranslate < 0) {
     panDirection = -1;
-  } 
-  
+  }
+
   var panFactor = 25;
   originalTranslate = currentTranslate;
   currentPan = currentPan+panDirection*panFactor;
@@ -275,7 +279,7 @@ function pan(delta) {
 }*/
 //svg.call(d3.behavior.zoom().scaleExtent([1,1])
 //      .on("zoom", function() {
-        
+
         //convertedPan = y.invert(ypan);
         //var maxPaddingHeight = (max*commitPadding) - y.invert(height-4*margin);
         //  if (convertedPan >= 0) { ypan = y(0); }
@@ -286,7 +290,7 @@ function pan(delta) {
         //originalTranslate = currentTranslate;
         //currentPan = currentPan + delta;
         //var convertedPan = y.invert(currentPan);
-        
+
         //if (currentTranslate <= -(maxPaddingHeight)) { currentTranslate = -(maxPaddingHeight); d3.event.translate[1] = y(currentTranslate); }
 //        console.log("ypan : "+ypan);
         //svgGroup.attr("transform", "translate(0, " + d3.event.translate[1] + ")");
@@ -323,16 +327,16 @@ function getCommit(id) {
 function redraw(commits, references) {
   previousMax = max;
   previousMin = min;
-	maxLane = d3.max(commits, function(d) { return d.lane;})+1;
+  maxLane = d3.max(commits, function(d) { return d.lane;})+1;
   svg.select("#clipMessage").select("rect")
-    .attr("width", x(maxAllowedLane-5)-margin)
+    .attr("width", x(maxAllowedLane-7)-margin)
     .attr("height", y(max));
   svg.select("#clipName").select("rect")
-    .attr("width", x(maxAllowedLane-2)-margin)
+    .attr("width", x(maxAllowedLane-4)-margin)
     .attr("height", y(max));
-  
 
-	var nodes = [];
+
+  var nodes = [];
   var links = [];
   var infos = [];
   commits.forEach(function(d, i) {
@@ -364,13 +368,13 @@ function redraw(commits, references) {
       }
       if (d.children !== null) {
         d.children.forEach(function(c, i) {
-        	var target = {"id": c.id ,"x": x(c.lane), "y": y(c.position)};
+          var target = {"id": c.id ,"x": x(c.lane), "y": y(c.position)};
             links.push({"id": source.id + "-" + target.id ,"source": source, "target": target});
         });
-  	}
+    }
   });
-  	
-	var linksSelection = linksGroup.selectAll("path").data(links, key);
+
+  var linksSelection = linksGroup.selectAll("path").data(links, key);
   var linksEnterSelection = linksSelection.enter();
   var linksExitingSelection = linksSelection.exit();
 
@@ -380,11 +384,11 @@ function redraw(commits, references) {
       .duration(delay)
       .style("opacity", 1);
 
-  
+
   var commitsSelection = commitsGroup.selectAll(".circle").data(nodes, key);
   var commitsEnterSelection = commitsSelection.enter().append("g").attr("class", "circle");
   var commitsExitingSelection = commitsSelection.exit();
-	
+
 
   var enteringCommits = commitsEnterSelection.append("circle")
       .attr("class", function (d) {
@@ -403,12 +407,12 @@ function redraw(commits, references) {
       .duration(delay)
       .style("opacity", 1);
 
-	var infosSelection = infosGroup.selectAll(".info").data(infos, key);
+  var infosSelection = infosGroup.selectAll(".info").data(infos, key);
   var infosEnterSelection = infosSelection.enter().append("g").attr("class", function (d, i) { return "info info"+i; })
     .on('mouseover', function(){d3.select(this).classed("selected", true);})
     .on('mouseout', function(){d3.select(this).classed("selected", false);})
     .on("click", function(d) { showCommitInfos(d); });
-  var infosExitingSelection = infosSelection.exit(); 
+  var infosExitingSelection = infosSelection.exit();
 
   var branchesPaddings = new Object();
 
@@ -467,18 +471,14 @@ function redraw(commits, references) {
       .attr("clip-path", "url(#clipMessage)")
       .text(function (d) { return d.message; })
   textTable.append("tspan")
-      .attr("x", function(d) { return x(maxAllowedLane-5)+margin; })
+      .attr("x", function(d) { return x(maxAllowedLane-7)+margin; })
       .attr("clip-path", "url(#clipName)")
       .text(function (d) { return d.author; });
   textTable.append("tspan")
-      .attr("x", function(d) { return x(maxAllowedLane-2)+margin; })
+      .attr("x", function(d) { return x(maxAllowedLane-4)+margin; })
       .text(function (d) { return d.date; });
 
   commitsExitingSelection.remove();
   linksExitingSelection.transition().remove();
   infosExitingSelection.transition().remove();
-
-  
-
-
 }

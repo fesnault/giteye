@@ -146,6 +146,7 @@ public class GitServiceimpl implements GitService {
                     continue;
                 } else if (name.contains("/")) {
                     name = name.replace("refs/", "");
+                    name = name.replace("remotes/", "");
                 }
                 JsonBranch branch = new JsonBranch(name);
                 branch.setRef(ref.getName());

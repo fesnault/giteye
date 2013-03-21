@@ -13,37 +13,7 @@
 
 <div class="container-fluid">
     <div class="row-fluid">
-        <div class="span3">
-            <div class="well sidebar-nav">
-                <ul class="nav nav-list">
-                    <li class="nav-header">Zoom</li>
-                    <li><a href="#" onclick="zoomin();">Zoom in</a></li>
-                    <li><a href="#" onclick="zoomout();">Zoom out</a></li>
-                </ul>
-            </div> <!--/.well -->
-
-        </div><!--/span-->
-
-        <div class="span6">
-            <table class="table table-bordered table-striped" width="100%">
-                <tr>
-                    <td width="10%">Id</td>
-                    <td id="commit-id"></td>
-                </tr>
-                <tr>
-                    <td width="10%">Author</td>
-                    <td id="commit-author"></td>
-                </tr>
-                <tr>
-                    <td width="10%">Message</td>
-                    <td id="commit-message"></td>
-                </tr>
-                <tr>
-                    <td width="10%">Date</td>
-                    <td id="commit-date"></td>
-                </tr>
-            </table>
-            <br/>
+        <div class="span12">
             <div>
                 <table class="table table-bordered" width="100%">
                 <tr><td id="svgcontainer"><!-- Here comes the svg --></td></tr>
