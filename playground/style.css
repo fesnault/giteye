@@ -12,8 +12,6 @@ h1, p {
 }
 
 #svgcontainer .workspace {
-  width: 1300px;
-  height: 500px;
   border: solid black 1px;
   background: #F0F0F0;
   overflow : scroll;

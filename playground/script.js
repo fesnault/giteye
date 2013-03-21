@@ -4,13 +4,14 @@ var maxPaddingHeight = 0;
 var minPaddingHeight = 0;
 var originalTranslate = 0;
 var currentPan = 0;
+var commitInfoPanel = null;
 // scalers - scales the commits dates base on the idea that they are displayed vertically. So the scale range uses the height as a max.
 // X is scaled by the number of branches (from 1 to 10) - TODO : make it dynamic from the branch count in the data.
 // Y is scaled by the commit date
 var x = d3.scale.linear().domain([0,maxAllowedLane]).range([margin,width-margin]);
 var y = d3.scale.linear().domain([min, max]).range([margin, height-margin]);
 var svg=d3.select("#svgcontainer")
-.append("svg").attr("class", "workspace");
+.append("svg").attr("class", "workspace").attr("width",1500).attr("height", 500)
 
 svg.append("clipPath")
     .attr("id", "clipMessage")
@@ -38,6 +39,7 @@ function doit(d) {
 }
 
 var svgGroup = svg.insert("g").attr("class", "log");
+
   
 var linksGroup = svgGroup.insert("g").attr("class", "links-group");
 var commitsGroup = svgGroup.insert("g").attr("class", "commits-group");
@@ -151,12 +153,15 @@ d3.json("data.json", function(jrep) {
 });
 
 
-function click(commit) {
-	//alert('Clicked commit '+commit.id);
-  var clickedCommit = getCommit(commit.id);
-  if (clickedCommit !== null) {
-    alert(clickedCommit.message);
-  }
+function showCommitInfos(commit) {
+  if (commitInfoPanel != null) return;
+  //commitInfoPanel = svgGroup.append("g" ).attr("class", "commitInfoPanel");
+
+  //var clickedCommit = getCommit(commit.id);
+  //if (clickedCommit !== null) {
+   // alert(clickedCommit.message);
+  //}
+  //commitInfoPanel.append("text").attr("x", 150).attr("y", 150).text(clickedCommit.message);
 }
 
 var brush;
@@ -227,19 +232,21 @@ function brushend() {
 //var zoom = d3.behavior.zoom().on('zoom', pan);
 //svg.call(zoom);
 
+// Firefox
 svg.on("wheel", mozPan);
+// IE9, Chrome, Safari, Opera
 svg.on("mousewheel", miscPan)
+
 function miscPan() {
-  //console.log(d3.event);
-  // IE : MouseWheelEvent
-  // Opera : MouseEvent
-  // Chrome / Safari : WheelEvent wheelDeltaY ?
+  var delta = +d3.event.wheelDeltaY;
+  pan(delta);
 }
 function mozPan() {
-  // Firefox (Gecko 17+) : wheel
-  // deltaY in delta mode 0, amount of pixels
-  //TODO ABSOLUTELY !!!!! DO IT DO IT DO IT DO IT : try this : http://www.sitepoint.com/html5-javascript-mouse-wheel/
-  var delta = +d3.event.deltaY;
+  var delta = -d3.event.deltaY;
+  pan(delta);
+}
+
+function pan(delta) {
   currentPan = currentPan+delta;
   if (currentPan < (-maxPaddingHeight)) {
     currentPan = -maxPaddingHeight;
@@ -247,7 +254,6 @@ function mozPan() {
     currentPan = 0;
   }
   svgGroup.attr("transform", "translate(0, "+currentPan+")");
-  //console.log(currentPan);
 }
 
 
@@ -392,8 +398,7 @@ function redraw(commits, references) {
       .attr("cx", function(d) {return x(d.lane);})
       .attr("cy", function(d) { return y(+d.position); })
       .attr("r", 4)
-      .attr("transform", "translate(30,0)")
-      .on("click", function(d) { click(d); });
+      .attr("transform", "translate(30,0)");
   enteringCommits.transition()
       .duration(delay)
       .style("opacity", 1);
@@ -401,7 +406,8 @@ function redraw(commits, references) {
 	var infosSelection = infosGroup.selectAll(".info").data(infos, key);
   var infosEnterSelection = infosSelection.enter().append("g").attr("class", function (d, i) { return "info info"+i; })
     .on('mouseover', function(){d3.select(this).classed("selected", true);})
-    .on('mouseout', function(){d3.select(this).classed("selected", false);});
+    .on('mouseout', function(){d3.select(this).classed("selected", false);})
+    .on("click", function(d) { showCommitInfos(d); });
   var infosExitingSelection = infosSelection.exit(); 
 
   var branchesPaddings = new Object();
