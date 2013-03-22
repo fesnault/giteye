@@ -5,12 +5,14 @@ import org.phoenix.giteye.core.beans.RepositoryConfig;
 import org.phoenix.giteye.core.exceptions.json.NotInitializedRepositoryException;
 import org.phoenix.giteye.core.git.services.GitService;
 import org.phoenix.giteye.core.git.services.RepositoryService;
+import org.phoenix.giteye.json.JsonCommitDetails;
 import org.phoenix.giteye.json.JsonRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -55,7 +57,7 @@ public class GitController {
     }
 
     @RequestMapping(value = "/json/log.do", produces = "application/json")
-    public @ResponseBody JsonRepository getLogAsJson(HttpSession session, Model model) {
+    public @ResponseBody JsonRepository getLogAsJson(HttpSession session) {
         RepositoryConfig selectedRepository = (RepositoryConfig)session.getAttribute("repository");
         if (selectedRepository == null) {
             return null;
@@ -68,6 +70,22 @@ public class GitController {
             logger.error("Error while retrieving json repository", notInitializedRepositoryException);
         }
         return jrep;
+    }
+
+    @RequestMapping(value = "/json/commit/{commitId}/details.do")
+    public @ResponseBody JsonCommitDetails getCommitDetails(HttpSession session, @PathVariable String commitId) {
+        RepositoryConfig selectedRepository = (RepositoryConfig)session.getAttribute("repository");
+        if (selectedRepository == null) {
+            return null;
+        }
+        RepositoryBean bean = repositoryService.getRepositoryInformation(selectedRepository.getLocation());
+        JsonCommitDetails details = null;
+        try {
+            details = gitService.getCommitDetails(bean, commitId);
+        } catch (NotInitializedRepositoryException nire) {
+
+        }
+        return details;
     }
 
 }

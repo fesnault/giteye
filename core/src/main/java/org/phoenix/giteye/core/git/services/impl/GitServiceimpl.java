@@ -4,6 +4,9 @@ import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.ListBranchCommand;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.api.errors.NoHeadException;
+import org.eclipse.jgit.diff.DiffEntry;
+import org.eclipse.jgit.diff.DiffFormatter;
+import org.eclipse.jgit.diff.RawTextComparator;
 import org.eclipse.jgit.lib.*;
 import org.eclipse.jgit.revplot.PlotCommit;
 import org.eclipse.jgit.revplot.PlotCommitList;
@@ -11,6 +14,7 @@ import org.eclipse.jgit.revplot.PlotLane;
 import org.eclipse.jgit.revplot.PlotWalk;
 import org.eclipse.jgit.revwalk.RevCommit;
 import org.eclipse.jgit.revwalk.RevSort;
+import org.eclipse.jgit.revwalk.RevWalk;
 import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
 import org.phoenix.giteye.core.beans.BranchBean;
 import org.phoenix.giteye.core.beans.CommitBean;
@@ -24,6 +28,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
@@ -61,8 +66,6 @@ public class GitServiceimpl implements GitService {
                     }
                 }
 
-    //            COMMIT PARENTS LIST IS EMPTY !!!
-    //                    ANYWAY, REFACTOR THE JSON STRUCTURE SENT BACK TO Dom4jAccessor.ElementAttributeSetter D3 WORK, YOU STUPID FAT PIG !
                 commit.setDate(new Date(revCommit.getCommitTime() * 1000L));
                 commit.setId(revCommit.getId().name());
                 commit.setCommitterName(revCommit.getAuthorIdent().getName());
@@ -114,6 +117,60 @@ public class GitServiceimpl implements GitService {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
         return branches;
+    }
+
+    @Override
+    public JsonCommitDetails getCommitDetails(RepositoryBean repository, String commitId) {
+        FileRepositoryBuilder builder = new FileRepositoryBuilder();
+        Repository repo = null;
+
+        JsonCommitDetails details = new JsonCommitDetails();
+        try {
+            repo = builder.setGitDir(new File(repository.getPath()))
+                    .readEnvironment() // scan environment GIT_* variables
+                    .findGitDir() // scan up the file system tree
+                    .build();
+
+            RevWalk revWalk = new RevWalk(repo);
+
+            RevCommit commit = revWalk.parseCommit(repo.resolve(commitId));
+            RevCommit parent = null;
+            if (commit == null) {
+                return null;
+            }
+            if (commit.getParent(0) != null) {
+                parent = revWalk.parseCommit(commit.getParent(0).getId());
+            }
+
+            ByteArrayOutputStream out = new ByteArrayOutputStream();
+            DiffFormatter df = new DiffFormatter(out);
+            df.setRepository(repo);
+            df.setDiffComparator(RawTextComparator.DEFAULT);
+            df.setDetectRenames(true);
+
+            details.setId(commit.getId().name());
+            details.setMessage(commit.getFullMessage());
+            details.setCommitDate(new Date(commit.getCommitTime() * 1000L));
+            details.setAuthorName(commit.getAuthorIdent().getName());
+            details.setAuthorEmail(commit.getAuthorIdent().getEmailAddress());
+
+            List<DiffEntry> diffs = df.scan(parent.getTree(), commit.getTree());
+            List<JsonDiff> differences = new ArrayList<JsonDiff>();
+            for (DiffEntry diff : diffs) {
+                df.format(diff);
+                JsonDiff jdiff = new JsonDiff();
+                jdiff.setChangeName(diff.getChangeType().name());
+                jdiff.setNewMode(diff.getNewMode().getBits());
+                jdiff.setNewPath(diff.getNewPath());
+                jdiff.setDiff(out.toString("UTF-8"));
+                out.reset();
+                differences.add(jdiff);
+            }
+            details.setDifferences(differences);
+        } catch (IOException ioe) {
+
+        }
+        return details;
     }
 
     @Override
@@ -224,6 +281,7 @@ public class GitServiceimpl implements GitService {
                 }
                 commit.resetParents();
             }
+            revWalk.release();
             //return LogGraphProcessorFactory.getProcessor().process(jrep);
             return jrep;
 
