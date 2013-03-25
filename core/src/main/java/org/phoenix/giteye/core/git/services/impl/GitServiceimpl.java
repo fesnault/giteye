@@ -162,7 +162,14 @@ public class GitServiceimpl implements GitService {
                 jdiff.setChangeName(diff.getChangeType().name());
                 jdiff.setNewMode(diff.getNewMode().getBits());
                 jdiff.setNewPath(diff.getNewPath());
-                jdiff.setDiff(out.toString("UTF-8"));
+                jdiff.setOldMode(diff.getOldMode().getBits());
+                jdiff.setOldPath(diff.getOldPath());
+                //jdiff.setDiff();
+                String lines = out.toString("UTF-8");
+                StringTokenizer tokenizer = new StringTokenizer(lines,"\n");
+                while (tokenizer.hasMoreTokens()) {
+                    jdiff.addLine(tokenizer.nextToken());
+                }
                 out.reset();
                 differences.add(jdiff);
             }

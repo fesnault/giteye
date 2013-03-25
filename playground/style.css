@@ -175,3 +175,13 @@ h1, p {
   fill-opacity: 0.2;
   font-family: sans-serif;
 }
+
+#diff .diffElement {
+  color: #000000;
+  cursor: default;
+}
+
+#diff .diffElement.hovered {
+  color: #3366FF;
+  cursor: pointer;
+}

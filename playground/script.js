@@ -156,9 +156,17 @@ d3.json("data.json", function(jrep) {
   redraw(currentCommits, refs);
 });
 
+function displayDifferences(diff) {
+  //$('#fileDiffModalTitle').text(diff.newPath);
+  var diffContents = d3.select("#fileDiffContents").selectAll("p").data(diff.lines);
+  diffContents.enter().append("p").attr("style", "margin: 0;").text(function (d) { return d; });
+  diffContents.exit().remove();
+  $('#fileDiffName').text(diff.newPath);
+  $('#fileDiffModal').modal({ keyboard: true });
+}
 
 function showCommitInfos(commit) {
-  if (commitInfoPanel != null) return;
+  //if (commitInfoPanel != null) return;
   //commitInfoPanel = svgGroup.append("g" ).attr("class", "commitInfoPanel");
 
   //var clickedCommit = getCommit(commit.id);
@@ -166,6 +174,39 @@ function showCommitInfos(commit) {
    // alert(clickedCommit.message);
   //}
   //commitInfoPanel.append("text").attr("x", 150).attr("y", 150).text(clickedCommit.message);
+  d3.json("commit.json", function(jcommit) {
+    $("#sha1").text(jcommit.id);
+    $("#author").text(jcommit.authorName+" <"+jcommit.authorEmail+">");
+    $("#date").text(formatMillisecondDate(jcommit.commitDate));
+    $("#message").text(jcommit.message);
+    var diffHolder = d3.select("#diff");
+    var diffSelection = diffHolder.selectAll("tr").data(jcommit.differences);
+    var diffSelectionLines = diffSelection
+      .enter()
+      .append("tr")
+        .attr("class", "diffElement")
+        .on('mouseover', function(){d3.select(this).classed("hovered", true);})
+        .on('mouseout', function(){d3.select(this).classed("hovered", false);})
+        .on("click", function(d) { displayDifferences(d); });
+    diffSelectionLines.append("td").attr("style", "border-top: none; padding: 0px;")
+      .append("i")
+        .attr("class", function (d) 
+          {
+            if (d.changeName === 'MODIFY') {
+              return "icon-pencil";
+            } else if (d.changeName === 'ADD') {
+              return "icon-plus-sign";
+            } else if (d.changeName === 'DELETE') {
+              return "icon-trash";
+            }  else if (d.changeName === 'RENAME') {
+              return "icon-text-height";
+            }  else if (d.changeName === 'COPY') {
+              return "icon-share";
+            }  
+          })
+    diffSelectionLines.append("td").attr("style", "border-top: none; padding: 0px;").text(function (d) { return d.newPath});
+    diffSelection.exit().remove();
+  });
 }
 
 var brush;

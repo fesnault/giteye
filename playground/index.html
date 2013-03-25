@@ -1,17 +1,165 @@
+
 <!DOCTYPE html>
-<html>
- <head>
-   <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
-   <link href="style.css" rel="stylesheet" media="screen"/>
-   <title>D3 Test</title>
-   
-   
- </head>
- <body>
-   <div id="svgcontainer">
-   	<!-- Here we go -->
-   </div>
-   <script type="text/javascript" src="d3.v3.js"></script>
-   <script type="text/javascript" src="script.js"></script>
- </body>
+<html lang="en">
+<head>
+        <meta charset="utf-8">
+    <title>GitEye</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <!-- Le styles -->
+    <link href="../webapp/src/main/webapp/bootstrap/css/bootstrap.css" rel="stylesheet">
+    <style type="text/css">
+      body {
+        padding-top: 60px;
+        padding-bottom: 40px;
+      }
+    </style>
+    <link href="../webapp/src/main/webapp/bootstrap/css/bootstrap-responsive.css" rel="stylesheet">
+
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="/bootstrap/js/html5shiv.js"></script>
+    <![endif]-->
+
+    <!-- Fav and touch icons -->
+    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="../../ico/apple-touch-icon-144-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="../../ico/apple-touch-icon-114-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="../../ico/apple-touch-icon-72-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" href="../../ico/apple-touch-icon-57-precomposed.png">
+    <link rel="shortcut icon" href="../../ico/favicon.png">
+    <link href="style.css" rel="stylesheet" media="screen"/>
+</head>
+
+<body>
+
+
+<div class="navbar navbar-inverse navbar-fixed-top">
+    <div class="navbar-inner">
+        <div class="container">
+            <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="brand" href="/index.jsp">GitEye</a>
+
+            <div class="nav-collapse collapse">
+                <p class="navbar-text pull-right">
+                    <a href="/repositories/list.do" class="navbar-link">
+                        
+                            
+                            
+                                <i>caha-web</i>
+                            
+                        
+                     </a>
+                </p>
+                <ul class="nav">
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Repositories<b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="/repositories/add.do">Add a repository</a></li>
+                            <li><a href="/repositories/list.do">List repositories</a></li>
+                        </ul>
+                    </li>
+                </ul>
+                
+                    <ul class="nav">
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Tools<b class="caret"></b></a>
+                            <ul class="dropdown-menu">
+                                <li><a href="/git/branches.do">List branches</a></li>
+                                <li><a href="/git/log.do">Show flat log</a></li>
+                                <!--li><a href="/git/json/test.do">Test Json</a></li-->
+                                <li class="divider"></li>
+                              <li class="nav-header">Graphs</li>
+                              <li><a href="/log.jsp">Log</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                
+            </div>
+            <!--/.nav-collapse -->
+        </div>
+    </div>
+</div>
+
+<div class="container-fluid">
+    <div class="row-fluid">
+        <div class="span12">
+            <div>
+                <table class="table table-bordered" width="100%">
+                <tr><td id="svgcontainer"><!-- Here comes the svg --></td></tr>
+                </table>
+            </div>
+        </div><!--/span-->
+
+    </div><!--/row-->
+
+    <div class="row-fluid">
+    	<div class="span6">
+	    	<table class="table table-condensed" width="100%">
+	    		<thead>
+	    			<th>Informations</th>
+	    		</thead>
+	    		<tbody>
+		    		<tr><td>SHA1</td><td id="sha1"></td></tr>
+					<tr><td>Author</td><td id="author"></td></tr>
+					<tr><td>Date</td><td id="date"></td></tr>
+					<tr><td>Message</td><td id="message"></td></tr>
+				</tbody>	
+	    	</table>
+	    </div>
+	    <div class="span6">
+	    	<table class="table" style="margin-bottom: 0px;"><thead><th>Files</th></thead></table>
+	    	<div  style="overflow: auto; height: 200px;">
+		    	<table class="table" id="diff">
+		    		<tbody>
+		    			
+		    		</tbody>
+		    	</table>
+	    	</div>
+	    </div>
+    </div>
+
+    <div id="fileDiffModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	  <div class="modal-header">
+	    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+	    <h3 id="fileDiffModalTitle">File diff</h3>
+	  </div>
+	  <div class="modal-body">
+	  	<blockquote>
+	  		<p id="fileDiffName"></p>
+	  	</blockquote>
+	    <span id="fileDiffContents"></span>
+	  </div>
+	  <div class="modal-footer">
+	    <button class="btn btn-primary" data-dismiss="modal" aria-hidden="true">Close</button>
+	  </div>
+	</div>
+
+</div> <!--container-->
+
+
+
+      <hr>
+
+      <footer>
+        <p>&copy; Phoenix 2013</p>
+      </footer>
+
+</div> <!-- /container -->
+
+<!-- javascript
+================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+<script src="../webapp/src/main/webapp/js/jquery/jquery.js"></script>
+<script src="../webapp/src/main/webapp/bootstrap/js/bootstrap.js"></script>
+
+<script src="d3.v3.js"></script>
+<script type="text/javascript" src="script.js"></script>
+
+</body>
 </html>

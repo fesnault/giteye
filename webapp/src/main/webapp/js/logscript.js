@@ -85,11 +85,11 @@ function key(d) {
 }
 
 function formatMillisecondDate(d) {
-	var format = d3.time.format("%a %b %d %H:%M:%S %Y");
-	if (d instanceof Date) {
-		return format(d);
-	}
-	return format(new Date(d));
+  var format = d3.time.format("%a %b %d %H:%M:%S %Y");
+  if (d instanceof Date) {
+    return format(d);
+  }
+  return format(new Date(d));
 }
 
 var delay = 500;
@@ -136,29 +136,38 @@ var initline = d3.svg.diagonal().projection( function (d) {
 //        .on("click", initBrush);
 
 function updateData() {
-	if (currentCommits.length > 50) {
-		currentCommits = currentCommits.slice(1, currentCommits.length);
-		redraw(currentCommits);
-	}
+  if (currentCommits.length > 50) {
+    currentCommits = currentCommits.slice(1, currentCommits.length);
+    redraw(currentCommits);
+  }
 }
 
 var maxLane = 0;
 
 d3.json("/git/json/log.do", function(jrep) {
-	repository = jrep;
-	currentCommits = repository.commits;
+  repository = jrep;
+  currentCommits = repository.commits;
   refs = repository.branches;
   max = d3.max(currentCommits, function(d) { return d.position;});
   min = d3.min(currentCommits, function(d) { return d.position;});
   maxPaddingHeight = (((height-margin)*commitPadding)-height)+2*margin;
   minPaddingHeight = 0;
   y = d3.scale.linear().domain([min, max]).range([margin, (height-margin)*commitPadding]);
-	redraw(currentCommits, refs);
+  redraw(currentCommits, refs);
 });
 
+function displayDifferences(path, lines) {
+  //$('#fileDiffModalTitle').text(diff.newPath);
+  $("#fileDiffContents").empty();
+  var diffContents = d3.select("#fileDiffContents").selectAll("p").data(lines);
+  diffContents.enter().append("p").attr("style", "margin: 0;").text(function (d) { return d; });
+  diffContents.exit().remove();
+  $('#fileDiffName').text(path);
+  $('#fileDiffModal').modal({ keyboard: true });
+}
 
 function showCommitInfos(commit) {
-  if (commitInfoPanel != null) return;
+  //if (commitInfoPanel != null) return;
   //commitInfoPanel = svgGroup.append("g" ).attr("class", "commitInfoPanel");
 
   //var clickedCommit = getCommit(commit.id);
@@ -166,6 +175,59 @@ function showCommitInfos(commit) {
    // alert(clickedCommit.message);
   //}
   //commitInfoPanel.append("text").attr("x", 150).attr("y", 150).text(clickedCommit.message);
+  d3.json("/git/json/commit/"+commit.id+"/details.do", function(jcommit) {
+    $("#sha1").text(jcommit.id);
+    $("#author").text(jcommit.authorName+" <"+jcommit.authorEmail+">");
+    $("#date").text(formatMillisecondDate(jcommit.commitDate));
+    $("#message").text(jcommit.message);
+    $("#diff").empty();
+    var diffHolder = d3.select("#diff");
+
+    var diffSelection = diffHolder.selectAll("tr").data(jcommit.differences);
+    var diffSelectionLines = diffSelection
+      .enter()
+      .append("tr")
+        .attr("class", "diffElement")
+        .on('mouseover', function(){d3.select(this).classed("hovered", true);})
+        .on('mouseout', function(){d3.select(this).classed("hovered", false);});
+
+    diffSelectionLines.append("td").attr("style", "border-top: none; padding: 0px;")
+      .append("i")
+        .attr("class", function (d) 
+          {
+            if (d.changeName === 'MODIFY') {
+              return "icon-pencil";
+            } else if (d.changeName === 'ADD') {
+              return "icon-plus-sign";
+            } else if (d.changeName === 'DELETE') {
+              return "icon-trash";
+            }  else if (d.changeName === 'RENAME') {
+              return "icon-text-height";
+            }  else if (d.changeName === 'COPY') {
+              return "icon-share";
+            }  
+          })
+
+    diffSelectionLines.append("td").attr("style", "border-top: none; padding: 0px;")
+      .on("click", function(d) {
+        var path = '';
+        if (d.changeName === 'DELETE') {
+            path = d.oldPath;
+        } else {
+            path = d.newPath;
+        }
+        displayDifferences(path, d.lines);
+       })
+      .text(function (d) {
+        if (d.changeName === 'DELETE') {
+            path = d.oldPath;
+        } else {
+            path = d.newPath;
+        }
+        return path;
+      });
+    diffSelection.exit().remove();
+  });
 }
 
 var brush;
@@ -200,24 +262,24 @@ function brushmove() {
   var by2 = (+(by+bh));
 
   d3.selectAll(".circle").classed("selected", function(d) {
-  	var cx = x(d.lane);
-  	var cy = y (+d.position);
-  	if (cx > bx && cx < bx2 && cy > by && cy < by2) {
-  		return true;
-  	}
-  	return false;
+    var cx = x(d.lane);
+    var cy = y (+d.position);
+    if (cx > bx && cx < bx2 && cy > by && cy < by2) {
+      return true;
+    }
+    return false;
  });
   var linkContainer = d3.selectAll(".link").classed("selected", function(d) {
-  	var sx = d.source.x;
-  	var sy = d.source.y;
-  	var tx = d.target.x;
-  	var ty = d.target.y;
-  	if (sx > bx && sx < bx2 && sy > by && sy < by2) {
-  		if (tx > bx && tx < bx2 && ty > by && ty < by2) {
-  			return true;
-  		}
-  	}
-  	return false;
+    var sx = d.source.x;
+    var sy = d.source.y;
+    var tx = d.target.x;
+    var ty = d.target.y;
+    if (sx > bx && sx < bx2 && sy > by && sy < by2) {
+      if (tx > bx && tx < bx2 && ty > by && ty < by2) {
+        return true;
+      }
+    }
+    return false;
  });
 }
 
@@ -227,7 +289,7 @@ function brushend() {
   var bw = (+brushRect.attr("width"));
   var bh = (+brushRect.attr("height"));
   if (bw > 10 && bh > 10) {
-  	zoom();
+    zoom();
   }
 }
 
@@ -327,7 +389,7 @@ function getCommit(id) {
 function redraw(commits, references) {
   previousMax = max;
   previousMin = min;
-	maxLane = d3.max(commits, function(d) { return d.lane;})+1;
+  maxLane = d3.max(commits, function(d) { return d.lane;})+1;
   svg.select("#clipMessage").select("rect")
     .attr("width", x(maxAllowedLane-7)-margin)
     .attr("height", y(max));
@@ -336,7 +398,7 @@ function redraw(commits, references) {
     .attr("height", y(max));
 
 
-	var nodes = [];
+  var nodes = [];
   var links = [];
   var infos = [];
   commits.forEach(function(d, i) {
@@ -368,13 +430,13 @@ function redraw(commits, references) {
       }
       if (d.children !== null) {
         d.children.forEach(function(c, i) {
-        	var target = {"id": c.id ,"x": x(c.lane), "y": y(c.position)};
+          var target = {"id": c.id ,"x": x(c.lane), "y": y(c.position)};
             links.push({"id": source.id + "-" + target.id ,"source": source, "target": target});
         });
-  	}
+    }
   });
 
-	var linksSelection = linksGroup.selectAll("path").data(links, key);
+  var linksSelection = linksGroup.selectAll("path").data(links, key);
   var linksEnterSelection = linksSelection.enter();
   var linksExitingSelection = linksSelection.exit();
 
@@ -407,7 +469,7 @@ function redraw(commits, references) {
       .duration(delay)
       .style("opacity", 1);
 
-	var infosSelection = infosGroup.selectAll(".info").data(infos, key);
+  var infosSelection = infosGroup.selectAll(".info").data(infos, key);
   var infosEnterSelection = infosSelection.enter().append("g").attr("class", function (d, i) { return "info info"+i; })
     .on('mouseover', function(){d3.select(this).classed("selected", true);})
     .on('mouseout', function(){d3.select(this).classed("selected", false);})

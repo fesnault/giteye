@@ -1,5 +1,6 @@
 package org.phoenix.giteye.json;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -14,7 +15,9 @@ public class JsonDiff {
     private String changeName;
     private int newMode;
     private String newPath;
-    private String diff;
+    private int oldMode;
+    private String oldPath;
+    private List<String> lines;
 
     public String getChangeName() {
         return changeName;
@@ -40,11 +43,30 @@ public class JsonDiff {
         this.newPath = newPath;
     }
 
-    public String getDiff() {
-        return diff;
+    public List<String> getLines() {
+        return lines;
     }
 
-    public void setDiff(String diff) {
-        this.diff = diff;
+    public void addLine(String line) {
+        if (this.lines == null) {
+            this.lines = new ArrayList<String>();
+        }
+        this.lines.add(line);
+    }
+
+    public int getOldMode() {
+        return oldMode;
+    }
+
+    public void setOldMode(int oldMode) {
+        this.oldMode = oldMode;
+    }
+
+    public String getOldPath() {
+        return oldPath;
+    }
+
+    public void setOldPath(String oldPath) {
+        this.oldPath = oldPath;
     }
 }

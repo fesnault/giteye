@@ -44,35 +44,35 @@ h1, p {
 }
 
 .circle .commit {
-	fill: #999999;
+  fill: #999999;
     stroke: #333333;
     stroke-width: 2px;
 }
 
 .circle .commit.root {
-	fill: #FF0000;
+  fill: #FF0000;
     stroke: #FF8800;
     stroke-width: 2px;
 }
 .circle .commit.tip {
-	fill: #00FF00;
+  fill: #00FF00;
     stroke: #FF8800;
     stroke-width: 2px;
 }
 
 .circle.selected circle {
-	stroke: #3366FF;
-	fill: #99AAFF;
+  stroke: #3366FF;
+  fill: #99AAFF;
 }
 
 .link {
-	stroke: #000000;
+  stroke: #000000;
     stroke-width: 2px;
     fill: none;
 }
 
 .link.selected{
-	stroke: #3366FF;
+  stroke: #3366FF;
     stroke-width: 2px;
     fill: none;
 }
@@ -174,4 +174,14 @@ h1, p {
   fill: #5577FF;
   fill-opacity: 0.2;
   font-family: sans-serif;
+}
+
+#diff .diffElement {
+  color: #000000;
+  cursor: default;
+}
+
+#diff .diffElement.hovered {
+  color: #3366FF;
+  cursor: pointer;
 }

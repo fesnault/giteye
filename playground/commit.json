@@ -1,0 +1,8 @@
+{"message":"CAHA-164 fix quiz path resolution & add missing bundles\n","id":"a62d3f0aee5957cab9a550c32fe8b80aa4f18ec1","commitDate":1361377038000,"authorName":"mouhcine moulou","authorEmail":"mouhcine.moulou@soat.fr",
+	"differences":
+		[
+			{"newMode":33188,"newPath":"webapp/src/main/webapp/WEB-INF/config/jetty-mysql.properties","changeName":"ADD","lines":["diff --git a/webapp/src/main/webapp/WEB-INF/config/jetty-mysql.properties b/webapp/src/main/webapp/WEB-INF/config/jetty-mysql.properties","index 0d9567c..92fab10 100644","--- a/webapp/src/main/webapp/WEB-INF/config/jetty-mysql.properties","+++ b/webapp/src/main/webapp/WEB-INF/config/jetty-mysql.properties","@@ -13,4 +13,4 @@"," "," # JNDI"," jndi.jdbc=java:comp/env/jdbc/caha","-cms.target=~/htdocs/caha-edito/client/publication/caha/preproduction","+cms.target=C:/ekino/caha/published"]},
+			{"newMode":33188,"newPath":"webapp/src/main/webapp/WEB-INF/config/jetty-mysql.properties","changeName":"MODIFY","lines":["diff --git a/webapp/src/main/webapp/WEB-INF/config/jetty-mysql.properties b/webapp/src/main/webapp/WEB-INF/config/jetty-mysql.properties","index 0d9567c..92fab10 100644","--- a/webapp/src/main/webapp/WEB-INF/config/jetty-mysql.properties","+++ b/webapp/src/main/webapp/WEB-INF/config/jetty-mysql.properties","@@ -13,4 +13,4 @@"," "," # JNDI"," jndi.jdbc=java:comp/env/jdbc/caha","-cms.target=~/htdocs/caha-edito/client/publication/caha/preproduction","+cms.target=C:/ekino/caha/published"]}
+
+		]
+}
