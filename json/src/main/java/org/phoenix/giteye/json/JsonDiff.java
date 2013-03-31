@@ -17,7 +17,7 @@ public class JsonDiff {
     private String newPath;
     private int oldMode;
     private String oldPath;
-    private List<String> lines;
+    private List<JsonDiffHunk> hunks;
 
     public String getChangeName() {
         return changeName;
@@ -43,16 +43,6 @@ public class JsonDiff {
         this.newPath = newPath;
     }
 
-    public List<String> getLines() {
-        return lines;
-    }
-
-    public void addLine(String line) {
-        if (this.lines == null) {
-            this.lines = new ArrayList<String>();
-        }
-        this.lines.add(line);
-    }
 
     public int getOldMode() {
         return oldMode;
@@ -68,5 +58,16 @@ public class JsonDiff {
 
     public void setOldPath(String oldPath) {
         this.oldPath = oldPath;
+    }
+
+    public List<JsonDiffHunk> getHunks() {
+        return hunks;
+    }
+
+    public void addHunk(JsonDiffHunk hunk) {
+        if (this.hunks == null) {
+            this.hunks = new ArrayList<JsonDiffHunk>();
+        }
+        this.hunks.add(hunk);
     }
 }

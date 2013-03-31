@@ -144,6 +144,7 @@ function updateData() {
 
 var maxLane = 0;
 
+//d3.json("data.json", function(jrep) {
 d3.json("/git/json/log.do", function(jrep) {
   repository = jrep;
   currentCommits = repository.commits;
@@ -156,14 +157,63 @@ d3.json("/git/json/log.do", function(jrep) {
   redraw(currentCommits, refs);
 });
 
-function displayDifferences(path, lines) {
+function displayDifferences(path, hunks) {
   //$('#fileDiffModalTitle').text(diff.newPath);
   $("#fileDiffContents").empty();
-  var diffContents = d3.select("#fileDiffContents").selectAll("p").data(lines);
-  diffContents.enter().append("p").attr("style", "margin: 0;").text(function (d) { return d; });
-  diffContents.exit().remove();
-  $('#fileDiffName').text(path);
-  $('#fileDiffModal').modal({ keyboard: true });
+  var diffContentHolder = d3.select("#fileDiffContents");
+  for (var i=0; i<hunks.length; i++) {
+    var hunkId = "hunk"+i;
+    diffContentHolder
+      .append("table")
+        .attr("id", hunkId)
+        .attr("class", "diffTable");
+    var diffContents = d3.select("#"+hunkId+".diffTable").selectAll("tr").data(hunks[i].lines);
+    var hunkLine = diffContents.enter()
+      .append("tr")
+        .attr("style", "width: 100%")
+        .attr("class", function(e) { return e.type.toLowerCase(); });
+    hunkLine.append("td")
+      .text(function(h) {
+         if (h.oldLineNumber === 0) {
+          return ' ';
+         } else {
+          return h.oldLineNumber;
+         }
+       }
+     );
+    hunkLine.append("td")
+      .attr("class", "bordered")
+      .text(function(h) {
+         if (h.newLineNumber === 0) {
+          return ' ';
+         } else {
+          return h.newLineNumber;
+         }
+       }
+     );
+    hunkLine.append("td")
+      .attr("class", "bordered")
+      .attr("style", "text-align: center;")
+      .text(function(f) {
+          if (f.type === 'OLD') {
+            return ' - ';
+          } else if (f.type === 'NEW') {
+            return ' + ';
+          } else {
+            return '   ';
+          }
+        }
+      );
+    hunkLine.append("td")
+      .attr("class", "bordered")
+      .attr("style", "width: 100%; white-space:PRE;")
+      .text(function(g) { return g.line; });
+        //function (d) { return d.line; }
+    diffContents.exit().remove();
+    $('#fileDiffName').text(path);
+    $('#fileDiffModal').modal({ keyboard: true });
+    diffContentHolder.append("br");
+  }
 }
 
 function showCommitInfos(commit) {
@@ -175,6 +225,8 @@ function showCommitInfos(commit) {
    // alert(clickedCommit.message);
   //}
   //commitInfoPanel.append("text").attr("x", 150).attr("y", 150).text(clickedCommit.message);
+
+  //d3.json("commit.json", function(jcommit) {
   d3.json("/git/json/commit/"+commit.id+"/details.do", function(jcommit) {
     $("#sha1").text(jcommit.id);
     $("#author").text(jcommit.authorName+" <"+jcommit.authorEmail+">");
@@ -216,7 +268,7 @@ function showCommitInfos(commit) {
         } else {
             path = d.newPath;
         }
-        displayDifferences(path, d.lines);
+        displayDifferences(path, d.hunks);
        })
       .text(function (d) {
         if (d.changeName === 'DELETE') {
@@ -422,7 +474,7 @@ function redraw(commits, references) {
             "x": x(d.lane)+margin,
             "y": y(d.position),
             "symbolic": references[j].symbolic,
-            "remote": references[j].name.indexOf("remote") !== -1,
+            "remote": references[j].name.indexOf("origin") !== -1,
             "current": references[j].current
           };
           info.branches.push(branch);

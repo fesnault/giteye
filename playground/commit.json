@@ -1,8 +1,218 @@
-{"message":"CAHA-164 fix quiz path resolution & add missing bundles\n","id":"a62d3f0aee5957cab9a550c32fe8b80aa4f18ec1","commitDate":1361377038000,"authorName":"mouhcine moulou","authorEmail":"mouhcine.moulou@soat.fr",
-	"differences":
-		[
-			{"newMode":33188,"newPath":"webapp/src/main/webapp/WEB-INF/config/jetty-mysql.properties","changeName":"ADD","lines":["diff --git a/webapp/src/main/webapp/WEB-INF/config/jetty-mysql.properties b/webapp/src/main/webapp/WEB-INF/config/jetty-mysql.properties","index 0d9567c..92fab10 100644","--- a/webapp/src/main/webapp/WEB-INF/config/jetty-mysql.properties","+++ b/webapp/src/main/webapp/WEB-INF/config/jetty-mysql.properties","@@ -13,4 +13,4 @@"," "," # JNDI"," jndi.jdbc=java:comp/env/jdbc/caha","-cms.target=~/htdocs/caha-edito/client/publication/caha/preproduction","+cms.target=C:/ekino/caha/published"]},
-			{"newMode":33188,"newPath":"webapp/src/main/webapp/WEB-INF/config/jetty-mysql.properties","changeName":"MODIFY","lines":["diff --git a/webapp/src/main/webapp/WEB-INF/config/jetty-mysql.properties b/webapp/src/main/webapp/WEB-INF/config/jetty-mysql.properties","index 0d9567c..92fab10 100644","--- a/webapp/src/main/webapp/WEB-INF/config/jetty-mysql.properties","+++ b/webapp/src/main/webapp/WEB-INF/config/jetty-mysql.properties","@@ -13,4 +13,4 @@"," "," # JNDI"," jndi.jdbc=java:comp/env/jdbc/caha","-cms.target=~/htdocs/caha-edito/client/publication/caha/preproduction","+cms.target=C:/ekino/caha/published"]}
-
-		]
+{
+   "message" : "removed fragile display fragment selection which now relies on a parameter from the fragment-calling piece.\n",
+   "id" : "4c554ba79c9fe07640add4fe8de4965ab907311a",
+   "commitDate" : 1363017014000,
+   "authorName" : "Matthieu Bertin",
+   "authorEmail" : "mbertin@consulting.altensir.fr",
+   "differences" :
+      [
+         {
+            "newMode" : 33188,
+            "newPath" : "webapp/src/main/java/com/caha/web/controllers/MeaController.java",
+            "oldMode" : 33188,
+            "oldPath" : "webapp/src/main/java/com/caha/web/controllers/MeaController.java",
+            "hunks" :
+               [
+                  {
+                     "oldLineStart" : 34,
+                     "newLineStart" : 34,
+                     "lines" :
+                        [
+                           {
+                              "type" : "COMMON",
+                              "line" : " ",
+                              "newLineNumber" : 34,
+                              "oldLineNumber" : 34
+                           },
+                           {
+                              "type" : "COMMON",
+                              "line" : "     private static int MAX_RESULTS = 3;",
+                              "newLineNumber" : 35,
+                              "oldLineNumber" : 35
+                           },
+                           {
+                              "type" : "COMMON",
+                              "line" : " ",
+                              "newLineNumber" : 36,
+                              "oldLineNumber" : 36
+                           },
+                           {
+                              "type" : "OLD",
+                              "line" : "     private final static String MEA_GUIDES_PAGE = \"fragments/mea_guides\";",
+                              "newLineNumber" : 0,
+                              "oldLineNumber" : 37
+                           },
+                           {
+                              "type" : "OLD",
+                              "line" : "     private final static String MEA_NEWS_PAGE = \"fragments/mea_news\";",
+                              "newLineNumber" : 0,
+                              "oldLineNumber" : 38
+                           },
+                           {
+                              "type" : "OLD",
+                              "line" : "     private final static String MEA_NEWS_HOMEPAGE = \"fragments/mea_hp_news\";",
+                              "newLineNumber" : 0,
+                              "oldLineNumber" : 39
+                           },
+                           {
+                              "type" : "OLD",
+                              "line" : "     private final static String MEA_NEWS_HUB = \"fragments/mea_hub_news\";",
+                              "newLineNumber" : 0,
+                              "oldLineNumber" : 40
+                           },
+                           {
+                              "type" : "OLD",
+                              "line" : " ",
+                              "newLineNumber" : 0,
+                              "oldLineNumber" : 41
+                           },
+                           {
+                              "type" : "COMMON",
+                              "line" : "     @RequestMapping(method = RequestMethod.GET)",
+                              "newLineNumber" : 37,
+                              "oldLineNumber" : 42
+                           },
+                           {
+                              "type" : "COMMON",
+                              "line" : "     public ModelAndView process(@RequestParam(\"type\") String type,",
+                              "newLineNumber" : 38,
+                              "oldLineNumber" : 43
+                           },
+                           {
+                              "type" : "NEW",
+                              "line" : "                                 @RequestParam(\"fragment\") String fragment,",
+                              "newLineNumber" : 39,
+                              "oldLineNumber" : 0
+                           },
+                           {
+                              "type" : "COMMON",
+                              "line" : "                                 @RequestParam(\"title\") String title,",
+                              "newLineNumber" : 40,
+                              "oldLineNumber" : 44
+                           },
+                           {
+                              "type" : "COMMON",
+                              "line" : "                                 @RequestParam(\"subtitle\") String subtitle,",
+                              "newLineNumber" : 41,
+                              "oldLineNumber" : 45
+                           },
+                           {
+                              "type" : "COMMON",
+                              "line" : "                                 @RequestParam(\"picto\") String picto,",
+                              "newLineNumber" : 42,
+                              "oldLineNumber" : 46
+                           }
+                        ],
+                     "oldLineRange" : 13,
+                     "newLineRange" : 9
+                  },
+                  {
+                     "oldLineStart" : 72,
+                     "newLineStart" : 68,
+                     "lines" :
+                        [
+                           {
+                              "type" : "COMMON",
+                              "line" : "         }",
+                              "newLineNumber" : 68,
+                              "oldLineNumber" : 72
+                           },
+                           {
+                              "type" : "COMMON",
+                              "line" : " ",
+                              "newLineNumber" : 69,
+                              "oldLineNumber" : 73
+                           },
+                           {
+                              "type" : "COMMON",
+                              "line" : "         model.put(\"links\", links);",
+                              "newLineNumber" : 70,
+                              "oldLineNumber" : 74
+                           },
+                           {
+                              "type" : "OLD",
+                              "line" : "         return new ModelAndView(getLandingPage(type, homePageFilter == \"true\", title), model);",
+                              "newLineNumber" : 0,
+                              "oldLineNumber" : 75
+                           },
+                           {
+                              "type" : "NEW",
+                              "line" : "         return new ModelAndView(fragment, model);",
+                              "newLineNumber" : 71,
+                              "oldLineNumber" : 0
+                           },
+                           {
+                              "type" : "COMMON",
+                              "line" : "     }",
+                              "newLineNumber" : 72,
+                              "oldLineNumber" : 76
+                           },
+                           {
+                              "type" : "COMMON",
+                              "line" : " ",
+                              "newLineNumber" : 73,
+                              "oldLineNumber" : 77
+                           },
+                           {
+                              "type" : "COMMON",
+                              "line" : "     public void setTypeMap(Map<String, URL> typeMap) {",
+                              "newLineNumber" : 74,
+                              "oldLineNumber" : 78
+                           },
+                           {
+                              "type" : "COMMON",
+                              "line" : "         this.typeMap = typeMap;",
+                              "newLineNumber" : 75,
+                              "oldLineNumber" : 79
+                           },
+                           {
+                              "type" : "OLD",
+                              "line" : "     }",
+                              "newLineNumber" : 0,
+                              "oldLineNumber" : 80
+                           },
+                           {
+                              "type" : "OLD",
+                              "line" : " ",
+                              "newLineNumber" : 0,
+                              "oldLineNumber" : 81
+                           },
+                           {
+                              "type" : "OLD",
+                              "line" : "     private String getLandingPage(String type, boolean homepage, String title) {",
+                              "newLineNumber" : 0,
+                              "oldLineNumber" : 82
+                           },
+                           {
+                              "type" : "OLD",
+                              "line" : "         return \"guides\".equals(type) ? MEA_GUIDES_PAGE : (homepage ? MEA_NEWS_HOMEPAGE : (\"\".equals(title) ? MEA_NEWS_HUB : MEA_NEWS_PAGE));",
+                              "newLineNumber" : 0,
+                              "oldLineNumber" : 83
+                           },
+                           {
+                              "type" : "COMMON",
+                              "line" : "     }",
+                              "newLineNumber" : 76,
+                              "oldLineNumber" : 84
+                           },
+                           {
+                              "type" : "COMMON",
+                              "line" : " ",
+                              "newLineNumber" : 77,
+                              "oldLineNumber" : 85
+                           },
+                           {
+                              "type" : "COMMON",
+                              "line" : "     public void setEditoDataService(EditoDataService editoDataService) {",
+                              "newLineNumber" : 78,
+                              "oldLineNumber" : 86
+                           }
+                        ],
+                     "oldLineRange" : 15,
+                     "newLineRange" : 11
+                  }
+               ],
+            "changeName" : "MODIFY"
+         }
+      ]
 }
