@@ -1,5 +1,6 @@
 package org.phoenix.giteye.json;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -16,7 +17,7 @@ public class JsonCommitDetails {
     private Date commitDate;
     private String authorName;
     private String authorEmail;
-    private List<JsonDiff> differences;
+    private List<JsonDiffs> differences;
 
     public String getId() {
         return id;
@@ -58,11 +59,14 @@ public class JsonCommitDetails {
         this.authorEmail = authorEmail;
     }
 
-    public List<JsonDiff> getDifferences() {
+    public List<JsonDiffs> getDifferences() {
         return differences;
     }
 
-    public void setDifferences(List<JsonDiff> differences) {
-        this.differences = differences;
+    public void addDifferences(JsonDiffs differenceSet) {
+        if (this.differences == null) {
+            this.differences = new ArrayList<JsonDiffs>();
+        }
+        this.differences.add(differenceSet);
     }
 }

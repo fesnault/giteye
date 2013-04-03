@@ -19,6 +19,7 @@ public class JsonDiff {
     private String oldPath;
     private List<JsonDiffHunk> hunks;
 
+
     public String getChangeName() {
         return changeName;
     }

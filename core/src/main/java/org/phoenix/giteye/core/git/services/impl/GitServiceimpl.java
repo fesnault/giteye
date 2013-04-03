@@ -138,105 +138,110 @@ public class GitServiceimpl implements GitService {
             if (commit == null) {
                 return null;
             }
-            if (commit.getParent(0) != null) {
-                parent = revWalk.parseCommit(commit.getParent(0).getId());
+            if (commit.getParentCount() == 0) {
+                return null;
             }
 
-            ByteArrayOutputStream out = new ByteArrayOutputStream();
-            DiffFormatter df = new DiffFormatter(out);
-            df.setRepository(repo);
-            df.setDiffComparator(RawTextComparator.DEFAULT);
-            df.setDetectRenames(true);
-
-            details.setId(commit.getId().name());
-            details.setMessage(commit.getFullMessage());
-            details.setCommitDate(new Date(commit.getCommitTime() * 1000L));
-            details.setAuthorName(commit.getAuthorIdent().getName());
-            details.setAuthorEmail(commit.getAuthorIdent().getEmailAddress());
-
-            List<DiffEntry> diffs = df.scan(parent.getTree(), commit.getTree());
             List<JsonDiff> differences = new ArrayList<JsonDiff>();
-            for (DiffEntry diff : diffs) {
-                df.format(diff);
-                JsonDiff jdiff = new JsonDiff();
-                jdiff.setChangeName(diff.getChangeType().name());
-                jdiff.setNewMode(diff.getNewMode().getBits());
-                jdiff.setNewPath(diff.getNewPath());
-                jdiff.setOldMode(diff.getOldMode().getBits());
-                jdiff.setOldPath(diff.getOldPath());
-                //jdiff.setDiff();
-                String lines = out.toString("UTF-8");
-                StringTokenizer tokenizer = new StringTokenizer(lines,"\n");
-                JsonDiffHunk hunk = null;
-                int oldLineNumber = 0;
-                int newLineNumber = 0;
-                while (tokenizer.hasMoreTokens()) {
-                    String line = tokenizer.nextToken();
-                    if (line.startsWith("@@")) {
-                        if (hunk != null) {
-                            jdiff.addHunk(hunk);
-                        }
-                        hunk = new JsonDiffHunk();
-                        line = line.replace("@@","").trim();
-                        StringTokenizer spaceTokenizer = new StringTokenizer(line, " ");
-                        while (spaceTokenizer.hasMoreTokens()) {
-                            String token = spaceTokenizer.nextToken();
-                            if (token.startsWith("-")) {
-                                token = token.substring(1);
-                                // old file diff part
-                                String[] elements = token.trim().split(",");
-                                hunk.setOldLineStart(Integer.parseInt(elements[0]));
-                                hunk.setOldLineRange(Integer.parseInt(elements[1]));
-                                oldLineNumber = hunk.getOldLineStart()-1;
-                            } else {
-                                // new file diff part
-                                token = token.substring(1);
-                                String[] elements = token.trim().split(",");
-                                hunk.setNewLineStart(Integer.parseInt(elements[0]));
-                                hunk.setNewLineRange(Integer.parseInt(elements[1]));
-                                newLineNumber = hunk.getNewLineStart()-1;
+            for (int i=0; i<commit.getParentCount(); i++) {
+                parent = revWalk.parseCommit(commit.getParent(i).getId());
+                JsonDiffs diffSet = new JsonDiffs();
+                diffSet.setParentCommitId(parent.getId().name());
+                ByteArrayOutputStream out = new ByteArrayOutputStream();
+                DiffFormatter df = new DiffFormatter(out);
+                df.setRepository(repo);
+                df.setDiffComparator(RawTextComparator.DEFAULT);
+                df.setDetectRenames(true);
+
+                details.setId(commit.getId().name());
+                details.setMessage(commit.getFullMessage());
+                details.setCommitDate(new Date(commit.getCommitTime() * 1000L));
+                details.setAuthorName(commit.getAuthorIdent().getName());
+                details.setAuthorEmail(commit.getAuthorIdent().getEmailAddress());
+
+                List<DiffEntry> diffs = df.scan(parent.getTree(), commit.getTree());
+                for (DiffEntry diff : diffs) {
+                    df.format(diff);
+                    JsonDiff jdiff = new JsonDiff();
+                    jdiff.setChangeName(diff.getChangeType().name());
+                    jdiff.setNewMode(diff.getNewMode().getBits());
+                    jdiff.setNewPath(diff.getNewPath());
+                    jdiff.setOldMode(diff.getOldMode().getBits());
+                    jdiff.setOldPath(diff.getOldPath());
+                    //jdiff.setDiff();
+                    String lines = out.toString("UTF-8");
+                    StringTokenizer tokenizer = new StringTokenizer(lines,"\n");
+                    JsonDiffHunk hunk = null;
+                    int oldLineNumber = 0;
+                    int newLineNumber = 0;
+                    while (tokenizer.hasMoreTokens()) {
+                        String line = tokenizer.nextToken();
+                        if (line.startsWith("@@")) {
+                            if (hunk != null) {
+                                jdiff.addHunk(hunk);
                             }
-                        }
-                    } else if (hunk != null) {
-                        JsonHunkLine hunkLine = new JsonHunkLine();
-                        if (line.startsWith("-")) {
-                            oldLineNumber++;
-                            hunkLine.setOldLineNumber(oldLineNumber);
-                            hunkLine.setNewLineNumber(0);
-                            if (line.length() == 1) {
-                                line = " ";
-                            } else {
-                                line = " "+line.substring(1);
+                            hunk = new JsonDiffHunk();
+                            line = line.replace("@@","").trim();
+                            StringTokenizer spaceTokenizer = new StringTokenizer(line, " ");
+                            while (spaceTokenizer.hasMoreTokens()) {
+                                String token = spaceTokenizer.nextToken();
+                                if (token.startsWith("-")) {
+                                    token = token.substring(1);
+                                    // old file diff part
+                                    String[] elements = token.trim().split(",");
+                                    hunk.setOldLineStart(Integer.parseInt(elements[0]));
+                                    hunk.setOldLineRange(Integer.parseInt(elements[1]));
+                                    oldLineNumber = hunk.getOldLineStart()-1;
+                                } else {
+                                    // new file diff part
+                                    token = token.substring(1);
+                                    String[] elements = token.trim().split(",");
+                                    hunk.setNewLineStart(Integer.parseInt(elements[0]));
+                                    hunk.setNewLineRange(Integer.parseInt(elements[1]));
+                                    newLineNumber = hunk.getNewLineStart()-1;
+                                }
                             }
-                            hunkLine.setType(HunkLineType.OLD);
-                        } else if (line.startsWith("+")) {
-                            newLineNumber++;
-                            hunkLine.setNewLineNumber(newLineNumber);
-                            hunkLine.setOldLineNumber(0);
-                            if (line.length() == 1) {
-                                line = " ";
+                        } else if (hunk != null) {
+                            JsonHunkLine hunkLine = new JsonHunkLine();
+                            if (line.startsWith("-")) {
+                                oldLineNumber++;
+                                hunkLine.setOldLineNumber(oldLineNumber);
+                                hunkLine.setNewLineNumber(0);
+                                if (line.length() == 1) {
+                                    line = " ";
+                                } else {
+                                    line = " "+line.substring(1);
+                                }
+                                hunkLine.setType(HunkLineType.OLD);
+                            } else if (line.startsWith("+")) {
+                                newLineNumber++;
+                                hunkLine.setNewLineNumber(newLineNumber);
+                                hunkLine.setOldLineNumber(0);
+                                if (line.length() == 1) {
+                                    line = " ";
+                                } else {
+                                    line = " "+line.substring(1);
+                                }
+                                hunkLine.setType(HunkLineType.NEW);
                             } else {
-                                line = " "+line.substring(1);
+                                newLineNumber++;
+                                oldLineNumber++;
+                                hunkLine.setOldLineNumber(oldLineNumber);
+                                hunkLine.setNewLineNumber(newLineNumber);
+                                hunkLine.setType(HunkLineType.COMMON);
                             }
-                            hunkLine.setType(HunkLineType.NEW);
-                        } else {
-                            newLineNumber++;
-                            oldLineNumber++;
-                            hunkLine.setOldLineNumber(oldLineNumber);
-                            hunkLine.setNewLineNumber(newLineNumber);
-                            hunkLine.setType(HunkLineType.COMMON);
+                            hunkLine.setLine(line);
+                            hunk.addLine(hunkLine);
                         }
-                        hunkLine.setLine(line);
-                        hunk.addLine(hunkLine);
                     }
+                    if (hunk != null) {
+                        jdiff.addHunk(hunk);
+                    }
+                    out.reset();
+                    diffSet.addDifference(jdiff);
                 }
-                if (hunk != null) {
-                    jdiff.addHunk(hunk);
-                }
-                out.reset();
-                differences.add(jdiff);
+                details.addDifferences(diffSet);
             }
-            details.setDifferences(differences);
         } catch (IOException ioe) {
 
         }
