@@ -176,12 +176,12 @@ h1, p {
   font-family: sans-serif;
 }
 
-#diff .diffElement {
+.diffElementHolder .diffElement {
   color: #000000;
   cursor: default;
 }
 
-#diff .diffElement.hovered {
+.diffElementHolder .diffElement.hovered {
   color: #3366FF;
   cursor: pointer;
 }

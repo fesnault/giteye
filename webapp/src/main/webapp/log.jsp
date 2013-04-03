@@ -40,15 +40,14 @@
 	    	</table>
 	    </div>
 	    <div class="span6">
-	    	<table class="table" style="margin-bottom: 0px;"><thead><th>Files</th></thead></table>
-	    	<div  style="overflow: auto; height: 200px;">
-		    	<table class="table">
-		    		<tbody id="diff">
-
-		    		</tbody>
-		    	</table>
-	    	</div>
-	    </div>
+            <table class="table" style="margin-bottom: 0px;"><thead><th>Files</th></thead></table>
+            <div class="tabbable"> <!-- Only required for left/right tabs -->
+              <ul class="nav nav-tabs" id="tabs">
+              </ul>
+              <div class="tab-content" id="tab-contents">
+              </div>
+            </div>
+        </div>
     </div>
 
     <div id="fileDiffModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">

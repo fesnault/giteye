@@ -164,10 +164,11 @@ function displayDifferences(path, hunks) {
   for (var i=0; i<hunks.length; i++) {
     var hunkId = "hunk"+i;
     diffContentHolder
-      .append("table")
+      .append("div")
         .attr("id", hunkId)
+      .append("table")
         .attr("class", "diffTable");
-    var diffContents = d3.select("#"+hunkId+".diffTable").selectAll("tr").data(hunks[i].lines);
+    var diffContents = d3.select("#"+hunkId+" .diffTable").selectAll("tr").data(hunks[i].lines);
     var hunkLine = diffContents.enter()
       .append("tr")
         .attr("style", "width: 100%")
@@ -232,53 +233,81 @@ function showCommitInfos(commit) {
     $("#author").text(jcommit.authorName+" <"+jcommit.authorEmail+">");
     $("#date").text(formatMillisecondDate(jcommit.commitDate));
     $("#message").text(jcommit.message);
-    $("#diff").empty();
-    var diffHolder = d3.select("#diff");
+    $("#tabs").empty();
+    $("#tab-contents").empty();
 
-    var diffSelection = diffHolder.selectAll("tr").data(jcommit.differences);
-    var diffSelectionLines = diffSelection
-      .enter()
-      .append("tr")
-        .attr("class", "diffElement")
-        .on('mouseover', function(){d3.select(this).classed("hovered", true);})
-        .on('mouseout', function(){d3.select(this).classed("hovered", false);});
+    var tabsHolder = d3.select("#tabs");
+    var tabs = tabsHolder.selectAll("li").data(jcommit.differences).enter();
+    tabs.append("li")
+        .attr("class", function(d,i) { if (i === 0) { return "active"; } else { return "";} })
+      .append("a")
+        .attr("href", function(d,i) { return "#tab"+i; })
+        .attr("data-toggle", "tab")
+        .text(function (d) {
+          return d.parentCommitId.substring(0,7);}
+        );
+    var tabContentsHolder = d3.select("#tab-contents");
+    var tabContents = tabContentsHolder.selectAll("div").data(jcommit.differences).enter();
+    tabContents
+      .append("div")
+        .attr("class", function(d,i) { if (i === 0) { return "tab-pane active"; } else { return "tab-pane";} })
+        .attr("id", function(d,i) { return "tab"+i; })
+        .attr("style", "overflow: auto; height: 200px;")
+      .append("table")
+        .attr("class", "table diffElementHolder")
+      .append("tbody")
+        .attr("id", function(d,i) { return "diff"+i; });
+//<!--li class="active"><a href="#tab1" data-toggle="tab">Section 1</a></li>
+//          <li><a href="#tab2" data-toggle="tab">Section 2</a></li-->
 
-    diffSelectionLines.append("td").attr("style", "border-top: none; padding: 0px;")
-      .append("i")
-        .attr("class", function (d) 
-          {
-            if (d.changeName === 'MODIFY') {
-              return "icon-pencil";
-            } else if (d.changeName === 'ADD') {
-              return "icon-plus-sign";
-            } else if (d.changeName === 'DELETE') {
-              return "icon-trash";
-            }  else if (d.changeName === 'RENAME') {
-              return "icon-text-height";
-            }  else if (d.changeName === 'COPY') {
-              return "icon-share";
-            }  
-          })
+    for (var i=0; i<jcommit.differences.length; i++) {  
+      var diffHolder = d3.select("#diff"+i);
 
-    diffSelectionLines.append("td").attr("style", "border-top: none; padding: 0px;")
-      .on("click", function(d) {
-        var path = '';
-        if (d.changeName === 'DELETE') {
-            path = d.oldPath;
-        } else {
-            path = d.newPath;
-        }
-        displayDifferences(path, d.hunks);
-       })
-      .text(function (d) {
-        if (d.changeName === 'DELETE') {
-            path = d.oldPath;
-        } else {
-            path = d.newPath;
-        }
-        return path;
-      });
-    diffSelection.exit().remove();
+      var diffSelection = diffHolder.selectAll("tr").data(jcommit.differences[i].differences);
+      var diffSelectionLines = diffSelection
+        .enter()
+        .append("tr")
+          .attr("class", "diffElement")
+          .on('mouseover', function(){d3.select(this).classed("hovered", true);})
+          .on('mouseout', function(){d3.select(this).classed("hovered", false);});
+
+      diffSelectionLines.append("td").attr("style", "border-top: none; padding: 0px;")
+        .append("i")
+          .attr("class", function (d) 
+            {
+              if (d.changeName === 'MODIFY') {
+                return "icon-pencil";
+              } else if (d.changeName === 'ADD') {
+                return "icon-plus-sign";
+              } else if (d.changeName === 'DELETE') {
+                return "icon-trash";
+              }  else if (d.changeName === 'RENAME') {
+                return "icon-text-height";
+              }  else if (d.changeName === 'COPY') {
+                return "icon-share";
+              }  
+            })
+
+      diffSelectionLines.append("td").attr("style", "border-top: none; padding: 0px;")
+        .on("click", function(d) {
+          var path = '';
+          if (d.changeName === 'DELETE') {
+              path = d.oldPath;
+          } else {
+              path = d.newPath;
+          }
+          displayDifferences(path, d.hunks);
+         })
+        .text(function (d) {
+          if (d.changeName === 'DELETE') {
+              path = d.oldPath;
+          } else {
+              path = d.newPath;
+          }
+          return path;
+        });
+      diffSelection.exit().remove();
+    }
   });
 }
 
