@@ -7,11 +7,11 @@ package org.phoenix.giteye.json;
  * Time: 8:31 AM
  * To change this template use File | Settings | File Templates.
  */
-public class JsonHunkLine {
+public class JsonChunkLine {
     private String line;
     private int newLineNumber;
     private int oldLineNumber;
-    private HunkLineType type;
+    private ChunkLineType type;
 
     public String getLine() {
         return line;
@@ -37,11 +37,11 @@ public class JsonHunkLine {
         this.oldLineNumber = oldLineNumber;
     }
 
-    public void setType(HunkLineType type) {
+    public void setType(ChunkLineType type) {
         this.type = type;
     }
 
-    public HunkLineType getType() {
+    public ChunkLineType getType() {
         return this.type;
     }
 }

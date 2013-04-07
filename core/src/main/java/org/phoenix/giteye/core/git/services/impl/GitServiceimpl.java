@@ -13,7 +13,6 @@ import org.eclipse.jgit.revplot.PlotCommitList;
 import org.eclipse.jgit.revplot.PlotLane;
 import org.eclipse.jgit.revplot.PlotWalk;
 import org.eclipse.jgit.revwalk.RevCommit;
-import org.eclipse.jgit.revwalk.RevSort;
 import org.eclipse.jgit.revwalk.RevWalk;
 import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
 import org.phoenix.giteye.core.beans.BranchBean;
@@ -21,7 +20,6 @@ import org.phoenix.giteye.core.beans.CommitBean;
 import org.phoenix.giteye.core.beans.RepositoryBean;
 import org.phoenix.giteye.core.exceptions.json.NotInitializedRepositoryException;
 import org.phoenix.giteye.core.git.services.GitService;
-import org.phoenix.giteye.core.graph.LogGraphProcessorFactory;
 import org.phoenix.giteye.json.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -171,16 +169,16 @@ public class GitServiceimpl implements GitService {
                     //jdiff.setDiff();
                     String lines = out.toString("UTF-8");
                     StringTokenizer tokenizer = new StringTokenizer(lines,"\n");
-                    JsonDiffHunk hunk = null;
+                    JsonDiffChunk chunk = null;
                     int oldLineNumber = 0;
                     int newLineNumber = 0;
                     while (tokenizer.hasMoreTokens()) {
                         String line = tokenizer.nextToken();
                         if (line.startsWith("@@")) {
-                            if (hunk != null) {
-                                jdiff.addHunk(hunk);
+                            if (chunk != null) {
+                                jdiff.addChunk(chunk);
                             }
-                            hunk = new JsonDiffHunk();
+                            chunk = new JsonDiffChunk();
                             line = line.replace("@@","").trim();
                             StringTokenizer spaceTokenizer = new StringTokenizer(line, " ");
                             while (spaceTokenizer.hasMoreTokens()) {
@@ -189,53 +187,53 @@ public class GitServiceimpl implements GitService {
                                     token = token.substring(1);
                                     // old file diff part
                                     String[] elements = token.trim().split(",");
-                                    hunk.setOldLineStart(Integer.parseInt(elements[0]));
-                                    hunk.setOldLineRange(Integer.parseInt(elements[1]));
-                                    oldLineNumber = hunk.getOldLineStart()-1;
+                                    chunk.setOldLineStart(Integer.parseInt(elements[0]));
+                                    chunk.setOldLineRange(Integer.parseInt(elements[1]));
+                                    oldLineNumber = chunk.getOldLineStart()-1;
                                 } else {
                                     // new file diff part
                                     token = token.substring(1);
                                     String[] elements = token.trim().split(",");
-                                    hunk.setNewLineStart(Integer.parseInt(elements[0]));
-                                    hunk.setNewLineRange(Integer.parseInt(elements[1]));
-                                    newLineNumber = hunk.getNewLineStart()-1;
+                                    chunk.setNewLineStart(Integer.parseInt(elements[0]));
+                                    chunk.setNewLineRange(Integer.parseInt(elements[1]));
+                                    newLineNumber = chunk.getNewLineStart()-1;
                                 }
                             }
-                        } else if (hunk != null) {
-                            JsonHunkLine hunkLine = new JsonHunkLine();
+                        } else if (chunk != null) {
+                            JsonChunkLine chunkLine = new JsonChunkLine();
                             if (line.startsWith("-")) {
                                 oldLineNumber++;
-                                hunkLine.setOldLineNumber(oldLineNumber);
-                                hunkLine.setNewLineNumber(0);
+                                chunkLine.setOldLineNumber(oldLineNumber);
+                                chunkLine.setNewLineNumber(0);
                                 if (line.length() == 1) {
                                     line = " ";
                                 } else {
                                     line = " "+line.substring(1);
                                 }
-                                hunkLine.setType(HunkLineType.OLD);
+                                chunkLine.setType(ChunkLineType.OLD);
                             } else if (line.startsWith("+")) {
                                 newLineNumber++;
-                                hunkLine.setNewLineNumber(newLineNumber);
-                                hunkLine.setOldLineNumber(0);
+                                chunkLine.setNewLineNumber(newLineNumber);
+                                chunkLine.setOldLineNumber(0);
                                 if (line.length() == 1) {
                                     line = " ";
                                 } else {
                                     line = " "+line.substring(1);
                                 }
-                                hunkLine.setType(HunkLineType.NEW);
+                                chunkLine.setType(ChunkLineType.NEW);
                             } else {
                                 newLineNumber++;
                                 oldLineNumber++;
-                                hunkLine.setOldLineNumber(oldLineNumber);
-                                hunkLine.setNewLineNumber(newLineNumber);
-                                hunkLine.setType(HunkLineType.COMMON);
+                                chunkLine.setOldLineNumber(oldLineNumber);
+                                chunkLine.setNewLineNumber(newLineNumber);
+                                chunkLine.setType(ChunkLineType.COMMON);
                             }
-                            hunkLine.setLine(line);
-                            hunk.addLine(hunkLine);
+                            chunkLine.setLine(line);
+                            chunk.addLine(chunkLine);
                         }
                     }
-                    if (hunk != null) {
-                        jdiff.addHunk(hunk);
+                    if (chunk != null) {
+                        jdiff.addChunk(chunk);
                     }
                     out.reset();
                     diffSet.addDifference(jdiff);
@@ -306,7 +304,6 @@ public class GitServiceimpl implements GitService {
                 }
                 heads.add(head);
             }
-            //revWalk.sort(RevSort.REVERSE);
             revWalk.markStart(heads);
             PlotCommitList<PlotLane> commits = new PlotCommitList<PlotLane>();
             commits.source(revWalk);
@@ -364,6 +361,5 @@ public class GitServiceimpl implements GitService {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
         return null;
-
     }
 }

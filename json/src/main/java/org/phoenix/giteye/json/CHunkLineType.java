@@ -7,13 +7,13 @@ package org.phoenix.giteye.json;
  * Time: 11:28 PM
  * To change this template use File | Settings | File Templates.
  */
-public enum HunkLineType {
+public enum ChunkLineType {
     COMMON(0),
     OLD(-1),
     NEW(1);
     private int value;
 
-    private HunkLineType(int type) {
+    private ChunkLineType(int type) {
         this.value = type;
     }
 

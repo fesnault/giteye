@@ -10,20 +10,20 @@ import java.util.List;
  * Time: 10:26 PM
  * To change this template use File | Settings | File Templates.
  */
-public class JsonDiffHunk {
-    private List<JsonHunkLine> lines;
+public class JsonDiffChunk {
+    private List<JsonChunkLine> lines;
     private int oldLineStart;
     private int oldLineRange;
     private int newLineStart;
     private int newLineRange;
 
-    public List<JsonHunkLine> getLines() {
+    public List<JsonChunkLine> getLines() {
         return lines;
     }
 
-    public void addLine(JsonHunkLine line) {
+    public void addLine(JsonChunkLine line) {
         if (this.lines == null) {
-            this.lines = new ArrayList<JsonHunkLine>();
+            this.lines = new ArrayList<JsonChunkLine>();
         }
         this.lines.add(line);
     }
