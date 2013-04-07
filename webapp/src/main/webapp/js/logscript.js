@@ -101,16 +101,29 @@ var repository;
 var currentCommits;
 var refs;
 
-
-var line = d3.svg.diagonal().projection( function (d) { return [d.x, d.y] } );
-var initline = d3.svg.diagonal().projection( function (d) {
-  if (d.y < min) {
-    return [d.x, margin];
-  } else if (d.y > max) {
-    return [d.x, height-margin];
+var diag = d3.svg.diagonal().projection( function (d) { return [d.x, d.y] } );
+var line = function(d) {
+  return innerLine([d.source, d.target]);
   }
-  return [d.x, margin];}
-);
+
+var chosenPathFunction = line;
+var innerLine = d3.svg.line().interpolate("monotone")
+  .x(function (d,i) {
+    return d.x;
+  }).y(function (d,i) {
+    return d.y;
+  });
+//x(function (d) { return x(d.x); }).y(function (d) {return y(d.y); });
+//diagonal().projection( function (d) { return [d.x, d.y] } );
+//var initline = d3.svg.line().x(function (d) { return x(d.x); }).y(function (d) {return y(d.y); });
+//.projection( function (d) {
+//   if (d.y < min) {
+//     return [d.x, margin];
+//   } else if (d.y > max) {
+//     return [d.x, height-margin];
+//   }
+//   return [d.x, margin];}
+// );
 
 // buttons
 //var resetButton = d3.select("svg").append("g").attr("class","button reset");
@@ -149,13 +162,11 @@ var maxLane = 0;
 d3.json("/git/json/log.do", function(jrep) {
   repository = jrep;
   currentCommits = repository.commits;
-  console.log(currentCommits.length);
   refs = repository.branches;
   max = d3.max(currentCommits, function(d) { return d.position;});
   min = d3.min(currentCommits, function(d) { return d.position;});
   height = 2*margin + currentCommits.length*commitPadding;
   //maxPaddingHeight = (((height-margin)*commitPadding)-height)+2*margin;
-  //d3.select("#workspace").attr("height", maxPaddingHeight);
   minPaddingHeight = 0;
   y = d3.scale.linear().domain([min, max]).range([margin, (height-margin)*commitPadding]);
   redraw(currentCommits, refs);
@@ -265,7 +276,7 @@ function showCommitInfos(commit) {
 //<!--li class="active"><a href="#tab1" data-toggle="tab">Section 1</a></li>
 //          <li><a href="#tab2" data-toggle="tab">Section 2</a></li-->
 
-    for (var i=0; i<jcommit.differences.length; i++) {  
+    for (var i=0; i<jcommit.differences.length; i++) {
       var diffHolder = d3.select("#diff"+i);
 
       var diffSelection = diffHolder.selectAll("tr").data(jcommit.differences[i].differences);
@@ -278,7 +289,7 @@ function showCommitInfos(commit) {
 
       diffSelectionLines.append("td").attr("style", "border-top: none; padding: 0px;")
         .append("i")
-          .attr("class", function (d) 
+          .attr("class", function (d)
             {
               if (d.changeName === 'MODIFY') {
                 return "icon-pencil";
@@ -290,7 +301,7 @@ function showCommitInfos(commit) {
                 return "icon-text-height";
               }  else if (d.changeName === 'COPY') {
                 return "icon-share";
-              }  
+              }
             })
 
       diffSelectionLines.append("td").attr("style", "border-top: none; padding: 0px;")
@@ -529,7 +540,7 @@ function redraw(commits, references) {
   var linksEnterSelection = linksSelection.enter();
   var linksExitingSelection = linksSelection.exit();
 
-  var enteringLinks = linksEnterSelection.append("path").attr("class", "link").attr("d", line)
+  var enteringLinks = linksEnterSelection.append("path").attr("class", "link").attr("d", chosenPathFunction)
       .attr("transform", "translate(30,0)");
   enteringLinks.transition()
       .duration(delay)

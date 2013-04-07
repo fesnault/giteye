@@ -1,10 +1,11 @@
 var min=0, max=0, previousMin=0, previousMax=0, commitPadding=4,width=1300,height=500,margin=10,padding=100,bgcolor="#FFFFFF", maxAllowedLane = 25, branchPadding = 3, ypan=0;
-
+var displayHeight = 500;
 var maxPaddingHeight = 0;
 var minPaddingHeight = 0;
 var originalTranslate = 0;
 var currentPan = 0;
 var commitInfoPanel = null;
+var maxY = 0;
 
 // scalers - scales the commits dates base on the idea that they are displayed vertically. So the scale range uses the height as a max.
 // X is scaled by the number of branches (from 1 to 10) - TODO : make it dynamic from the branch count in the data.
@@ -15,7 +16,7 @@ var availableWidth = d3.select("#svgcontainer")[0][0].clientWidth;
 var availableHeight = d3.select("#svgcontainer")[0][0].clientHeight;
 var maxAllowedLane = Math.floor(x.invert(availableWidth));
 var svg=d3.select("#svgcontainer")
-.append("svg").attr("class", "workspace").attr("width",availableWidth-16).attr("height", 500);
+.append("svg").attr("class", "workspace").attr("id", "workspace").attr("width",availableWidth-16).attr("height", displayHeight);
 
 svg.append("clipPath")
     .attr("id", "clipMessage")
@@ -100,16 +101,29 @@ var repository;
 var currentCommits;
 var refs;
 
-
-var line = d3.svg.diagonal().projection( function (d) { return [d.x, d.y] } );
-var initline = d3.svg.diagonal().projection( function (d) {
-  if (d.y < min) {
-    return [d.x, margin];
-  } else if (d.y > max) {
-    return [d.x, height-margin];
+var diag = d3.svg.diagonal().projection( function (d) { return [d.x, d.y] } );
+var line = function(d) {
+  return innerLine([d.source, d.target]);
   }
-  return [d.x, margin];}
-);
+
+var chosenPathFunction = line;
+var innerLine = d3.svg.line().interpolate("monotone")
+  .x(function (d,i) {
+    return d.x;
+  }).y(function (d,i) {
+    return d.y;
+  });
+//x(function (d) { return x(d.x); }).y(function (d) {return y(d.y); });
+//diagonal().projection( function (d) { return [d.x, d.y] } );
+//var initline = d3.svg.line().x(function (d) { return x(d.x); }).y(function (d) {return y(d.y); });
+//.projection( function (d) {
+//   if (d.y < min) {
+//     return [d.x, margin];
+//   } else if (d.y > max) {
+//     return [d.x, height-margin];
+//   }
+//   return [d.x, margin];}
+// );
 
 // buttons
 //var resetButton = d3.select("svg").append("g").attr("class","button reset");
@@ -144,6 +158,7 @@ function updateData() {
 
 var maxLane = 0;
 
+
 //d3.json("/git/json/log.do", function(jrep) {
 d3.json("data.json", function(jrep) {
   repository = jrep;
@@ -151,29 +166,31 @@ d3.json("data.json", function(jrep) {
   refs = repository.branches;
   max = d3.max(currentCommits, function(d) { return d.position;});
   min = d3.min(currentCommits, function(d) { return d.position;});
-  maxPaddingHeight = (((height-margin)*commitPadding)-height)+2*margin;
+  height = 2*margin + currentCommits.length*commitPadding;
+  //maxPaddingHeight = (((height-margin)*commitPadding)-height)+2*margin;
   minPaddingHeight = 0;
   y = d3.scale.linear().domain([min, max]).range([margin, (height-margin)*commitPadding]);
   redraw(currentCommits, refs);
+  maxPaddingHeight = y(maxY)-displayHeight+margin;
 });
 
-function displayDifferences(path, hunks) {
+function displayDifferences(path, chunks) {
   //$('#fileDiffModalTitle').text(diff.newPath);
   $("#fileDiffContents").empty();
   var diffContentHolder = d3.select("#fileDiffContents");
-  for (var i=0; i<hunks.length; i++) {
-    var hunkId = "hunk"+i;
+  for (var i=0; i<chunks.length; i++) {
+    var chunkId = "chunk"+i;
     diffContentHolder
       .append("div")
-        .attr("id", hunkId)
+        .attr("id", chunkId)
       .append("table")
         .attr("class", "diffTable");
-    var diffContents = d3.select("#"+hunkId+" .diffTable").selectAll("tr").data(hunks[i].lines);
-    var hunkLine = diffContents.enter()
+    var diffContents = d3.select("#"+chunkId+" .diffTable").selectAll("tr").data(chunks[i].lines);
+    var chunkLine = diffContents.enter()
       .append("tr")
         .attr("style", "width: 100%")
         .attr("class", function(e) { return e.type.toLowerCase(); });
-    hunkLine.append("td")
+    chunkLine.append("td")
       .text(function(h) {
          if (h.oldLineNumber === 0) {
           return ' ';
@@ -182,7 +199,7 @@ function displayDifferences(path, hunks) {
          }
        }
      );
-    hunkLine.append("td")
+    chunkLine.append("td")
       .attr("class", "bordered")
       .text(function(h) {
          if (h.newLineNumber === 0) {
@@ -192,7 +209,7 @@ function displayDifferences(path, hunks) {
          }
        }
      );
-    hunkLine.append("td")
+    chunkLine.append("td")
       .attr("class", "bordered")
       .attr("style", "text-align: center;")
       .text(function(f) {
@@ -205,7 +222,7 @@ function displayDifferences(path, hunks) {
           }
         }
       );
-    hunkLine.append("td")
+    chunkLine.append("td")
       .attr("class", "bordered")
       .attr("style", "width: 100%; white-space:PRE;")
       .text(function(g) { return g.line; });
@@ -233,7 +250,8 @@ function showCommitInfos(commit) {
     $("#author").text(jcommit.authorName+" <"+jcommit.authorEmail+">");
     $("#date").text(formatMillisecondDate(jcommit.commitDate));
     $("#message").text(jcommit.message);
-    $("#diff").empty();
+    $("#tabs").empty();
+    $("#tab-contents").empty();
 
     var tabsHolder = d3.select("#tabs");
     var tabs = tabsHolder.selectAll("li").data(jcommit.differences).enter();
@@ -259,7 +277,7 @@ function showCommitInfos(commit) {
 //<!--li class="active"><a href="#tab1" data-toggle="tab">Section 1</a></li>
 //          <li><a href="#tab2" data-toggle="tab">Section 2</a></li-->
 
-    for (var i=0; i<jcommit.differences.length; i++) {  
+    for (var i=0; i<jcommit.differences.length; i++) {
       var diffHolder = d3.select("#diff"+i);
 
       var diffSelection = diffHolder.selectAll("tr").data(jcommit.differences[i].differences);
@@ -272,7 +290,7 @@ function showCommitInfos(commit) {
 
       diffSelectionLines.append("td").attr("style", "border-top: none; padding: 0px;")
         .append("i")
-          .attr("class", function (d) 
+          .attr("class", function (d)
             {
               if (d.changeName === 'MODIFY') {
                 return "icon-pencil";
@@ -284,7 +302,7 @@ function showCommitInfos(commit) {
                 return "icon-text-height";
               }  else if (d.changeName === 'COPY') {
                 return "icon-share";
-              }  
+              }
             })
 
       diffSelectionLines.append("td").attr("style", "border-top: none; padding: 0px;")
@@ -295,7 +313,7 @@ function showCommitInfos(commit) {
           } else {
               path = d.newPath;
           }
-          displayDifferences(path, d.hunks);
+          displayDifferences(path, d.chunks);
          })
         .text(function (d) {
           if (d.changeName === 'DELETE') {
@@ -482,6 +500,9 @@ function redraw(commits, references) {
   var links = [];
   var infos = [];
   commits.forEach(function(d, i) {
+      if (d.position > maxY) {
+        maxY = d.position;
+      }
       var source = {"id": d.id ,"x": x(d.lane), "y": y(d.position)};
       nodes.push(d);
       //var info = {"id": d.id ,"committer": d.committerName, "date": d.date, "x": x(d.lane)+margin, "y": y(d.position)};
@@ -520,7 +541,7 @@ function redraw(commits, references) {
   var linksEnterSelection = linksSelection.enter();
   var linksExitingSelection = linksSelection.exit();
 
-  var enteringLinks = linksEnterSelection.append("path").attr("class", "link").attr("d", line)
+  var enteringLinks = linksEnterSelection.append("path").attr("class", "link").attr("d", chosenPathFunction)
       .attr("transform", "translate(30,0)");
   enteringLinks.transition()
       .duration(delay)
