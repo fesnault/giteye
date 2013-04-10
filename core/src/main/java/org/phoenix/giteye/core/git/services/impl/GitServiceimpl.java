@@ -23,6 +23,7 @@ import org.phoenix.giteye.core.git.services.GitService;
 import org.phoenix.giteye.json.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.cglib.transform.impl.AddDelegateTransformer;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
@@ -41,6 +42,7 @@ import java.util.*;
 @Service
 public class GitServiceimpl implements GitService {
     private final static Logger logger = LoggerFactory.getLogger(GitServiceimpl.class);
+    private final static int DEFAULT_MAX_COMMITS = 300;
     @Override
     public List<CommitBean> getLog(RepositoryBean repository) {
         FileRepositoryBuilder builder = new FileRepositoryBuilder();
@@ -247,7 +249,7 @@ public class GitServiceimpl implements GitService {
     }
 
     @Override
-    public JsonRepository getLogAsJson(RepositoryBean repository) throws NotInitializedRepositoryException {
+    public JsonRepository getLogAsJson(RepositoryBean repository, int max) throws NotInitializedRepositoryException {
         FileRepositoryBuilder builder = new FileRepositoryBuilder();
         Repository repo = null;
         int position = 0;
@@ -320,6 +322,10 @@ public class GitServiceimpl implements GitService {
                 commit.setCommitterName(revc.getCommitterIdent().getName());
                 commit.setCommitterEmail(revc.getCommitterIdent().getEmailAddress());
                 commit.setPosition(position);
+                if (jrep.getCommitCount() >= max) {
+                    commit.setExtra(true);
+                    commit.setDisposable(true);
+                }
                 if (revc.getLane() == null) {
                     commit.setLane(0);
                 } else {
@@ -333,13 +339,17 @@ public class GitServiceimpl implements GitService {
                 for (RevCommit parent : revc.getParents()) {
                     commit.addParent(parent.getId().name());
                 }
-
             }
             // set children
             for (JsonCommit commit : jrep.getCommits()) {
                 if (!CollectionUtils.isEmpty(commit.getParents())) {
+                    boolean allChildrenExtra = true;
                     for (String parent : commit.getParents()) {
                         JsonCommit parentCommit = jrep.getCommit(parent);
+                        if (parentCommit.isDisposable() && (!commit.isExtra())) {
+                            parentCommit.setDisposable(false);
+                            logger.warn("Keeping extra commit "+parentCommit.getId());
+                        }
                         if (parentCommit == null) {
                             logger.error("Could not get JsonCommit with id "+parent);
                         } else {
@@ -347,13 +357,15 @@ public class GitServiceimpl implements GitService {
                             child.setLane(commit.getLane());
                             child.setPosition(commit.getPosition());
                             parentCommit.addChild(child);
-
                         }
                     }
                 }
                 commit.resetParents();
             }
             revWalk.release();
+            logger.warn("Before cleaning : Json Repository contains "+jrep.getCommitCount()+" commits.");
+            jrep.tidy();
+            logger.warn("After cleaning : Json Repository contains "+jrep.getCommitCount()+" commits.");
             //return LogGraphProcessorFactory.getProcessor().process(jrep);
             return jrep;
 

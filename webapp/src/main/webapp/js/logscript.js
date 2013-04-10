@@ -106,7 +106,7 @@ var line = function(d) {
   return innerLine([d.source, d.target]);
   }
 
-var chosenPathFunction = line;
+var chosenPathFunction = diag;
 var innerLine = d3.svg.line().interpolate("monotone")
   .x(function (d,i) {
     return d.x;
@@ -159,13 +159,13 @@ function updateData() {
 var maxLane = 0;
 
 //d3.json("data.json", function(jrep) {
-d3.json("/git/json/log.do", function(jrep) {
+d3.json("/git/json/graph/100/log.do", function(jrep) {
   repository = jrep;
   currentCommits = repository.commits;
   refs = repository.branches;
-  max = d3.max(currentCommits, function(d) { return d.position;});
+  max = d3.max(currentCommits, function(d) { if (d.extra) { return 0;} else {return d.position;} });
   min = d3.min(currentCommits, function(d) { return d.position;});
-  height = 2*margin + currentCommits.length*commitPadding;
+  height = 2*margin + (max-min)*commitPadding;
   //maxPaddingHeight = (((height-margin)*commitPadding)-height)+2*margin;
   minPaddingHeight = 0;
   y = d3.scale.linear().domain([min, max]).range([margin, (height-margin)*commitPadding]);
@@ -499,7 +499,7 @@ function redraw(commits, references) {
   var links = [];
   var infos = [];
   commits.forEach(function(d, i) {
-      if (d.position > maxY) {
+      if ((d.position > maxY) && (d.extra === false)){
         maxY = d.position;
       }
       var source = {"id": d.id ,"x": x(d.lane), "y": y(d.position)};

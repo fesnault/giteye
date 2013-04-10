@@ -56,8 +56,8 @@ public class GitController {
         return "git/branches";
     }
 
-    @RequestMapping(value = "/json/log.do", produces = "application/json")
-    public @ResponseBody JsonRepository getLogAsJson(HttpSession session) {
+    @RequestMapping(value = "/json/graph/{max}/log.do", produces = "application/json")
+    public @ResponseBody JsonRepository getLogAsJson(HttpSession session, @PathVariable int max) {
         RepositoryConfig selectedRepository = (RepositoryConfig)session.getAttribute("repository");
         if (selectedRepository == null) {
             return null;
@@ -65,7 +65,7 @@ public class GitController {
         RepositoryBean bean = repositoryService.getRepositoryInformation(selectedRepository.getLocation());
         JsonRepository jrep = null;
         try {
-            jrep = gitService.getLogAsJson(bean);
+            jrep = gitService.getLogAsJson(bean, max);
         } catch (NotInitializedRepositoryException notInitializedRepositoryException) {
             logger.error("Error while retrieving json repository", notInitializedRepositoryException);
         }

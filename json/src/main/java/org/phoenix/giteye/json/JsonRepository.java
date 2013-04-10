@@ -16,9 +16,27 @@ public class JsonRepository {
     private List<JsonBranch> branches;
     private List<JsonCommit> commits;
     private List<JsonTag> tags;
+    private int commitCount = 0;
 
     public JsonRepository(String name) {
         this.name = name;
+    }
+
+    public void tidy() {
+        commitCount = 0;
+        List<JsonCommit> tempCommits = new ArrayList<JsonCommit>();
+        for (JsonCommit commit : this.commits) {
+            if (!commit.isDisposable()) {
+                tempCommits.add(commit);
+                commitCount++;
+            }
+        }
+        this.commits = tempCommits;
+        tempCommits = null;
+    }
+
+    public void removeCommit(JsonCommit commit) {
+        commits.remove(commit);
     }
 
     public void addTag(JsonTag tag) {
@@ -48,6 +66,7 @@ public class JsonRepository {
             commits = new ArrayList<JsonCommit>();
         }
         commits.add(0, commit);
+        commitCount++;
     }
 
     public List<JsonBranch> getBranches() {
@@ -68,6 +87,10 @@ public class JsonRepository {
 
     public String getName() {
         return name;
+    }
+
+    public int getCommitCount() {
+        return commitCount;
     }
 
 }

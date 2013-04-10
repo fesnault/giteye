@@ -21,7 +21,7 @@ public interface GitService {
 
     List<BranchBean> getBranches(RepositoryBean repository);
 
-    JsonRepository getLogAsJson(RepositoryBean repository) throws NotInitializedRepositoryException;
+    JsonRepository getLogAsJson(RepositoryBean repository, int max) throws NotInitializedRepositoryException;
 
     JsonCommitDetails getCommitDetails(RepositoryBean repository, String commitId) throws NotInitializedRepositoryException;
 }

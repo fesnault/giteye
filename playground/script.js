@@ -45,7 +45,8 @@ function doit(d) {
 
 var svgGroup = svg.insert("g").attr("class", "log");
 
-
+var loader = d3.select("#svgcontainer").append("img").attr("src","../webapp/src/main/webapp/images/ajax-loader.gif").attr("style", "text-align: center; vertical-align:middle;");
+      //.append("img").attr("src","../webapp/src/main/webapp/images/ajax-loader.gif");
 var linksGroup = svgGroup.insert("g").attr("class", "links-group");
 var commitsGroup = svgGroup.insert("g").attr("class", "commits-group");
 var infosGroup = svgGroup.insert("g").attr("class", "infos-group");
@@ -160,7 +161,7 @@ var maxLane = 0;
 
 
 //d3.json("/git/json/log.do", function(jrep) {
-d3.json("data.json", function(jrep) {
+d3.json("datas.json", function(jrep) {
   repository = jrep;
   currentCommits = repository.commits;
   refs = repository.branches;

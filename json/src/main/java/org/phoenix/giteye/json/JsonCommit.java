@@ -26,6 +26,8 @@ public class JsonCommit {
     private int parentCount = 0;
     private int lane;
     private int position;
+    private boolean extra = false;
+    private transient boolean disposable = false;
 
     public JsonCommit(String id) {
         this.id = id;
@@ -156,5 +158,21 @@ public class JsonCommit {
 
     public void setPosition(int position) {
         this.position = position;
+    }
+
+    public boolean isExtra() {
+        return extra;
+    }
+
+    public void setExtra(boolean extra) {
+        this.extra = extra;
+    }
+
+    public boolean isDisposable() {
+        return disposable;
+    }
+
+    public void setDisposable(boolean disposable) {
+        this.disposable = disposable;
     }
 }
