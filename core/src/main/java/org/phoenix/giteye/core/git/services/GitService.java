@@ -17,11 +17,10 @@ import java.util.List;
  * To change this template use File | Settings | File Templates.
  */
 public interface GitService {
-    List<CommitBean> getLog(RepositoryBean repository);
 
     List<BranchBean> getBranches(RepositoryBean repository);
 
-    JsonRepository getLogAsJson(RepositoryBean repository, int max) throws NotInitializedRepositoryException;
+    JsonRepository getLogAsJson(RepositoryBean repository, int pageSize, int page) throws NotInitializedRepositoryException;
 
     JsonCommitDetails getCommitDetails(RepositoryBean repository, String commitId) throws NotInitializedRepositoryException;
 }

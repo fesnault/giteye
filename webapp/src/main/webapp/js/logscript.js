@@ -5,7 +5,9 @@ var minPaddingHeight = 0;
 var originalTranslate = 0;
 var currentPan = 0;
 var commitInfoPanel = null;
-var maxY = 0;
+var maxY = 0, minY = -1;
+var currentPage = 1;
+var maxPage = 1;
 
 // scalers - scales the commits dates base on the idea that they are displayed vertically. So the scale range uses the height as a max.
 // X is scaled by the number of branches (from 1 to 10) - TODO : make it dynamic from the branch count in the data.
@@ -159,19 +161,45 @@ function updateData() {
 var maxLane = 0;
 
 //d3.json("data.json", function(jrep) {
-d3.json("/git/json/graph/100/log.do", function(jrep) {
-  repository = jrep;
-  currentCommits = repository.commits;
-  refs = repository.branches;
-  max = d3.max(currentCommits, function(d) { if (d.extra) { return 0;} else {return d.position;} });
-  min = d3.min(currentCommits, function(d) { return d.position;});
-  height = 2*margin + (max-min)*commitPadding;
-  //maxPaddingHeight = (((height-margin)*commitPadding)-height)+2*margin;
-  minPaddingHeight = 0;
-  y = d3.scale.linear().domain([min, max]).range([margin, (height-margin)*commitPadding]);
-  redraw(currentCommits, refs);
-  maxPaddingHeight = y(maxY)-displayHeight+margin;
-});
+d3.json("/git/json/graph/100/1/log.do", showLog);
+
+function previousPage() {
+    var newPage = currentPage - 1;
+    if (currentPage === 1) newPage = 1;
+    d3.json("/git/json/graph/100/"+newPage+"/log.do", showLog);
+}
+
+function nextPage() {
+    var newPage = currentPage + 1;
+    if (currentPage === maxPage) newPage = currentPage;
+    d3.json("/git/json/graph/100/"+newPage+"/log.do", showLog);
+}
+
+function firstPage() {
+    var newPage = 1;
+    d3.json("/git/json/graph/100/"+newPage+"/log.do", showLog);
+}
+
+function lastPage() {
+    var newPage = maxPage;
+    d3.json("/git/json/graph/100/"+newPage+"/log.do", showLog);
+}
+
+function showLog(jrep) {
+    repository = jrep;
+    currentCommits = repository.commits;
+    currentPage = repository.currentPage;
+    maxPage = repository.maxPage;
+    refs = repository.branches;
+    max = d3.max(currentCommits, function(d) { if (d.extra) { return 0;} else {return d.position;} });
+    min = d3.min(currentCommits, function(d) { if (d.extra) { return max;} else {return d.position;} });
+    height = 2*margin + (max-min)*commitPadding;
+    //maxPaddingHeight = (((height-margin)*commitPadding)-height)+2*margin;
+    minPaddingHeight = y(minY);
+    y = d3.scale.linear().domain([min, max]).range([margin, (height-margin)*commitPadding]);
+    redraw(currentCommits, refs);
+    maxPaddingHeight = y(maxY)-displayHeight+margin;
+}
 
 function displayDifferences(path, chunks) {
   //$('#fileDiffModalTitle').text(diff.newPath);
@@ -470,7 +498,6 @@ function zoom2() {
 }
 
 function resetZoom() {
-  //console.log("dblclick");
   redraw(originalCommits);
 }
 
@@ -501,6 +528,9 @@ function redraw(commits, references) {
   commits.forEach(function(d, i) {
       if ((d.position > maxY) && (d.extra === false)){
         maxY = d.position;
+      }
+      if (minY == -1 && (d.extra === false)) {
+        minY = d.position;
       }
       var source = {"id": d.id ,"x": x(d.lane), "y": y(d.position)};
       nodes.push(d);

@@ -32,18 +32,6 @@ public class GitController {
     @Autowired
     private GitService gitService;
 
-    @RequestMapping(value = "/log.do")
-    public String showLog(HttpSession session, Model model) {
-        RepositoryConfig selectedRepository = (RepositoryConfig)session.getAttribute("repository");
-        if (selectedRepository == null) {
-            return "redirect:/repositories/list.do";
-        }
-        RepositoryBean bean = repositoryService.getRepositoryInformation(selectedRepository.getLocation());
-        model.addAttribute("log", gitService.getLog(bean));
-        model.addAttribute("gitRepository", bean);
-        return "git/log";
-    }
-
     @RequestMapping(value = "/branches.do")
     public String showBranches(HttpSession session, Model model) {
         RepositoryConfig selectedRepository = (RepositoryConfig)session.getAttribute("repository");
@@ -56,16 +44,16 @@ public class GitController {
         return "git/branches";
     }
 
-    @RequestMapping(value = "/json/graph/{max}/log.do", produces = "application/json")
-    public @ResponseBody JsonRepository getLogAsJson(HttpSession session, @PathVariable int max) {
-        RepositoryConfig selectedRepository = (RepositoryConfig)session.getAttribute("repository");
+    @RequestMapping(value = "/json/graph/{max}/{page}/log.do", produces = "application/json")
+    public @ResponseBody JsonRepository getLogAsJson(HttpSession session, @PathVariable int max, @PathVariable int page) {
+            RepositoryConfig selectedRepository = (RepositoryConfig)session.getAttribute("repository");
         if (selectedRepository == null) {
             return null;
         }
         RepositoryBean bean = repositoryService.getRepositoryInformation(selectedRepository.getLocation());
         JsonRepository jrep = null;
         try {
-            jrep = gitService.getLogAsJson(bean, max);
+            jrep = gitService.getLogAsJson(bean, max, page);
         } catch (NotInitializedRepositoryException notInitializedRepositoryException) {
             logger.error("Error while retrieving json repository", notInitializedRepositoryException);
         }

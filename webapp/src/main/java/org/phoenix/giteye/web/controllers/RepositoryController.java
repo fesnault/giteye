@@ -32,18 +32,6 @@ public class RepositoryController {
     @Autowired
     private GitService logService;
 
-    @RequestMapping(value = "/repository.do")
-    public String showRepository(HttpSession session, Model model) {
-        RepositoryConfig selectedRepository = (RepositoryConfig)session.getAttribute("repository");
-        if (selectedRepository == null) {
-            return "redirect:/repositories/list.do";
-        }
-        RepositoryBean bean = repositoryService.getRepositoryInformation(selectedRepository.getLocation());
-        model.addAttribute("log", logService.getLog(bean));
-        model.addAttribute("gitRepository", bean);
-        return "repositories/repository";
-    }
-
     @RequestMapping(value = "/add.do", method = RequestMethod.GET)
     public String showForm(@ModelAttribute RepositoryConfig repositoryConfig) {
         return "repositories/add";

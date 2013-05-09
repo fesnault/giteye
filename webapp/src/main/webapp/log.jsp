@@ -20,7 +20,20 @@
                 </table>
             </div>
         </div><!--/span-->
-
+    <ul class="pager">
+           <li class="previous">
+            <a href="#" onClick="firstPage();">&larr; Last</a>
+          </li>
+          <li class="previous">
+            <a href="#" onClick="previousPage();">&larr; Newer</a>
+          </li>
+          <li class="next">
+            <a href="#" onClick="lastPage();">First &rarr;</a>
+          </li>
+          <li class="next">
+            <a href="#" onClick="nextPage();">Older &rarr;</a>
+          </li>
+        </ul>
     </div><!--/row-->
 
 </div> <!--container-->

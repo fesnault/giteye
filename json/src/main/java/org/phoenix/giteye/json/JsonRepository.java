@@ -17,6 +17,8 @@ public class JsonRepository {
     private List<JsonCommit> commits;
     private List<JsonTag> tags;
     private int commitCount = 0;
+    private int currentPage = 0;
+    private int maxPage = 0;
 
     public JsonRepository(String name) {
         this.name = name;
@@ -93,4 +95,19 @@ public class JsonRepository {
         return commitCount;
     }
 
+    public int getCurrentPage() {
+        return currentPage;
+    }
+
+    public void setCurrentPage(int currentPage) {
+        this.currentPage = currentPage;
+    }
+
+    public int getMaxPage() {
+        return maxPage;
+    }
+
+    public void setMaxPage(int maxPage) {
+        this.maxPage = maxPage;
+    }
 }
