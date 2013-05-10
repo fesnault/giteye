@@ -11,7 +11,16 @@
     <jsp:param name="current" value="home"/>
 </jsp:include>
 
+
 <div class="container-fluid">
+	<div id="loading" class="modal hide" style="display: none; ">  
+<div class="modal-header">  
+<h3><center>Loading</center></h3>  
+</div>  
+<div class="modal-body">  
+<p><center><img src="images/ajax-loader.gif"/></center></p>
+</div>   
+</div>  
     <div class="row-fluid">
         <div class="span12">
             <div>

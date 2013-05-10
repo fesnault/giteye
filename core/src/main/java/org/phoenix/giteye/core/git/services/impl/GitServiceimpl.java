@@ -251,7 +251,7 @@ public class GitServiceimpl implements GitService {
         Repository repo = null;
         int position = 0;
         int max = page*pageSize;
-        int firstCommitPosition = 1 + ((page-1)*pageSize);
+        int firstCommitPosition = (page-1)*pageSize;
 
         try {
             repo = gitDAO.getRepository(repository.getPath());
@@ -336,10 +336,9 @@ public class GitServiceimpl implements GitService {
             int nbPages = (int) Math.ceil(jrep.getCommitCount() / pageSize);
             jrep.setCurrentPage(page);
             jrep.setMaxPage(nbPages);
-            logger.warn("Before cleaning : Json Repository contains " + jrep.getCommitCount() + " commits ("+nbPages+").");
+            logger.info("Before cleaning : Json Repository contains " + jrep.getCommitCount() + " commits ("+nbPages+").");
             jrep.tidy();
-            logger.warn("After cleaning : Json Repository contains "+jrep.getCommitCount()+" commits.");
-            //return LogGraphProcessorFactory.getProcessor().process(jrep);
+            logger.info("After cleaning : Json Repository contains "+jrep.getCommitCount()+" commits.");
             return jrep;
 
         } catch (IOException e) {

@@ -160,29 +160,33 @@ function updateData() {
 
 var maxLane = 0;
 
+function loadPage(pageNb) {
+  $('#loading').modal('show');
+  d3.json("/git/json/graph/100/"+pageNb+"/log.do", showLog);
+}
 //d3.json("data.json", function(jrep) {
-d3.json("/git/json/graph/100/1/log.do", showLog);
+loadPage(1);
 
 function previousPage() {
     var newPage = currentPage - 1;
     if (currentPage === 1) newPage = 1;
-    d3.json("/git/json/graph/100/"+newPage+"/log.do", showLog);
+    loadPage(newPage);
 }
 
 function nextPage() {
     var newPage = currentPage + 1;
     if (currentPage === maxPage) newPage = currentPage;
-    d3.json("/git/json/graph/100/"+newPage+"/log.do", showLog);
+    loadPage(newPage);
 }
 
 function firstPage() {
     var newPage = 1;
-    d3.json("/git/json/graph/100/"+newPage+"/log.do", showLog);
+    loadPage(newPage);
 }
 
 function lastPage() {
     var newPage = maxPage;
-    d3.json("/git/json/graph/100/"+newPage+"/log.do", showLog);
+    loadPage(newPage);
 }
 
 function showLog(jrep) {
@@ -197,8 +201,18 @@ function showLog(jrep) {
     //maxPaddingHeight = (((height-margin)*commitPadding)-height)+2*margin;
     minPaddingHeight = y(minY);
     y = d3.scale.linear().domain([min, max]).range([margin, (height-margin)*commitPadding]);
+    svgGroup.remove();
+    linksGroup.remove();
+    commitsGroup.remove();
+    infosGroup.remove();
+    maxY = 0;
+    svgGroup = svg.insert("g").attr("class", "log");
+    linksGroup = svgGroup.insert("g").attr("class", "links-group");
+    commitsGroup = svgGroup.insert("g").attr("class", "commits-group");
+    infosGroup = svgGroup.insert("g").attr("class", "infos-group");
     redraw(currentCommits, refs);
     maxPaddingHeight = y(maxY)-displayHeight+margin;
+    $('#loading').modal('hide');
 }
 
 function displayDifferences(path, chunks) {
@@ -576,7 +590,6 @@ function redraw(commits, references) {
       .duration(delay)
       .style("opacity", 1);
 
-
   var commitsSelection = commitsGroup.selectAll(".circle").data(nodes, key);
   var commitsEnterSelection = commitsSelection.enter().append("g").attr("class", "circle");
   var commitsExitingSelection = commitsSelection.exit();
@@ -598,6 +611,7 @@ function redraw(commits, references) {
   enteringCommits.transition()
       .duration(delay)
       .style("opacity", 1);
+  commitsSelection.select(".circle").attr("cy", function(d) { return y(+d.position); }).transition();
 
   var infosSelection = infosGroup.selectAll(".info").data(infos, key);
   var infosEnterSelection = infosSelection.enter().append("g").attr("class", function (d, i) { return "info info"+i; })
@@ -670,7 +684,7 @@ function redraw(commits, references) {
       .attr("x", function(d) { return x(maxAllowedLane-4)+margin; })
       .text(function (d) { return d.date; });
 
-  commitsExitingSelection.remove();
+  commitsExitingSelection.transition().remove();
   linksExitingSelection.transition().remove();
   infosExitingSelection.transition().remove();
 }
