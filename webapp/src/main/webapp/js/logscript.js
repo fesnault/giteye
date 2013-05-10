@@ -212,6 +212,8 @@ function showLog(jrep) {
     infosGroup = svgGroup.insert("g").attr("class", "infos-group");
     redraw(currentCommits, refs);
     maxPaddingHeight = y(maxY)-displayHeight+margin;
+    if (currentPage === 1) d3.selectAll("li.previous").classed("disabled","true") else d3.selectAll("li.previous").classed("disabled","false");
+    if (currentPage === maxPage) d3.selectAll("li.next").classed("disabled","true") else d3.selectAll("li.next").classed("disabled","false");
     $('#loading').modal('hide');
 }
 
