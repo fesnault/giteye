@@ -19,13 +19,12 @@
         <tr>
             <th>Name</th>
             <th>Location</th>
-            <th>Type</th>
             <th>Action</th>
         </tr>
       </thead>
       <tbody>
         <c:forEach items="${repositories}" var="repository">
-            <tr><td>${repository.name}</td><td>${repository.location}</td><td>${repository.type}</td>
+            <tr><td>${repository.name}</td><td>${repository.location}</td>
                 <td>
                     <c:choose>
                         <c:when test="${sessionScope.repository != null && sessionScope.repository.name == repository.name}">
@@ -35,7 +34,6 @@
                             <form:form modelAttribute="repository" method="POST" action="/repositories/select.do" style="margin: 0">
                                 <input type="hidden" name="name" value="${repository.name}"/>
                                 <input type="hidden" name="location" value="${repository.location}"/>
-                                <input type="hidden" name="type" value="${repository.type}"/>
                                 <button type="submit" class="btn btn-mini btn-primary">Select</button>
                             </form:form>
                         </c:otherwise>

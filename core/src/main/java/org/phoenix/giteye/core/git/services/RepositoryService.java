@@ -19,6 +19,8 @@ public interface RepositoryService {
 
     void saveRepository(RepositoryConfig repository) throws RepositoryPersistenceException;
 
+    void createRepository(RepositoryConfig repository);
+
     RepositoryConfig getRepository(String name) throws NoSuchRepositoryException;
 
     List<RepositoryConfig> getAllRepositories();

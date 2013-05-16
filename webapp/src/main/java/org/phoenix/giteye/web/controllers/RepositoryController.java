@@ -39,14 +39,15 @@ public class RepositoryController {
 
     @RequestMapping(value = "/add.do", method = RequestMethod.POST)
     public String addRepository(@ModelAttribute RepositoryConfig repositoryConfig, Model model, RedirectAttributes redirectAttributes) {
-        try {
-            repositoryService.saveRepository(repositoryConfig);
-        } catch (RepositoryPersistenceException rpe) {
+        //try {
+            //repositoryService.saveRepository(repositoryConfig);
+            repositoryService.createRepository(repositoryConfig);
+        /*} catch (RepositoryPersistenceException rpe) {
             logger.error("Could not save repository ", rpe);
             redirectAttributes.addFlashAttribute("error", rpe.getMessage());
             redirectAttributes.addFlashAttribute(repositoryConfig);
             return "redirect:/repositories/add.do";
-        }
+        }*/
         return "redirect:/";
     }
 

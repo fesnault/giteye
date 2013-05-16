@@ -6,4 +6,14 @@
                                http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee.xsd">
 
 
+    <bean id="databasePath" class="java.lang.String">
+        <constructor-arg value="${graph.db.path}"/>
+    </bean>
+
+    <bean id="graphDbManager" class="org.phoenix.giteye.core.neo4j.manager.impl.GraphDatabaseManagerImpl">
+        <property name="graphTemplate" ref="graphTemplate"/>
+        <property name="databasePath" ref="databasePath"/>
+    </bean>
+    
+    <bean id="graphTemplate" class="org.phoenix.giteye.core.neo4j.manager.GraphTemplate"/>
 </beans>

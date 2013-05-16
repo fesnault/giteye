@@ -7,17 +7,8 @@ import org.phoenix.giteye.core.RepositoryType;
  * @author phoenix
  */
 public class RepositoryConfig {
-    private RepositoryType type;
     private String location;
     private String name;
-
-    public RepositoryType getType() {
-        return type;
-    }
-
-    public void setType(RepositoryType type) {
-        this.type = type;
-    }
 
     public String getLocation() {
         return location;
