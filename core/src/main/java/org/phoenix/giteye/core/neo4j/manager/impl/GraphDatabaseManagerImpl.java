@@ -1,7 +1,9 @@
 package org.phoenix.giteye.core.neo4j.manager.impl;
 
+import com.sun.org.apache.regexp.internal.RE;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Node;
+import org.neo4j.graphdb.Relationship;
 import org.neo4j.graphdb.Transaction;
 import org.neo4j.graphdb.factory.GraphDatabaseFactory;
 import org.neo4j.graphdb.factory.GraphDatabaseSettings;
@@ -35,6 +37,8 @@ import java.util.Map;
  * To change this template use File | Settings | File Templates.
  */
 public class GraphDatabaseManagerImpl implements GraphDatabaseManager{
+    public static final String RELATIONSHIPS_INDEX_NAME = "relationships";
+    public static final String COMMITS_INDEX_NAME = "commits";
     private String databasePath;
     private GraphTemplate graphTemplate;
     private final static Logger logger = LoggerFactory.getLogger(GraphDatabaseManagerImpl.class);
@@ -63,9 +67,19 @@ public class GraphDatabaseManagerImpl implements GraphDatabaseManager{
                 node.setProperty("target", branch.getTarget());
                 node.setProperty("symbolic", branch.isSymbolic());
                 node.setProperty("type", "nt:branch");
-                ReadableIndex<Node> autoIndex = graphDb.index().forNodes("commits");
-                Node target = autoIndex.get("sha1",branch.getTarget()).getSingle();
-                node.createRelationshipTo(target, GitRelation.POINTS_TO);
+                Index<Node> cIndex = graphDb.index().forNodes(COMMITS_INDEX_NAME);
+                cIndex.add(node, "name", branch.getName());
+                cIndex.add(node, "type", "nt:branch");
+                ReadableIndex<Node> index = graphDb.index().forNodes(COMMITS_INDEX_NAME);
+                Node target = index.get("sha1",branch.getTarget()).getSingle();
+                if (target == null) {
+                    logger.error("Branch relationship not created : could not find commit with sha1 "+branch.getTarget());
+                    return null;
+                }
+                Relationship relation = node.createRelationshipTo(target, GitRelation.POINTS_TO);
+                Index<Relationship> rIndex = graphDb.index().forRelationships(RELATIONSHIPS_INDEX_NAME);
+                rIndex.add(relation, "name", branch.getName());
+                rIndex.add(relation, "target", branch.getTarget());
                 logger.info("Added branch "+branch.getName());
                 return node;
             }
@@ -85,15 +99,16 @@ public class GraphDatabaseManagerImpl implements GraphDatabaseManager{
                 node.setProperty("date", commit.getDate().toString());
                 node.setProperty("message", commit.getMessage());
                 node.setProperty("shortMessage", commit.getShortMessage());
-                node.setProperty("parentCount", commit.getParentCount());
                 node.setProperty("lane", commit.getLane());
                 node.setProperty("position", commit.getPosition());
                 node.setProperty("type", "nt:commit");
-                Index<Node> index = graphDb.index().forNodes("commits");
+                Index<Node> index = graphDb.index().forNodes(COMMITS_INDEX_NAME);
                 index.add(node, "sha1", commit.getId());
                 index.add(node, "authorName", commit.getAuthorName());
                 index.add(node, "authorEmail", commit.getAuthorEmail());
                 index.add(node, "message", commit.getMessage());
+                index.add(node, "type", "nt:commit");
+
                 logger.info("Added commit "+commit.getId());
                 return node;
             }
@@ -104,14 +119,16 @@ public class GraphDatabaseManagerImpl implements GraphDatabaseManager{
     public void setParents(final GraphDatabaseService graphDb, final String commitId, final List<String> parentIds) {
         graphTemplate.doInGraph(graphDb, new GraphCallback() {
             public Node execute(GraphDatabaseService graphDb) {
-                ReadableIndex<Node> autoIndex = graphDb.index().forNodes("commits");
-                Node child = autoIndex.get("sha1",commitId).getSingle();
+                Index<Node> index = graphDb.index().forNodes(COMMITS_INDEX_NAME);
+                Node child = index.get("sha1",commitId).getSingle();
                 if (child == null) return null;
                 if (!CollectionUtils.isEmpty(parentIds)) {
                     Iterator parentIterator = parentIds.iterator();
+                    child.setProperty("parentCount", parentIds.size());
+                    index.add(child, "parentCount", parentIds.size());
                     while (parentIterator.hasNext()) {
                         String parentId = (String)parentIterator.next();
-                        Node parent = autoIndex.get("sha1",parentId).getSingle();
+                        Node parent = index.get("sha1",parentId).getSingle();
                         child.createRelationshipTo(parent, GitRelation.IS_CHILD_OF);
                         parent.createRelationshipTo(child, GitRelation.IS_PARENT_OF);
                     }
@@ -136,8 +153,8 @@ public class GraphDatabaseManagerImpl implements GraphDatabaseManager{
                 node.setProperty("ref", tag.getRef());
                 node.setProperty("target", tag.getTarget());
                 node.setProperty("type", "nt:tag");
-                ReadableIndex<Node> autoIndex = graphDb.index().forNodes("commits");
-                Node target = autoIndex.get("sha1",tag.getTarget()).getSingle();
+                ReadableIndex<Node> index = graphDb.index().forNodes(COMMITS_INDEX_NAME);
+                Node target = index.get("sha1",tag.getTarget()).getSingle();
                 if (target == null) {
                     logger.error("Could not find commit with sha1 "+tag.getTarget());
                     return null;
@@ -171,7 +188,8 @@ public class GraphDatabaseManagerImpl implements GraphDatabaseManager{
                 newGraphDatabase();
         Map<String, String> indexConfig = new HashMap<String, String>();
         indexConfig.put("type", "fulltext");
-        Index<Node> index = graphDb.index().forNodes("commits", indexConfig);
+        graphDb.index().forNodes(COMMITS_INDEX_NAME, indexConfig);
+        graphDb.index().forRelationships(RELATIONSHIPS_INDEX_NAME, indexConfig);
         logger.info("Opened database " + name + " with location : " + databasePath + name);
         registerShutdownHook( graphDb );
         return graphDb;
