@@ -19,6 +19,7 @@ public class JsonRepository {
     private int commitCount = 0;
     private int currentPage = 0;
     private int maxPage = 0;
+    private int maxLane = 0;
 
     public JsonRepository(String name) {
         this.name = name;
@@ -69,6 +70,9 @@ public class JsonRepository {
         }
         commits.add(0, commit);
         commitCount++;
+        if (commit.getLane() > maxLane) {
+            maxLane = commit.getLane();
+        }
     }
 
     public List<JsonBranch> getBranches() {
@@ -109,5 +113,9 @@ public class JsonRepository {
 
     public void setMaxPage(int maxPage) {
         this.maxPage = maxPage;
+    }
+
+    public int getMaxLane() {
+        return maxLane;
     }
 }

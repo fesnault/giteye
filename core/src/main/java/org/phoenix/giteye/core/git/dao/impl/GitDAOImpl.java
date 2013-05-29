@@ -1,4 +1,4 @@
-package org.phoenix.giteye.core.git.services.dao.impl;
+package org.phoenix.giteye.core.git.dao.impl;
 
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.ListBranchCommand;
@@ -8,9 +8,8 @@ import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.lib.RefDatabase;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
-import org.phoenix.giteye.core.git.services.dao.GitDAO;
+import org.phoenix.giteye.core.git.dao.GitDAO;
 
-import javax.persistence.MapsId;
 import java.io.File;
 import java.io.IOException;
 import java.util.Map;

@@ -1,5 +1,6 @@
 package org.phoenix.giteye.web.controllers;
 
+import org.phoenix.giteye.core.beans.GitLogRequest;
 import org.phoenix.giteye.core.beans.RepositoryBean;
 import org.phoenix.giteye.core.beans.RepositoryConfig;
 import org.phoenix.giteye.core.exceptions.json.NotInitializedRepositoryException;
@@ -13,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -60,6 +62,22 @@ public class GitController {
         return jrep;
     }
 
+    @RequestMapping(value = "/json/graph/log2.do", produces = "application/json", consumes = "application/json")
+    public @ResponseBody JsonRepository getLogAsJson(HttpSession session, @RequestBody GitLogRequest logRequest) {
+        RepositoryConfig selectedRepository = (RepositoryConfig)session.getAttribute("repository");
+        if (selectedRepository == null) {
+            return null;
+        }
+        RepositoryBean bean = repositoryService.getRepositoryInformation(selectedRepository.getLocation());
+        JsonRepository jrep = null;
+        try {
+            jrep = gitService.getLogAsJson(bean, logRequest);
+        } catch (NotInitializedRepositoryException notInitializedRepositoryException) {
+            logger.error("Error while retrieving json repository", notInitializedRepositoryException);
+        }
+        return jrep;
+    }
+
     @RequestMapping(value = "/json/commit/{commitId}/details.do")
     public @ResponseBody JsonCommitDetails getCommitDetails(HttpSession session, @PathVariable String commitId) {
         RepositoryConfig selectedRepository = (RepositoryConfig)session.getAttribute("repository");
@@ -75,5 +93,7 @@ public class GitController {
         }
         return details;
     }
+
+
 
 }

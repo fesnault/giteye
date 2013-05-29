@@ -24,7 +24,7 @@ public class JsonCommit {
     private List<JsonCommitChild> children;
     private List<String> parents;
     private int parentCount = 0;
-    private int lane;
+    private int lane = -1;
     private int position;
     private boolean extra = false;
     private transient boolean disposable = false;

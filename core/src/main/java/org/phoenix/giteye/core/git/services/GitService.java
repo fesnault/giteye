@@ -2,6 +2,7 @@ package org.phoenix.giteye.core.git.services;
 
 import org.phoenix.giteye.core.beans.BranchBean;
 import org.phoenix.giteye.core.beans.CommitBean;
+import org.phoenix.giteye.core.beans.GitLogRequest;
 import org.phoenix.giteye.core.beans.RepositoryBean;
 import org.phoenix.giteye.core.exceptions.json.NotInitializedRepositoryException;
 import org.phoenix.giteye.json.JsonCommitDetails;
@@ -21,6 +22,8 @@ public interface GitService {
     List<BranchBean> getBranches(RepositoryBean repository);
 
     JsonRepository getLogAsJson(RepositoryBean repository, int pageSize, int page) throws NotInitializedRepositoryException;
+
+    JsonRepository getLogAsJson(RepositoryBean repository, GitLogRequest logRequest) throws NotInitializedRepositoryException;
 
     JsonCommitDetails getCommitDetails(RepositoryBean repository, String commitId) throws NotInitializedRepositoryException;
 }

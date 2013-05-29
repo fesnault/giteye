@@ -1,6 +1,7 @@
 package org.phoenix.giteye.core.graph;
 
 import org.phoenix.giteye.core.graph.impl.LogGraphProcessorImpl;
+import org.phoenix.giteye.json.JsonRepository;
 
 /**
  * Created with IntelliJ IDEA.
@@ -15,8 +16,8 @@ public class LogGraphProcessorFactory {
         // Private emtpy constructor - Utility class
     }
 
-    public static LogGraphProcessor getProcessor() {
-        return new LogGraphProcessorImpl();
+    public static LogGraphProcessor getProcessor(JsonRepository repository) {
+        return new LogGraphProcessorImpl(repository);
     }
 
 }

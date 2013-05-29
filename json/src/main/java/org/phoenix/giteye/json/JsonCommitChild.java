@@ -15,9 +15,12 @@ public class JsonCommitChild {
     private String id;
     private int lane;
     private int position;
+    private int parentCount;
 
     public JsonCommitChild(String id) {
         this.id = id;
+        this.lane = -1;
+        this.parentCount = 0;
     }
 
     public String getId() {
@@ -38,5 +41,13 @@ public class JsonCommitChild {
 
     public void setPosition(int position) {
         this.position = position;
+    }
+
+    public void addParent() {
+        this.parentCount++;
+    }
+
+    public int getParentCount() {
+        return parentCount;
     }
 }

@@ -1,6 +1,12 @@
 package org.phoenix.giteye.core.graph;
 
+import org.eclipse.jgit.lib.Repository;
+import org.eclipse.jgit.revplot.PlotWalk;
+import org.eclipse.jgit.revwalk.RevCommit;
+import org.phoenix.giteye.core.beans.GitLogRequest;
 import org.phoenix.giteye.json.JsonRepository;
+
+import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
@@ -10,5 +16,5 @@ import org.phoenix.giteye.json.JsonRepository;
  * To change this template use File | Settings | File Templates.
  */
 public interface LogGraphProcessor {
-    JsonRepository process(JsonRepository repository);
+    void process(Repository gitRepository, PlotWalk walk, List<RevCommit> heads, int max);
 }

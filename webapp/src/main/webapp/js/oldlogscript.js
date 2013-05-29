@@ -162,7 +162,7 @@ var maxLane = 0;
 
 function loadPage(pageNb) {
   $('#loading').modal('show');
-  $.ajax({
+  /*$.ajax({
         type: "POST",
         headers: { 
             'Accept': 'application/json',
@@ -172,8 +172,8 @@ function loadPage(pageNb) {
         data: '{"pageSize": 100, "heads": []}',
         success: showLog,
         dataType: "json"
-    });
-  //d3.json("/git/json/graph/100/"+pageNb+"/log.do", showLog);
+    });*/
+  d3.json("/git/json/graph/100/"+pageNb+"/log.do", showLog);
 }
 
 function oldLoadPage(pageNb) {

@@ -1,7 +1,5 @@
 package org.phoenix.giteye.core.git.services.impl;
 
-import org.eclipse.jgit.api.Git;
-import org.eclipse.jgit.api.ListBranchCommand;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.api.errors.NoHeadException;
 import org.eclipse.jgit.diff.DiffEntry;
@@ -16,16 +14,17 @@ import org.eclipse.jgit.revwalk.RevCommit;
 import org.eclipse.jgit.revwalk.RevWalk;
 import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
 import org.phoenix.giteye.core.beans.BranchBean;
-import org.phoenix.giteye.core.beans.CommitBean;
+import org.phoenix.giteye.core.beans.GitLogRequest;
 import org.phoenix.giteye.core.beans.RepositoryBean;
 import org.phoenix.giteye.core.exceptions.json.NotInitializedRepositoryException;
 import org.phoenix.giteye.core.git.services.GitService;
-import org.phoenix.giteye.core.git.services.dao.GitDAO;
+import org.phoenix.giteye.core.git.dao.GitDAO;
+import org.phoenix.giteye.core.git.utils.GitLogCommitList;
+import org.phoenix.giteye.core.graph.LogGraphProcessorFactory;
 import org.phoenix.giteye.json.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cglib.transform.impl.AddDelegateTransformer;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
@@ -246,6 +245,79 @@ public class GitServiceimpl implements GitService {
     }
 
     @Override
+    public JsonRepository getLogAsJson(RepositoryBean repository, GitLogRequest logRequest) throws NotInitializedRepositoryException {
+        FileRepositoryBuilder builder = new FileRepositoryBuilder();
+        Repository repo = null;
+
+        List<String> headsIds = logRequest.getHeads();
+        if (headsIds ==  null) headsIds = Collections.<String>emptyList();
+        logger.info("Processing log graph...");
+        try {
+            repo = gitDAO.getRepository(repository.getPath());
+
+            JsonRepository jrep = new JsonRepository(repository.getDisplayName());
+
+            // Retrieve refs
+            addRepositoryRefs(jrep, repo, repository.getBranch());
+
+            PlotWalk revWalk = new PlotWalk(repo);
+            List<RevCommit> heads = null;
+            boolean includeHeads = true;
+            if (headsIds.size() > 0) {
+                heads = getHeads(headsIds, repo, revWalk);
+                includeHeads = false;
+            } else {
+                heads = getHeads(jrep, revWalk, repo);
+            }
+            revWalk.markStart(heads);
+
+            // Process log graph
+            LogGraphProcessorFactory.getProcessor(jrep).process(repo, revWalk, heads, logRequest.getPageSize());
+
+            revWalk.release();
+            return jrep;
+        } catch (IOException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
+        return null;
+    }
+
+    private List<RevCommit> getHeads(List<String> headsIds, Repository repository, PlotWalk revWalk) {
+        List<RevCommit> heads = new ArrayList<RevCommit>();
+        for (String headId : headsIds) {
+            RevCommit head = null;
+            try {
+                ObjectId headObjectId = repository.resolve(headId);
+                if (headObjectId == null) {
+                    logger.error("Could not resolve head commit with sha1 : "+headId);
+                    continue;
+                }
+                head = revWalk.lookupCommit(headObjectId);
+                heads.add(head);
+            } catch (IOException ioe) {
+                logger.error("Could not resolve head commit with sha1 : "+headId);
+            }
+        }
+        return heads;
+    }
+
+    private List<RevCommit> getHeads(JsonRepository jrep, PlotWalk revWalk, Repository repo) throws IOException {
+        List<RevCommit> heads = new ArrayList<RevCommit>();
+        for (JsonBranch branch : jrep.getBranches()) {
+            if (branch.isSymbolic()) {
+                continue;
+            }
+            String headId = branch.getTarget();
+            RevCommit head = revWalk.lookupCommit(repo.resolve(headId));
+            if (head == null) {
+                continue;
+            }
+            heads.add(head);
+        }
+        return heads;
+    }
+
+    @Override
     public JsonRepository getLogAsJson(RepositoryBean repository, int pageSize, int page) throws NotInitializedRepositoryException {
         FileRepositoryBuilder builder = new FileRepositoryBuilder();
         Repository repo = null;
@@ -263,18 +335,7 @@ public class GitServiceimpl implements GitService {
             // Retrieve objects
             PlotWalk revWalk = new PlotWalk(repo);
             // First create a list of heads targets for all non symbolic refs
-            List<RevCommit> heads = new ArrayList<RevCommit>();
-            for (JsonBranch branch : jrep.getBranches()) {
-                if (branch.isSymbolic()) {
-                    continue;
-                }
-                String headId = branch.getTarget();
-                RevCommit head = revWalk.lookupCommit(repo.resolve(headId));
-                if (head == null) {
-                    continue;
-                }
-                heads.add(head);
-            }
+            List<RevCommit> heads = getHeads(jrep, revWalk, repo);
             revWalk.markStart(heads);
             PlotCommitList<PlotLane> commits = new PlotCommitList<PlotLane>();
             commits.source(revWalk);
@@ -316,7 +377,7 @@ public class GitServiceimpl implements GitService {
                         JsonCommit parentCommit = jrep.getCommit(parent);
                         if (parentCommit.isDisposable() && (!commit.isExtra())) {
                             parentCommit.setDisposable(false);
-                            logger.warn("Keeping extra commit "+parentCommit.getId());
+                            logger.info("Keeping extra commit "+parentCommit.getId());
                         } else if (commit.isDisposable() && (!parentCommit.isExtra())) {
                             commit.setDisposable(false);
                         }

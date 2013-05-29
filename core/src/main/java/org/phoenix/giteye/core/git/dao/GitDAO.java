@@ -1,4 +1,4 @@
-package org.phoenix.giteye.core.git.services.dao;
+package org.phoenix.giteye.core.git.dao;
 
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.api.errors.NoHeadException;
