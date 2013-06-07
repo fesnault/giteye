@@ -590,8 +590,8 @@ function redraw(commits, references) {
           info.branches.push(branch);
         }
       }
-      if (d.children !== null) {
-        d.children.forEach(function(c, i) {
+      if (d.parents !== null) {
+        d.parents.forEach(function(c, i) {
           var target = {"id": c.id ,"x": x(c.lane), "y": y(c.position)};
             links.push({"id": source.id + "-" + target.id ,"source": source, "target": target});
         });

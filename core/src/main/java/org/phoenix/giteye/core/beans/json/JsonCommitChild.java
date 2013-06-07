@@ -1,8 +1,4 @@
-package org.phoenix.giteye.json;
-
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+package org.phoenix.giteye.core.beans.json;
 
 /**
  * Created with IntelliJ IDEA.

@@ -1,13 +1,17 @@
 package org.phoenix.giteye.web.controllers;
 
+import org.eclipse.jgit.revplot.PlotCommit;
+import org.eclipse.jgit.revplot.PlotCommitList;
+import org.eclipse.jgit.revplot.PlotLane;
 import org.phoenix.giteye.core.beans.GitLogRequest;
 import org.phoenix.giteye.core.beans.RepositoryBean;
 import org.phoenix.giteye.core.beans.RepositoryConfig;
-import org.phoenix.giteye.core.exceptions.json.NotInitializedRepositoryException;
+import org.phoenix.giteye.core.beans.json.JsonCommitDetails;
+import org.phoenix.giteye.core.beans.json.JsonRepository;
+import org.phoenix.giteye.core.dto.Commit;
+import org.phoenix.giteye.core.exceptions.NotInitializedRepositoryException;
 import org.phoenix.giteye.core.git.services.GitService;
 import org.phoenix.giteye.core.git.services.RepositoryService;
-import org.phoenix.giteye.json.JsonCommitDetails;
-import org.phoenix.giteye.json.JsonRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +23,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpSession;
+import java.util.Collection;
+import java.util.List;
 
 /**
  * Git Commands controller.
@@ -53,13 +59,7 @@ public class GitController {
             return null;
         }
         RepositoryBean bean = repositoryService.getRepositoryInformation(selectedRepository.getLocation());
-        JsonRepository jrep = null;
-        try {
-            jrep = gitService.getLogAsJson(bean, max, page);
-        } catch (NotInitializedRepositoryException notInitializedRepositoryException) {
-            logger.error("Error while retrieving json repository", notInitializedRepositoryException);
-        }
-        return jrep;
+        return gitService.getLogAsJson(bean, max, page);
     }
 
     @RequestMapping(value = "/json/graph/log2.do", produces = "application/json", consumes = "application/json")
@@ -79,7 +79,8 @@ public class GitController {
     }
 
     @RequestMapping(value = "/json/commit/{commitId}/details.do")
-    public @ResponseBody JsonCommitDetails getCommitDetails(HttpSession session, @PathVariable String commitId) {
+    public @ResponseBody
+    JsonCommitDetails getCommitDetails(HttpSession session, @PathVariable String commitId) {
         RepositoryConfig selectedRepository = (RepositoryConfig)session.getAttribute("repository");
         if (selectedRepository == null) {
             return null;

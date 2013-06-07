@@ -1,4 +1,4 @@
-package org.phoenix.giteye.json;
+package org.phoenix.giteye.core.beans.json;
 
 /**
  * Created with IntelliJ IDEA.

@@ -1,7 +1,7 @@
 package org.phoenix.giteye.core.graph;
 
+import org.phoenix.giteye.core.beans.json.JsonRepository;
 import org.phoenix.giteye.core.graph.impl.LogGraphProcessorImpl;
-import org.phoenix.giteye.json.JsonRepository;
 
 /**
  * Created with IntelliJ IDEA.
@@ -17,7 +17,13 @@ public class LogGraphProcessorFactory {
     }
 
     public static LogGraphProcessor getProcessor(JsonRepository repository) {
-        return new LogGraphProcessorImpl(repository);
+        //return new LogGraphProcessorImpl(repository);
+        return null;
+    }
+
+    public static LogGraphProcessor getProcessor(JsonRepository repository, GraphState state) {
+        //return new LogGraphProcessorImpl(repository, state);
+        return null;
     }
 
 }

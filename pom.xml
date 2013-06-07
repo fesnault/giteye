@@ -7,7 +7,6 @@
     <packaging>pom</packaging>
     <name>giteye tool parent</name>
     <modules>
-        <module>json</module>
         <module>core</module>
         <module>webapp</module>
     </modules>
@@ -275,6 +274,11 @@
                 <version>${javassist.version}</version>
             </dependency>
             <dependency>
+                <groupId>com.google.guava</groupId>
+                <artifactId>guava</artifactId>
+                <version>${guava.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>commons-dbcp</groupId>
                 <artifactId>commons-dbcp</artifactId>
                 <version>${commons-dbcp.version}</version>
@@ -297,6 +301,7 @@
     <!-- Properties -->
     <properties>
         <springframework.version>3.2.0.RELEASE</springframework.version>
+        <guava.version>14.0.1</guava.version>
         <commons-dbcp.version>1.4</commons-dbcp.version>
         <hibernate.version>3.6.4.Final</hibernate.version>
         <hibernate.jmx.version>3.5.6-Final</hibernate.jmx.version>

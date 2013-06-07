@@ -7,10 +7,11 @@ import org.eclipse.jgit.revplot.PlotCommit;
 import org.eclipse.jgit.revplot.PlotWalk;
 import org.eclipse.jgit.revwalk.RevCommit;
 import org.phoenix.giteye.core.beans.GitLogRequest;
+import org.phoenix.giteye.core.beans.json.JsonRepository;
+import org.phoenix.giteye.core.dto.Commit;
+import org.phoenix.giteye.core.graph.GraphState;
+import org.phoenix.giteye.core.graph.GraphTail;
 import org.phoenix.giteye.core.graph.LogGraphProcessor;
-import org.phoenix.giteye.json.JsonCommit;
-import org.phoenix.giteye.json.JsonCommitChild;
-import org.phoenix.giteye.json.JsonRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.CollectionUtils;
@@ -28,21 +29,38 @@ public class LogGraphProcessorImpl implements LogGraphProcessor{
     private final static Logger logger = LoggerFactory.getLogger(LogGraphProcessorImpl.class);
     private BitSet blockedLanes;
     private JsonRepository repository;
-    private int activeLanes = 0;
+    private int activeLanes;
     private Map<String, List<String>> childrenCount = new HashMap<String, List<String>>();
-    private Map<Integer, JsonCommit> laneTails;
+    private Map<Integer, Commit> laneTails;
     private int position = 0;
+    private GraphState state = new GraphState();
 
-    public LogGraphProcessorImpl(JsonRepository repository) {
+    /*public LogGraphProcessorImpl(JsonRepository repository) {
         this.repository = repository;
         this.blockedLanes = new BitSet();
-        this.laneTails = new HashMap<Integer, JsonCommit>();
+        this.laneTails = new HashMap<Integer, Commit>();
+        this.activeLanes = 0;
+    }
+
+    public LogGraphProcessorImpl(JsonRepository repository, GraphState state) {
+        this.repository = repository;
+        this.blockedLanes = new BitSet();
+        for (Integer blockedLane : state.getBlockedLanes()) {
+            blockedLanes.set(blockedLane.intValue());
+        }
+        this.laneTails = new HashMap<Integer, Commit>();
+        for (GraphTail tail : state.getTails()) {
+            //Commit commit
+            ;
+        }
+        this.activeLanes = state.getActiveLanes();
     }
 
     @Override
     public void process(Repository gitRepository, PlotWalk walk, List<RevCommit> heads, int max) {
         try {
             PlotCommit commit = null;
+
             while ( (commit = (PlotCommit)walk.next()) != null) {
                 addCommitToRepository(commit, position, false);
                 position++;
@@ -58,7 +76,7 @@ public class LogGraphProcessorImpl implements LogGraphProcessor{
     }
 
     private void addCommitToRepository(PlotCommit current, int position, boolean extra) {
-        JsonCommit commit = new JsonCommit(current.getId().name());
+        Commit commit = new Commit(current.getId().name());
 
         commit.setShortMessage(current.getShortMessage());
         commit.setMessage(current.getFullMessage());
@@ -88,7 +106,7 @@ public class LogGraphProcessorImpl implements LogGraphProcessor{
         commit.resetParents();
     }
 
-    private void setCommitChildren(JsonCommit commit, PlotCommit plotcommit) {
+    private void setCommitChildren(Commit commit, PlotCommit plotcommit) {
         List<String> childrenIds = childrenCount.get(commit.getId());
         if (childrenIds == null) {
             return;
@@ -97,27 +115,28 @@ public class LogGraphProcessorImpl implements LogGraphProcessor{
         if (childCount > 0) {
             for (int i = 0; i < childCount; i++) {
                 String childId = childrenIds.get(i);
-                JsonCommit childCommit = repository.getCommit(childId);
+                Commit childCommit = repository.getCommit(childId);
                 if (childCommit == null) {
                     logger.warn("Could not find commit child with id : "+childId);
+                } else {
+                    childCommit.addParent(commit.getId());
+                    CommitChild child = new CommitChild(childCommit.getId());
+                    child.setPosition(childCommit.getPosition());
+                    child.setLane(childCommit.getLane());
+                    child.addParent();
+                    commit.addChild(child);
                 }
-                childCommit.addParent(commit.getId());
-                JsonCommitChild child = new JsonCommitChild(childCommit.getId());
-                child.setPosition(childCommit.getPosition());
-                child.setLane(childCommit.getLane());
-                child.addParent();
-                commit.addChild(child);
             }
         }
     }
 
-    private void computeCommitLane(JsonCommit commit) {
+    private void computeCommitLane(Commit commit) {
         int childCount = commit.getChildCount();
         if (childCount == 0) {
             return;
         }
         if (childCount == 1) {
-            JsonCommitChild child = commit.getChildren().get(0);
+            CommitChild child = commit.getChildren().get(0);
             if (child == null) {
                 logger.error("Could not find child commit. Weird");
             } else {
@@ -126,7 +145,7 @@ public class LogGraphProcessorImpl implements LogGraphProcessor{
         } else {
             // more than 1 child : commit is a fork
             for (int childIndex=0; childIndex<commit.getChildCount(); childIndex++) {
-                JsonCommitChild child = commit.getChildren().get(childIndex);
+                CommitChild child = commit.getChildren().get(childIndex);
                 if (child == null) {
                     logger.error("Could not find child commit. Weird");
                 } else {
@@ -141,7 +160,7 @@ public class LogGraphProcessorImpl implements LogGraphProcessor{
 
     }
 
-    private void setCommitAndchildLane(JsonCommit commit, JsonCommitChild child) {
+    private void setCommitAndchildLane(Commit commit, CommitChild child) {
         if (child.getLane() == -1) {
             int lane = getNextAvailableLane();
             child.setLane(lane);
@@ -160,7 +179,7 @@ public class LogGraphProcessorImpl implements LogGraphProcessor{
     }
 
     private void setChildCommitLane(String childId, int lane) {
-        JsonCommit childCommit = repository.getCommit(childId);
+        Commit childCommit = repository.getCommit(childId);
         if (childCommit == null) {
             logger.error("Could not find child commit. This is weird...");
         } else {
@@ -168,7 +187,7 @@ public class LogGraphProcessorImpl implements LogGraphProcessor{
         }
     }
 
-    private void setCommitLane(JsonCommit commit, int lane) {
+    private void setCommitLane(Commit commit, int lane) {
         commit.setLane(lane);
         laneTails.put(lane, commit);
     }
@@ -193,8 +212,8 @@ public class LogGraphProcessorImpl implements LogGraphProcessor{
     }
 
     private void finishGraph(Repository gitRepository, PlotWalk walk) {
-        for (Map.Entry<Integer, JsonCommit> entry : laneTails.entrySet()) {
-            JsonCommit commit = entry.getValue();
+        for (Map.Entry<Integer, Commit> entry : laneTails.entrySet()) {
+            Commit commit = entry.getValue();
             int lane = entry.getKey().intValue();
             try {
                 ObjectId objectId = gitRepository.resolve(commit.getId());
@@ -213,6 +232,6 @@ public class LogGraphProcessorImpl implements LogGraphProcessor{
             }
             //RevCommit rCommit = walk.lookupCommit(AnyObjectId.)
         }
-    }
+    }*/
 
 }

@@ -16,5 +16,5 @@ import java.util.List;
  * To change this template use File | Settings | File Templates.
  */
 public interface LogGraphProcessor {
-    void process(Repository gitRepository, PlotWalk walk, List<RevCommit> heads, int max);
+    //void process(Repository gitRepository, PlotWalk walk, List<RevCommit> heads, int max);
 }

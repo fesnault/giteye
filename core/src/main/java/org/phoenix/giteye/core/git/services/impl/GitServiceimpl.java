@@ -1,5 +1,6 @@
 package org.phoenix.giteye.core.git.services.impl;
 
+import com.google.common.collect.Collections2;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.api.errors.NoHeadException;
 import org.eclipse.jgit.diff.DiffEntry;
@@ -11,17 +12,20 @@ import org.eclipse.jgit.revplot.PlotCommitList;
 import org.eclipse.jgit.revplot.PlotLane;
 import org.eclipse.jgit.revplot.PlotWalk;
 import org.eclipse.jgit.revwalk.RevCommit;
+import org.eclipse.jgit.revwalk.RevSort;
 import org.eclipse.jgit.revwalk.RevWalk;
 import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
 import org.phoenix.giteye.core.beans.BranchBean;
 import org.phoenix.giteye.core.beans.GitLogRequest;
 import org.phoenix.giteye.core.beans.RepositoryBean;
-import org.phoenix.giteye.core.exceptions.json.NotInitializedRepositoryException;
+import org.phoenix.giteye.core.beans.json.*;
+import org.phoenix.giteye.core.dto.Commit;
+import org.phoenix.giteye.core.dto.Parent;
+import org.phoenix.giteye.core.exceptions.NotInitializedRepositoryException;
 import org.phoenix.giteye.core.git.services.GitService;
 import org.phoenix.giteye.core.git.dao.GitDAO;
-import org.phoenix.giteye.core.git.utils.GitLogCommitList;
 import org.phoenix.giteye.core.graph.LogGraphProcessorFactory;
-import org.phoenix.giteye.json.*;
+import org.phoenix.giteye.core.utils.CommitListPredicate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +35,7 @@ import org.springframework.util.CollectionUtils;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -272,7 +277,7 @@ public class GitServiceimpl implements GitService {
             revWalk.markStart(heads);
 
             // Process log graph
-            LogGraphProcessorFactory.getProcessor(jrep).process(repo, revWalk, heads, logRequest.getPageSize());
+            //LogGraphProcessorFactory.getProcessor(jrep).process(repo, revWalk, heads, logRequest.getPageSize());
 
             revWalk.release();
             return jrep;
@@ -317,8 +322,104 @@ public class GitServiceimpl implements GitService {
         return heads;
     }
 
+
     @Override
-    public JsonRepository getLogAsJson(RepositoryBean repository, int pageSize, int page) throws NotInitializedRepositoryException {
+    public JsonRepository getLogAsJson(RepositoryBean repository, int pageSize, int page) {
+        FileRepositoryBuilder builder = new FileRepositoryBuilder();
+        int position = 0;
+        int max = page*pageSize;
+        int firstCommitPosition = (page-1)*pageSize;
+        JsonRepository jrep = null;
+        List<Commit> commits = new LinkedList<Commit>();
+        PlotWalk walk = null;
+        Repository repo = null;
+
+        /*try {
+            repo = gitDAO.getRepository(repository.getPath());
+            jrep = new JsonRepository(repository.getDisplayName());
+            // Retrieve refs
+            addRepositoryRefs(jrep, repo, repository.getBranch());
+            // Retrieve objects
+            PlotWalk revWalk = new PlotWalk(repo);
+            // First create a list of heads targets for all non symbolic refs
+            List<RevCommit> heads = getHeads(jrep, revWalk, repo);
+            revWalk.markStart(heads);
+            commits = new PlotCommitList<PlotLane>();
+            commits.source(revWalk);
+            commits.fillTo(Integer.MAX_VALUE);
+            revWalk.release();
+        } catch (Exception e) {
+            logger.error("error : "+e.getMessage(), e);
+        }*/
+        try {
+            repo = gitDAO.getRepository(repository.getPath());
+            jrep = new JsonRepository(repository.getDisplayName());
+            addRepositoryRefs(jrep, repo, repository.getBranch());
+            walk = new PlotWalk(repo);
+            List<RevCommit> heads = getHeads(jrep, walk, repo);
+            walk.sort(RevSort.COMMIT_TIME_DESC, true);
+            walk.markStart(heads);
+
+            PlotCommitList<PlotLane> pcl = new PlotCommitList<PlotLane>();
+            pcl.source(walk);
+            pcl.fillTo(Integer.MAX_VALUE);
+            Collections.reverse(pcl);
+            position = pcl.size() - 1;
+
+            final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            logger.info("Preparing data...");
+            Map<String, Commit> commitsById = new HashMap<String, Commit>(pcl.size());
+            for (int i = 0; i < pcl.size(); i++) {
+                PlotCommit<PlotLane> pc = pcl.get(i);
+                Commit commit = new Commit();
+
+                commit.setAuthor(pc.getAuthorIdent().getName());
+                commit.setDate(sdf.format(pc.getAuthorIdent().getWhen()));
+                commit.setId(pc.getId().getName());
+                commit.setEmail(pc.getAuthorIdent().getEmailAddress());
+                commit.setMessage(pc.getFullMessage());
+                if (pc.getLane() != null) {
+                    commit.setLane(pc.getLane().getPosition());
+                } else {
+                    commit.setLane(0);
+                }
+                commit.setPosition(position);
+                position--;
+
+                for (RevCommit parentRC : pc.getParents()) {
+                    Commit parentCommit = commitsById.get(parentRC.getId().getName());
+                    if (parentCommit == null) {
+                        logger.error("Commit not found  : "+parentRC.getId().getName());
+                    } else {
+                        parentCommit.addChild();
+                        Parent parent = new Parent();
+                        parent.setId(parentCommit.getId());
+                        parent.setPosition(parentCommit.getPosition());
+                        parent.setLane(parentCommit.getLane());
+                        commit.addParent(parent);
+                    }
+                }
+
+                commitsById.put(commit.getId(), commit);
+                commits.add(commit);
+            }
+
+        } catch (Exception e) {
+                logger.error("Error : "+e.getMessage(), e);
+        } finally {
+            walk.dispose();
+            repo.close();
+        }
+        logger.info("Reversing...");
+        Collections.reverse(commits);
+        logger.info("Filtering...");
+        Collection<Commit> result = Collections2.filter(commits, new CommitListPredicate(firstCommitPosition, max));
+        logger.info("Returning jrep (found "+result.size()+" commits.)");
+        jrep.setCommits(result);
+        return jrep;
+    }
+
+    /*public JsonRepository gedtLogAsJson(RepositoryBean repository, int pageSize, int page) throws NotInitializedRepositoryException {
         FileRepositoryBuilder builder = new FileRepositoryBuilder();
         Repository repo = null;
         int position = 0;
@@ -406,5 +507,5 @@ public class GitServiceimpl implements GitService {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
         return null;
-    }
+    }*/
 }

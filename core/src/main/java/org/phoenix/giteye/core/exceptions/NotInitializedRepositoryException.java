@@ -1,4 +1,4 @@
-package org.phoenix.giteye.core.exceptions.json;
+package org.phoenix.giteye.core.exceptions;
 
 /**
  * No such repository in persistence store.

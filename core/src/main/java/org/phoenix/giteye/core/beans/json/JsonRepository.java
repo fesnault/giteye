@@ -1,6 +1,10 @@
-package org.phoenix.giteye.json;
+package org.phoenix.giteye.core.beans.json;
+
+import org.phoenix.giteye.core.dto.Commit;
+import org.phoenix.giteye.core.graph.GraphState;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -14,21 +18,30 @@ import java.util.List;
 public class JsonRepository {
     private String name;
     private List<JsonBranch> branches;
-    private List<JsonCommit> commits;
+    private Collection<Commit> commits;
     private List<JsonTag> tags;
     private int commitCount = 0;
     private int currentPage = 0;
     private int maxPage = 0;
     private int maxLane = 0;
+    private GraphState state;
 
     public JsonRepository(String name) {
         this.name = name;
     }
 
-    public void tidy() {
+    public GraphState getState() {
+        return state;
+    }
+
+    public void setState(GraphState state) {
+        this.state = state;
+    }
+
+/*    public void tidy() {
         commitCount = 0;
-        List<JsonCommit> tempCommits = new ArrayList<JsonCommit>();
-        for (JsonCommit commit : this.commits) {
+        List<Commit> tempCommits = new ArrayList<Commit>();
+        for (Commit commit : this.commits) {
             if (!commit.isDisposable()) {
                 tempCommits.add(commit);
                 commitCount++;
@@ -36,9 +49,9 @@ public class JsonRepository {
         }
         this.commits = tempCommits;
         tempCommits = null;
-    }
+    }*/
 
-    public void removeCommit(JsonCommit commit) {
+    public void removeCommit(Commit commit) {
         commits.remove(commit);
     }
 
@@ -60,30 +73,34 @@ public class JsonRepository {
         return tags;
     }
 
-    public List<JsonCommit> getCommits() {
-        return commits == null ? Collections.<JsonCommit>emptyList() : commits;
+    public Collection<Commit> getCommits() {
+        return commits == null ? Collections.<Commit>emptyList() : commits;
     }
 
-    public void addCommit(JsonCommit commit) {
+    public void setCommits(Collection<Commit> commits) {
+        this.commits = commits;
+    }
+
+    /*public void addCommit(Commit commit) {
         if (commits == null) {
-            commits = new ArrayList<JsonCommit>();
+            commits = new ArrayList<Commit>();
         }
         commits.add(0, commit);
         commitCount++;
         if (commit.getLane() > maxLane) {
             maxLane = commit.getLane();
         }
-    }
+    }*/
 
     public List<JsonBranch> getBranches() {
         return branches == null ? Collections.<JsonBranch>emptyList() : branches;
     }
 
-    public JsonCommit getCommit(String id) {
+    public Commit getCommit(String id) {
         if (commits == null) {
             return null;
         }
-        for (JsonCommit commit : commits) {
+        for (Commit commit : commits) {
             if (commit.getId().equals(id)) {
                 return commit;
             }
