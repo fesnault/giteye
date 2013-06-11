@@ -62,22 +62,6 @@ public class GitController {
         return gitService.getLogAsJson(bean, max, page);
     }
 
-    @RequestMapping(value = "/json/graph/log2.do", produces = "application/json", consumes = "application/json")
-    public @ResponseBody JsonRepository getLogAsJson(HttpSession session, @RequestBody GitLogRequest logRequest) {
-        RepositoryConfig selectedRepository = (RepositoryConfig)session.getAttribute("repository");
-        if (selectedRepository == null) {
-            return null;
-        }
-        RepositoryBean bean = repositoryService.getRepositoryInformation(selectedRepository.getLocation());
-        JsonRepository jrep = null;
-        try {
-            jrep = gitService.getLogAsJson(bean, logRequest);
-        } catch (NotInitializedRepositoryException notInitializedRepositoryException) {
-            logger.error("Error while retrieving json repository", notInitializedRepositoryException);
-        }
-        return jrep;
-    }
-
     @RequestMapping(value = "/json/commit/{commitId}/details.do")
     public @ResponseBody
     JsonCommitDetails getCommitDetails(HttpSession session, @PathVariable String commitId) {

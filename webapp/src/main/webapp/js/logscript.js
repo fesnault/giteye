@@ -8,6 +8,7 @@ var commitInfoPanel = null;
 var maxY = 0, minY = -1;
 var currentPage = 1;
 var maxPage = 1;
+var pageSize = 250;
 
 // scalers - scales the commits dates base on the idea that they are displayed vertically. So the scale range uses the height as a max.
 // X is scaled by the number of branches (from 1 to 10) - TODO : make it dynamic from the branch count in the data.
@@ -162,7 +163,7 @@ var maxLane = 0;
 
 function loadPage(pageNb) {
   $('#loading').modal('show');
-  $.ajax({
+  /*$.ajax({
         type: "POST",
         headers: { 
             'Accept': 'application/json',
@@ -172,13 +173,13 @@ function loadPage(pageNb) {
         data: '{"pageSize": 100, "heads": []}',
         success: showLog,
         dataType: "json"
-    });
-  //d3.json("/git/json/graph/100/"+pageNb+"/log.do", showLog);
+    });*/
+  d3.json("/git/json/graph/"+pageSize+"/"+pageNb+"/log.do", showLog);
 }
 
 function oldLoadPage(pageNb) {
   $('#loading').modal('show');
-  d3.json("/git/json/graph/100/"+pageNb+"/log.do", showLog);
+  d3.json("/git/json/graph/"+pageSize+"/"+pageNb+"/log.do", showLog);
 }
 //d3.json("data.json", function(jrep) {
 loadPage(1);
@@ -228,8 +229,8 @@ function showLog(jrep) {
     infosGroup = svgGroup.insert("g").attr("class", "infos-group");
     redraw(currentCommits, refs);
     maxPaddingHeight = y(maxY)-displayHeight+margin;
-    if (currentPage === 1) d3.selectAll("li.previous").classed("disabled",true); else d3.selectAll("li.previous").classed("disabled",true);
-    if (currentPage === maxPage) d3.selectAll("li.next").classed("disabled",true); else d3.selectAll("li.next").classed("disabled",true);
+    if (currentPage === 1) d3.selectAll("li.previous").classed("disabled",true); else d3.selectAll("li.previous").classed("disabled",false);
+    if (currentPage === maxPage) d3.selectAll("li.next").classed("disabled",true); else d3.selectAll("li.next").classed("disabled",false);
     $('#loading').modal('hide');
 }
 
@@ -307,7 +308,9 @@ function showCommitInfos(commit) {
   d3.json("/git/json/commit/"+commit.id+"/details.do", function(jcommit) {
     $("#sha1").text(jcommit.id);
     $("#author").text(jcommit.authorName+" <"+jcommit.authorEmail+">");
-    $("#date").text(formatMillisecondDate(jcommit.commitDate));
+    $("#adate").text(jcommit.authorDate);
+    $("#committer").text(jcommit.committerName+" <"+jcommit.committerEmail+">");
+    $("#cdate").text(jcommit.commitDate);
     $("#message").text(jcommit.message);
     $("#tabs").empty();
     $("#tab-contents").empty();
@@ -570,8 +573,8 @@ function redraw(commits, references) {
       var info = {
         "id": d.id,
         "message": d.message,
-        "author": d.authorName,
-        "date": formatMillisecondDate(d.date),
+        "author": d.author,
+        "date": d.date,
         "x": x(d.lane)+margin,
         "y": y(d.position),
         "branches": []
@@ -590,8 +593,8 @@ function redraw(commits, references) {
           info.branches.push(branch);
         }
       }
-      if (d.children !== null) {
-        d.children.forEach(function(c, i) {
+      if (d.parents !== null) {
+        d.parents.forEach(function(c, i) {
           var target = {"id": c.id ,"x": x(c.lane), "y": y(c.position)};
             links.push({"id": source.id + "-" + target.id ,"source": source, "target": target});
         });

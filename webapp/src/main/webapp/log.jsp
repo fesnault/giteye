@@ -55,8 +55,10 @@
 	    		</thead>
 	    		<tbody>
 		    		<tr><td>SHA1</td><td id="sha1"></td></tr>
+		    		<tr><td>Committer</td><td id="committer"></td></tr>
+                    <tr><td>Date (commiter)</td><td id="cdate"></td></tr>
 					<tr><td>Author</td><td id="author"></td></tr>
-					<tr><td>Date</td><td id="date"></td></tr>
+					<tr><td>Date (author)</td><td id="adate"></td></tr>
 					<tr><td>Message</td><td id="message"></td></tr>
 				</tbody>
 	    	</table>

@@ -22,6 +22,7 @@ public class Commit implements Serializable {
     private List<Parent> parents;
     private int parentCount = 0;
     private int childCount = 0;
+    private boolean extra = false;
 
     public List<Parent> getParents() {
         return parents;
@@ -93,5 +94,29 @@ public class Commit implements Serializable {
 
     public void setPosition(int position) {
         this.position = position;
+    }
+
+    public boolean isExtra() {
+        return extra;
+    }
+
+    public void setExtra(boolean extra) {
+        this.extra = extra;
+    }
+
+    public int getParentCount() {
+        return parentCount;
+    }
+
+    public void setParentCount(int parentCount) {
+        this.parentCount = parentCount;
+    }
+
+    public int getChildCount() {
+        return childCount;
+    }
+
+    public void setChildCount(int childCount) {
+        this.childCount = childCount;
     }
 }

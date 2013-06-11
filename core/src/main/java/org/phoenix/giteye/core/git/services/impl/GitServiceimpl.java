@@ -49,6 +49,7 @@ import java.util.*;
 public class GitServiceimpl implements GitService {
     private final static Logger logger = LoggerFactory.getLogger(GitServiceimpl.class);
     private final static int DEFAULT_MAX_COMMITS = 300;
+    private final SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-dd-MM HH:mm:ss");
 
     @Autowired
     private GitDAO gitDAO;
@@ -122,9 +123,12 @@ public class GitServiceimpl implements GitService {
 
                 details.setId(commit.getId().name());
                 details.setMessage(commit.getFullMessage());
-                details.setCommitDate(new Date(commit.getCommitTime() * 1000L));
+                details.setCommitDate(dateFormatter.format(commit.getCommitterIdent().getWhen()));
+                details.setAuthorDate(dateFormatter.format(commit.getAuthorIdent().getWhen()));
                 details.setAuthorName(commit.getAuthorIdent().getName());
                 details.setAuthorEmail(commit.getAuthorIdent().getEmailAddress());
+                details.setCommitterName(commit.getCommitterIdent().getName());
+                details.setCommitterEmail(commit.getCommitterIdent().getEmailAddress());
 
                 List<DiffEntry> diffs = df.scan(parent.getTree(), commit.getTree());
                 for (DiffEntry diff : diffs) {
@@ -333,6 +337,7 @@ public class GitServiceimpl implements GitService {
         List<Commit> commits = new LinkedList<Commit>();
         PlotWalk walk = null;
         Repository repo = null;
+        Map<String, Commit> commitsById = null;
 
         /*try {
             repo = gitDAO.getRepository(repository.getPath());
@@ -354,6 +359,7 @@ public class GitServiceimpl implements GitService {
         try {
             repo = gitDAO.getRepository(repository.getPath());
             jrep = new JsonRepository(repository.getDisplayName());
+            jrep.setCurrentPage(page);
             addRepositoryRefs(jrep, repo, repository.getBranch());
             walk = new PlotWalk(repo);
             List<RevCommit> heads = getHeads(jrep, walk, repo);
@@ -364,17 +370,17 @@ public class GitServiceimpl implements GitService {
             pcl.source(walk);
             pcl.fillTo(Integer.MAX_VALUE);
             Collections.reverse(pcl);
-            position = pcl.size() - 1;
-
-            final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            int nbCommits = pcl.size();
+            jrep.setMaxPage(nbCommits / pageSize);
+            position = nbCommits - 1;
+            commitsById = new HashMap<String, Commit>(nbCommits);
             logger.info("Preparing data...");
-            Map<String, Commit> commitsById = new HashMap<String, Commit>(pcl.size());
-            for (int i = 0; i < pcl.size(); i++) {
+            for (int i = 0; i < nbCommits; i++) {
                 PlotCommit<PlotLane> pc = pcl.get(i);
                 Commit commit = new Commit();
 
-                commit.setAuthor(pc.getAuthorIdent().getName());
-                commit.setDate(sdf.format(pc.getAuthorIdent().getWhen()));
+                commit.setAuthor(pc.getCommitterIdent().getName());
+                commit.setDate(dateFormatter.format(pc.getCommitterIdent().getWhen()));
                 commit.setId(pc.getId().getName());
                 commit.setEmail(pc.getAuthorIdent().getEmailAddress());
                 commit.setMessage(pc.getFullMessage());
@@ -413,7 +419,7 @@ public class GitServiceimpl implements GitService {
         logger.info("Reversing...");
         Collections.reverse(commits);
         logger.info("Filtering...");
-        Collection<Commit> result = Collections2.filter(commits, new CommitListPredicate(firstCommitPosition, max));
+        Collection<Commit> result = Collections2.filter(commits, new CommitListPredicate(commitsById, firstCommitPosition, max));
         logger.info("Returning jrep (found "+result.size()+" commits.)");
         jrep.setCommits(result);
         return jrep;

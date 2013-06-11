@@ -14,9 +14,12 @@ import java.util.List;
 public class JsonCommitDetails {
     private String id;
     private String message;
-    private Date commitDate;
+    private String commitDate;
     private String authorName;
     private String authorEmail;
+    private String authorDate;
+    private String committerName;
+    private String committerEmail;
     private List<JsonDiffs> differences;
 
     public String getId() {
@@ -35,11 +38,11 @@ public class JsonCommitDetails {
         this.message = message;
     }
 
-    public Date getCommitDate() {
+    public String getCommitDate() {
         return commitDate;
     }
 
-    public void setCommitDate(Date commitDate) {
+    public void setCommitDate(String commitDate) {
         this.commitDate = commitDate;
     }
 
@@ -68,5 +71,29 @@ public class JsonCommitDetails {
             this.differences = new ArrayList<JsonDiffs>();
         }
         this.differences.add(differenceSet);
+    }
+
+    public String getAuthorDate() {
+        return authorDate;
+    }
+
+    public void setAuthorDate(String authorDate) {
+        this.authorDate = authorDate;
+    }
+
+    public String getCommitterName() {
+        return committerName;
+    }
+
+    public void setCommitterName(String committerName) {
+        this.committerName = committerName;
+    }
+
+    public String getCommitterEmail() {
+        return committerEmail;
+    }
+
+    public void setCommitterEmail(String committerEmail) {
+        this.committerEmail = committerEmail;
     }
 }
