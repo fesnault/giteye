@@ -234,9 +234,21 @@ function showLog(jrep) {
     $('#loading').modal('hide');
 }
 
-function displayDifferences(path, chunks) {
-  //$('#fileDiffModalTitle').text(diff.newPath);
+function displayDifferences(commitId, parentId, oldId, newId) {
+  $("#loading-message").get(0).style.visibility='visible';
+   d3.json("/git/json/commit/"+commitId+"/"+parentId+"/"+oldId+"/"+newId+"/differences.do", doDisplayDifferences);
+}
+
+function doDisplayDifferences(differencesHolder) {
+  $("#loading-message").get(0).style.visibility='hidden';
   $("#fileDiffContents").empty();
+  var chunks = differencesHolder.chunks;
+  var path = '';
+  if (differencesHolder.changeName === 'DELETE') {
+      path = differencesHolder.oldPath;
+  } else {
+      path = differencesHolder.newPath;
+  }
   var diffContentHolder = d3.select("#fileDiffContents");
   for (var i=0; i<chunks.length; i++) {
     var chunkId = "chunk"+i;
@@ -305,6 +317,7 @@ function showCommitInfos(commit) {
   //commitInfoPanel.append("text").attr("x", 150).attr("y", 150).text(clickedCommit.message);
 
   //d3.json("commit.json", function(jcommit) {
+  $("#loading-message").get(0).style.visibility='visible';
   d3.json("/git/json/commit/"+commit.id+"/details.do", function(jcommit) {
     $("#sha1").text(jcommit.id);
     $("#author").text(jcommit.authorName+" <"+jcommit.authorEmail+">");
@@ -368,25 +381,15 @@ function showCommitInfos(commit) {
             })
 
       diffSelectionLines.append("td").attr("style", "border-top: none; padding: 0px;")
-        .on("click", function(d) {
-          var path = '';
-          if (d.changeName === 'DELETE') {
-              path = d.oldPath;
-          } else {
-              path = d.newPath;
-          }
-          displayDifferences(path, d.chunks);
-         })
-        .text(function (d) {
-          if (d.changeName === 'DELETE') {
-              path = d.oldPath;
-          } else {
-              path = d.newPath;
-          }
-          return path;
-        });
-      diffSelection.exit().remove();
+          .on("click", function(d) {
+            displayDifferences(commit.id, d.parentId, d.oldId, d.newId);
+           })
+          .text(function (d) {
+            return d.name;
+          });
+        diffSelection.exit().remove();
     }
+    $("#loading-message").get(0).style.visibility='hidden';
   });
 }
 

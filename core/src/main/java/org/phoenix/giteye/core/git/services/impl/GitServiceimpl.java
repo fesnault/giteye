@@ -13,6 +13,7 @@ import org.eclipse.jgit.revplot.PlotLane;
 import org.eclipse.jgit.revplot.PlotWalk;
 import org.eclipse.jgit.revwalk.RevCommit;
 import org.eclipse.jgit.revwalk.RevSort;
+import org.eclipse.jgit.revwalk.RevTree;
 import org.eclipse.jgit.revwalk.RevWalk;
 import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
 import org.phoenix.giteye.core.beans.BranchBean;
@@ -24,13 +25,12 @@ import org.phoenix.giteye.core.dto.Parent;
 import org.phoenix.giteye.core.exceptions.NotInitializedRepositoryException;
 import org.phoenix.giteye.core.git.services.GitService;
 import org.phoenix.giteye.core.git.dao.GitDAO;
-import org.phoenix.giteye.core.graph.LogGraphProcessorFactory;
 import org.phoenix.giteye.core.utils.CommitListPredicate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
+import sun.misc.IOUtils;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -49,7 +49,8 @@ import java.util.*;
 public class GitServiceimpl implements GitService {
     private final static Logger logger = LoggerFactory.getLogger(GitServiceimpl.class);
     private final static int DEFAULT_MAX_COMMITS = 300;
-    private final SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-dd-MM HH:mm:ss");
+    public static final int CONTEXT_LINES = 3;
+    private final SimpleDateFormat dateFormatter = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
 
     @Autowired
     private GitDAO gitDAO;
@@ -87,10 +88,13 @@ public class GitServiceimpl implements GitService {
         return branches;
     }
 
-    @Override
-    public JsonCommitDetails getCommitDetails(RepositoryBean repository, String commitId) {
+
+/*    public void getCommitDifferences(RepositoryBean repository, String commitId) {
         FileRepositoryBuilder builder = new FileRepositoryBuilder();
         Repository repo = null;
+        DiffFormatter df = null;
+        RevWalk revWalk = null;
+
 
         JsonCommitDetails details = new JsonCommitDetails();
         try {
@@ -99,47 +103,60 @@ public class GitServiceimpl implements GitService {
                     .findGitDir() // scan up the file system tree
                     .build();
 
-            RevWalk revWalk = new RevWalk(repo);
+            revWalk = new RevWalk(repo);
+        } catch (IOException ioe) {
+
+        } finally {
+            df.release();
+            revWalk.release();
+        }
+    }*/
+
+    @Override
+    public JsonDiff getCommitElementDifferences(RepositoryBean repository, String commitId, String parentId, String oldId, String newId) throws NotInitializedRepositoryException {
+        FileRepositoryBuilder builder = new FileRepositoryBuilder();
+        Repository repo = null;
+        DiffFormatter df = null;
+        RevWalk revWalk = null;
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        JsonDiff jdiff = null;
+
+        try {
+            repo = builder.setGitDir(new File(repository.getPath()))
+                    .readEnvironment() // scan environment GIT_* variables
+                    .findGitDir() // scan up the file system tree
+                    .build();
+
+            revWalk = new RevWalk(repo);
 
             RevCommit commit = revWalk.parseCommit(repo.resolve(commitId));
-            RevCommit parent = null;
-            if (commit == null) {
-                return null;
-            }
-            if (commit.getParentCount() == 0) {
+            RevCommit parent = revWalk.parseCommit(repo.resolve(parentId));
+            if (commit == null || parent == null) {
                 return null;
             }
 
-            List<JsonDiff> differences = new ArrayList<JsonDiff>();
-            for (int i=0; i<commit.getParentCount(); i++) {
-                parent = revWalk.parseCommit(commit.getParent(i).getId());
-                JsonDiffs diffSet = new JsonDiffs();
-                diffSet.setParentCommitId(parent.getId().name());
-                ByteArrayOutputStream out = new ByteArrayOutputStream();
-                DiffFormatter df = new DiffFormatter(out);
-                df.setRepository(repo);
-                df.setDiffComparator(RawTextComparator.DEFAULT);
-                df.setDetectRenames(true);
+            df = new DiffFormatter(out);
+            df.setRepository(repo);
+            df.setDiffComparator(RawTextComparator.DEFAULT);
+            df.setDetectRenames(true);
+            df.setContext(CONTEXT_LINES);
 
-                details.setId(commit.getId().name());
-                details.setMessage(commit.getFullMessage());
-                details.setCommitDate(dateFormatter.format(commit.getCommitterIdent().getWhen()));
-                details.setAuthorDate(dateFormatter.format(commit.getAuthorIdent().getWhen()));
-                details.setAuthorName(commit.getAuthorIdent().getName());
-                details.setAuthorEmail(commit.getAuthorIdent().getEmailAddress());
-                details.setCommitterName(commit.getCommitterIdent().getName());
-                details.setCommitterEmail(commit.getCommitterIdent().getEmailAddress());
+            RevTree commitTree =  commit.getTree();
+            RevTree parentTree = parent.getTree();
 
-                List<DiffEntry> diffs = df.scan(parent.getTree(), commit.getTree());
-                for (DiffEntry diff : diffs) {
+            List<DiffEntry> diffs = df.scan(parentTree, commitTree);
+            for (DiffEntry diff : diffs) {
+                if ( (!diff.getOldId().name().equals(oldId)) && (!diff.getNewId().name().equals(newId)) ) {
+                   continue;
+                } else {
                     df.format(diff);
-                    JsonDiff jdiff = new JsonDiff();
+                    jdiff = new JsonDiff();
                     jdiff.setChangeName(diff.getChangeType().name());
                     jdiff.setNewMode(diff.getNewMode().getBits());
                     jdiff.setNewPath(diff.getNewPath());
                     jdiff.setOldMode(diff.getOldMode().getBits());
                     jdiff.setOldPath(diff.getOldPath());
-                    //jdiff.setDiff();
+
                     String lines = out.toString("UTF-8");
                     StringTokenizer tokenizer = new StringTokenizer(lines,"\n");
                     JsonDiffChunk chunk = null;
@@ -209,12 +226,101 @@ public class GitServiceimpl implements GitService {
                         jdiff.addChunk(chunk);
                     }
                     out.reset();
+                    break;
+                }
+            }
+
+        } catch (IOException ioe) {
+
+        } finally {
+            try {
+                out.close();
+            } catch (IOException ioe2) {
+                logger.error("Oups ! Error while closing output stream...", ioe2);
+            }
+            df.release();
+            revWalk.release();
+        }
+        return jdiff;
+    }
+
+    @Override
+    public JsonCommitDetails getCommitDetails(RepositoryBean repository, String commitId) {
+        FileRepositoryBuilder builder = new FileRepositoryBuilder();
+        Repository repo = null;
+        DiffFormatter df = null;
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        RevWalk revWalk = null;
+
+
+        JsonCommitDetails details = new JsonCommitDetails();
+        try {
+            repo = builder.setGitDir(new File(repository.getPath()))
+                    .readEnvironment() // scan environment GIT_* variables
+                    .findGitDir() // scan up the file system tree
+                    .build();
+
+            revWalk = new RevWalk(repo);
+
+            RevCommit commit = revWalk.parseCommit(repo.resolve(commitId));
+            RevCommit parent = null;
+            if (commit == null) {
+                return null;
+            }
+            if (commit.getParentCount() == 0) {
+                return null;
+            }
+
+            df = new DiffFormatter(out);
+            df.setRepository(repo);
+            df.setDiffComparator(RawTextComparator.DEFAULT);
+            df.setDetectRenames(true);
+            df.setContext(CONTEXT_LINES);
+
+            List<JsonDiff> differences = new ArrayList<JsonDiff>();
+            for (int i=0; i<commit.getParentCount(); i++) {
+                parent = revWalk.parseCommit(commit.getParent(i).getId());
+
+                RevTree commitTree =  commit.getTree();
+                RevTree parentTree = parent.getTree();
+
+                JsonDiffs diffSet = new JsonDiffs();
+                diffSet.setParentCommitId(parent.getId().name());
+
+
+                details.setId(commit.getId().name());
+                details.setMessage(commit.getFullMessage());
+                details.setCommitDate(dateFormatter.format(commit.getCommitterIdent().getWhen()));
+                details.setAuthorDate(dateFormatter.format(commit.getAuthorIdent().getWhen()));
+                details.setAuthorName(commit.getAuthorIdent().getName());
+                details.setAuthorEmail(commit.getAuthorIdent().getEmailAddress());
+                details.setCommitterName(commit.getCommitterIdent().getName());
+                details.setCommitterEmail(commit.getCommitterIdent().getEmailAddress());
+
+                List<DiffEntry> diffs = df.scan(parent.getTree(), commit.getTree());
+                for (DiffEntry diff : diffs) {
+                    df.format(diff);
+                    JsonDiffId jdiff = new JsonDiffId();
+                    jdiff.setName(diff.getChangeType().name().equals(DiffEntry.ChangeType.DELETE.name()) ? diff.getOldPath() : diff.getNewPath());
+                    jdiff.setChangeName(diff.getChangeType().name());
+                    jdiff.setOldId(diff.getOldId().name());
+                    jdiff.setNewId(diff.getNewId().name());
+                    jdiff.setParentId(parent.getId().name());
+
                     diffSet.addDifference(jdiff);
                 }
                 details.addDifferences(diffSet);
             }
         } catch (IOException ioe) {
 
+        } finally {
+            try {
+                out.close();
+            } catch (IOException ioe2) {
+                logger.error("Oups ! Error while closing output stream...", ioe2);
+            }
+            df.release();
+            revWalk.release();
         }
         return details;
     }

@@ -20,7 +20,12 @@
 <div class="modal-body">  
 <p><center><img src="images/ajax-loader.gif"/></center></p>
 </div>   
-</div>  
+</div>
+                <div style="text-align: center;">
+                <span id="loading-message" class="alert alert-info" style="visibility: hidden; text-align: center;">
+                                      Loading...
+                                    </span>
+                                    </div>
     <div class="row-fluid">
         <div class="span12">
             <div>

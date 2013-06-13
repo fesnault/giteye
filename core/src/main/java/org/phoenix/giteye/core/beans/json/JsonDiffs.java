@@ -12,7 +12,7 @@ import java.util.List;
  */
 public class JsonDiffs {
     private String parentCommitId;
-    private List<JsonDiff> differences;
+    private List<JsonDiffId> differences;
 
     public String getParentCommitId() {
         return parentCommitId;
@@ -22,13 +22,13 @@ public class JsonDiffs {
         this.parentCommitId = parentCommitId;
     }
 
-    public List<JsonDiff> getDifferences() {
+    public List<JsonDiffId> getDifferences() {
         return differences;
     }
 
-    public void addDifference(JsonDiff difference) {
+    public void addDifference(JsonDiffId difference) {
         if (this.differences == null) {
-            this.differences = new ArrayList<JsonDiff>();
+            this.differences = new ArrayList<JsonDiffId>();
         }
         this.differences.add(difference);
     }

@@ -7,6 +7,7 @@ import org.phoenix.giteye.core.beans.BranchBean;
 import org.phoenix.giteye.core.beans.GitLogRequest;
 import org.phoenix.giteye.core.beans.RepositoryBean;
 import org.phoenix.giteye.core.beans.json.JsonCommitDetails;
+import org.phoenix.giteye.core.beans.json.JsonDiff;
 import org.phoenix.giteye.core.beans.json.JsonRepository;
 import org.phoenix.giteye.core.dto.Commit;
 import org.phoenix.giteye.core.exceptions.NotInitializedRepositoryException;
@@ -32,4 +33,6 @@ public interface GitService {
     JsonRepository getLogAsJson(RepositoryBean repository, GitLogRequest logRequest) throws NotInitializedRepositoryException;
 
     JsonCommitDetails getCommitDetails(RepositoryBean repository, String commitId) throws NotInitializedRepositoryException;
+
+    JsonDiff getCommitElementDifferences(RepositoryBean repository, String commitId, String parentId, String oldId, String newId) throws NotInitializedRepositoryException;
 }

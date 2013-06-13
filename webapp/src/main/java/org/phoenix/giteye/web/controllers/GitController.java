@@ -7,6 +7,8 @@ import org.phoenix.giteye.core.beans.GitLogRequest;
 import org.phoenix.giteye.core.beans.RepositoryBean;
 import org.phoenix.giteye.core.beans.RepositoryConfig;
 import org.phoenix.giteye.core.beans.json.JsonCommitDetails;
+import org.phoenix.giteye.core.beans.json.JsonDiff;
+import org.phoenix.giteye.core.beans.json.JsonDiffs;
 import org.phoenix.giteye.core.beans.json.JsonRepository;
 import org.phoenix.giteye.core.dto.Commit;
 import org.phoenix.giteye.core.exceptions.NotInitializedRepositoryException;
@@ -62,9 +64,24 @@ public class GitController {
         return gitService.getLogAsJson(bean, max, page);
     }
 
+   @RequestMapping(value = "/json/commit/{commitId}/{parentId}/{oldId}/{newId}/differences.do")
+   public @ResponseBody JsonDiff getCommitElementDiffs(HttpSession session, @PathVariable String commitId, @PathVariable String parentId, @PathVariable String oldId, @PathVariable String newId) {
+       RepositoryConfig selectedRepository = (RepositoryConfig)session.getAttribute("repository");
+       if (selectedRepository == null) {
+           return null;
+       }
+       RepositoryBean bean = repositoryService.getRepositoryInformation(selectedRepository.getLocation());
+       JsonDiff diffs = null;
+       try {
+           diffs = gitService.getCommitElementDifferences(bean, commitId, parentId, oldId, newId);
+       } catch (NotInitializedRepositoryException nire) {
+
+       }
+       return diffs;
+   }
+
     @RequestMapping(value = "/json/commit/{commitId}/details.do")
-    public @ResponseBody
-    JsonCommitDetails getCommitDetails(HttpSession session, @PathVariable String commitId) {
+    public @ResponseBody JsonCommitDetails getCommitDetails(HttpSession session, @PathVariable String commitId) {
         RepositoryConfig selectedRepository = (RepositoryConfig)session.getAttribute("repository");
         if (selectedRepository == null) {
             return null;
