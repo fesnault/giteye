@@ -11,8 +11,8 @@ import org.eclipse.jgit.revwalk.DepthWalk;
 import org.eclipse.jgit.revwalk.RevCommit;
 import org.eclipse.jgit.revwalk.RevWalk;
 import org.phoenix.giteye.core.beans.GitLogRequest;
-import org.phoenix.giteye.json.JsonCommit;
-import org.phoenix.giteye.json.JsonRepository;
+import org.phoenix.giteye.core.beans.json.JsonCommit;
+import org.phoenix.giteye.core.beans.json.JsonRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

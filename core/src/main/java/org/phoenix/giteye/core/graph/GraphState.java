@@ -1,12 +1,10 @@
 package org.phoenix.giteye.core.graph;
 
-import org.phoenix.giteye.json.JsonCommit;
-
+import org.phoenix.giteye.core.beans.json.JsonCommit;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.List;
-import java.util.Map;
 
 /**
  * This bean holds the state of a log graph at the end of a page processing.

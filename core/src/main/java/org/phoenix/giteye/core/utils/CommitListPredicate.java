@@ -1,7 +1,6 @@
 package org.phoenix.giteye.core.utils;
 
 import com.google.common.base.Predicate;
-import com.sun.istack.internal.Nullable;
 import org.phoenix.giteye.core.dto.Commit;
 import org.phoenix.giteye.core.dto.Parent;
 
@@ -27,7 +26,7 @@ public class CommitListPredicate implements Predicate {
     }
 
     @Override
-    public boolean apply(@Nullable Object o) {
+    public boolean apply(Object o) {
         Commit commit = (Commit)o;
         if (commit.isExtra()) {
             return true;
