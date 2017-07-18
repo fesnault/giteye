@@ -1,12 +1,9 @@
 package org.phoenix.giteye.core.dao.impl;
 
-import org.hibernate.SessionFactory;
 import org.phoenix.giteye.core.dao.AbstractDAO;
-import org.phoenix.giteye.core.dao.impl.PersistentDAOImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.orm.hibernate3.HibernateTemplate;
-import org.springframework.stereotype.Repository;
+import org.springframework.orm.hibernate5.HibernateTemplate;
 
 import java.io.Serializable;
 

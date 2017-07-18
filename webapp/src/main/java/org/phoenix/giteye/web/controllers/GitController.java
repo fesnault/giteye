@@ -1,16 +1,10 @@
 package org.phoenix.giteye.web.controllers;
 
-import org.eclipse.jgit.revplot.PlotCommit;
-import org.eclipse.jgit.revplot.PlotCommitList;
-import org.eclipse.jgit.revplot.PlotLane;
-import org.phoenix.giteye.core.beans.GitLogRequest;
 import org.phoenix.giteye.core.beans.RepositoryBean;
 import org.phoenix.giteye.core.beans.RepositoryConfig;
 import org.phoenix.giteye.core.beans.json.JsonCommitDetails;
 import org.phoenix.giteye.core.beans.json.JsonDiff;
-import org.phoenix.giteye.core.beans.json.JsonDiffs;
 import org.phoenix.giteye.core.beans.json.JsonRepository;
-import org.phoenix.giteye.core.dto.Commit;
 import org.phoenix.giteye.core.exceptions.NotInitializedRepositoryException;
 import org.phoenix.giteye.core.git.services.GitService;
 import org.phoenix.giteye.core.git.services.RepositoryService;
@@ -20,19 +14,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import javax.servlet.http.HttpSession;
-import java.util.Collection;
-import java.util.List;
 
 /**
  * Git Commands controller.
  * @author phoenix
  */
 @Controller
+@EnableWebMvc
 @RequestMapping(value = "/git")
 public class GitController {
     private final static Logger logger = LoggerFactory.getLogger(GitController.class);
@@ -54,7 +47,7 @@ public class GitController {
         return "git/branches";
     }
 
-    @RequestMapping(value = "/json/graph/{max}/{page}/log.do", produces = "application/json")
+    @RequestMapping(value = "/json/graph/{max}/{page}/log.do", headers="Accept=*/*", produces = "application/json")
     public @ResponseBody JsonRepository getLogAsJson(HttpSession session, @PathVariable int max, @PathVariable int page) {
             RepositoryConfig selectedRepository = (RepositoryConfig)session.getAttribute("repository");
         if (selectedRepository == null) {

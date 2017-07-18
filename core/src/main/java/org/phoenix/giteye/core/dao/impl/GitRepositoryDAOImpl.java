@@ -19,6 +19,6 @@ public class GitRepositoryDAOImpl extends AbstractDAOImpl<String, GitRepository>
      * {@inheritDoc}
      */
     public List<GitRepository> findByPath(String path) {
-        return getHibernateTemplate().find("from GitRepository where path = ?", path);
+        return (List<GitRepository>)getHibernateTemplate().find("from GitRepository where path = ?", path);
     }
 }

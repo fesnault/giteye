@@ -1,22 +1,20 @@
 package org.phoenix.giteye.core.dao.impl;
 
-import org.hibernate.*;
-import org.hibernate.criterion.*;
+import org.hibernate.Criteria;
+import org.hibernate.HibernateException;
+import org.hibernate.Session;
+import org.hibernate.criterion.Criterion;
+import org.hibernate.criterion.Projections;
+import org.hibernate.criterion.Restrictions;
 import org.phoenix.giteye.core.dao.PersistentDAO;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.orm.hibernate3.HibernateCallback;
-import org.springframework.orm.hibernate3.HibernateTemplate;
-import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
-import org.springframework.stereotype.Repository;
+import org.springframework.orm.hibernate5.HibernateCallback;
+import org.springframework.orm.hibernate5.support.HibernateDaoSupport;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.Serializable;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.sql.SQLException;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Created with IntelliJ IDEA.
@@ -97,7 +95,7 @@ public abstract class PersistentDAOImpl<K extends Serializable, T extends Serial
      */
     @Override
     public List<T> findAll() {
-        return getHibernateTemplate().find("from "+persistentClass.getSimpleName());
+        return (List<T>)getHibernateTemplate().find("from "+persistentClass.getSimpleName());
     }
 
 
@@ -144,8 +142,7 @@ public abstract class PersistentDAOImpl<K extends Serializable, T extends Serial
     @Override
     public long count(final Criterion[] where) {
         return (Long)getHibernateTemplate().execute(new HibernateCallback() {
-            @Override
-            public Object doInHibernate(Session session) throws HibernateException, SQLException {
+            public Object doInHibernate(Session session) throws HibernateException {
                 Criteria c = session.createCriteria(persistentClass);
                 if (where != null && where.length > 0) {
                     for (Criterion aWhere : where) {

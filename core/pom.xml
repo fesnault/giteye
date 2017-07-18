@@ -27,12 +27,12 @@
         </dependency>
         <dependency>
             <groupId>net.sf.ehcache</groupId>
-            <artifactId>ehcache-core</artifactId>
+            <artifactId>ehcache</artifactId>
         </dependency>
-        <dependency>
+        <!--dependency>
             <groupId>org.hibernate.javax.persistence</groupId>
             <artifactId>hibernate-jpa-2.0-api</artifactId>
-        </dependency>
+        </dependency-->
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-validator</artifactId>
@@ -46,10 +46,6 @@
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-tx</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.hibernate.javax.persistence</groupId>
-            <artifactId>hibernate-jpa-2.0-api</artifactId>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
@@ -97,9 +93,17 @@
                     <groupId>net.sf.ehcache</groupId>
                     <artifactId>ehcache</artifactId>
                 </exclusion>
+                <exclusion>
+                    <groupId>org.jboss.logging</groupId>
+                    <artifactId>jboss-logging</artifactId>
+                </exclusion>
             </exclusions>
         </dependency>
         <dependency>
+            <groupId>org.jboss.logging</groupId>
+            <artifactId>jboss-logging</artifactId>
+        </dependency>
+        <!--dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-jmx</artifactId>
             <exclusions>
@@ -112,9 +116,9 @@
                     <artifactId>hibernate-annotations</artifactId>
                 </exclusion>
             </exclusions>
-        </dependency>
+        </dependency-->
         <dependency>
-            <groupId>org.hibernate</groupId>
+            <groupId>org.hibernate.common</groupId>
             <artifactId>hibernate-commons-annotations</artifactId>
             <exclusions>
                 <exclusion>
