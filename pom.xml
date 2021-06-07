@@ -338,7 +338,7 @@
         <jdbc.version>5.1.22</jdbc.version>
         <jdbc.driverClassName>com.mysql.jdbc.Driver</jdbc.driverClassName>
         <slf4j.version>1.7.2</slf4j.version>
-        <logback.version>1.0.9</logback.version>
+        <logback.version>1.2.0</logback.version>
         <mockito.version>1.9.5</mockito.version>
         <testng.version>6.8</testng.version>
         <javassist.version>3.12.1.GA</javassist.version>
