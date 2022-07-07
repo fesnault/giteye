@@ -321,7 +321,7 @@
         <jboss.logging.version>3.3.0.Final</jboss.logging.version>
         <hibernate.version>5.0.7.Final</hibernate.version>
         <hibernate.commons.annotations.version>5.0.1.Final</hibernate.commons.annotations.version>
-        <hibernate.validator.version>5.1.1.Final</hibernate.validator.version>
+        <hibernate.validator.version>6.0.23.Final</hibernate.validator.version>
         <hibernate.ehcache.version>5.2.10.Final</hibernate.ehcache.version>
         <hibernate.jpa.version>1.0.1.Final</hibernate.jpa.version>
         <ehcache.version>2.7.0</ehcache.version>
