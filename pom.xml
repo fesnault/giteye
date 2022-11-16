@@ -314,7 +314,7 @@
     </developers>
     <!-- Properties -->
     <properties>
-        <jackson.databind.version>2.9.10.1</jackson.databind.version>
+        <jackson.databind.version>2.12.7.1</jackson.databind.version>
         <springframework.version>4.3.9.RELEASE</springframework.version>
         <guava.version>14.0.1</guava.version>
         <commons-dbcp.version>1.4</commons-dbcp.version>
